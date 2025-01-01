@@ -1,0 +1,14 @@
+
+        {
+            "firstName": "Daniel",
+            "LastName": "Larbi",
+            "otherNames": "Bekoe Palmer",
+            "username": "dbplarbi",
+            "roles": [
+                "loan officer",
+                "admin"
+            ],
+            "dob": "1990-12-27",
+            "sex": "male"
+        }
+  
