@@ -24,7 +24,7 @@ const InfoHeader = ({
   const isActive = (href: string) => pathName === href;
 
   return (
-    <div className="flex justify-between items-center bg-white shadow-md p-3">
+    <div className="flex justify-between items-center bg-violet-100 shadow-md p-1">
       <div className="flex flex-row gap-5 items-center">
       <h1 className="font-sans font-semibold text-lg text-slate-700">
         {route}

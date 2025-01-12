@@ -65,10 +65,8 @@ export async function POST(req: NextRequest) {
         return createResponse(false, "001", "Invalid Credentials", {},{})
       }
       
-      const encryptedData = encryptData(user);
-      console.log({encryptedData}) 
       // Create a session or token
-      await  createSession(user);
+      await createSession(user);
       await userService.update(user._id, {online_status: 'online'})
   
       // Send response to the client

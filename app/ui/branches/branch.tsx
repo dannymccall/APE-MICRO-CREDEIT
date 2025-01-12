@@ -61,10 +61,10 @@ const Branch: React.FC<UserProps> = ({ branch, onDelete, editBranch }) => {
       )}
 
       <tr key={branch.id} className="hover:bg-gray-100 relative w-full">
-        <td className="p-2">{branch.branchName}</td>
-        <td className="p-2">{branch.branchCode}</td>
+        <td className="p-2 text-sm">{branch.branchName}</td>
+        <td className="p-2 text-sm">{branch.branchCode}</td>
        
-        <td className="p-2 relative">
+        <td className="p-2 text-sm relative">
           <section
             className="dropdown flex items-center h-full relative right-0 left-0"
             style={{ height: "100%" }}
@@ -85,7 +85,7 @@ const Branch: React.FC<UserProps> = ({ branch, onDelete, editBranch }) => {
               <ul
                 tabIndex={0}
                 role="menu"
-                className="dropdown-content menu absolute right-48 bg-white rounded z-10 w-28 p-2 shadow-lg"
+                className="dropdown-content menu absolute right-48 bg-white rounded z-10 w-28 p-2 text-sm shadow-lg"
                 style={{ top: "100%" }}
               >
                 <li>

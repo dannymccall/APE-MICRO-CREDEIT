@@ -1,5 +1,7 @@
+import { mkdir, writeFile } from "fs/promises";
 import { Jimp } from "jimp";
 import { NextResponse } from "next/server";
+import { join } from "path";
 
 export async function makeRequest(url: string, options: RequestInit) {
   try {
@@ -171,3 +173,104 @@ export async function validateImageDimensions(
 export function toCapitalized(str: string): string {
   return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
 }
+
+export function calculateLoanInformaion(
+  principal: number,
+  duration: number,
+  interstPerMonth: any
+) {
+  const monthlyInterest = (parseFloat(interstPerMonth) / 100) * principal;
+  const interstForTerm = monthlyInterest * duration;
+  const weeklyInterest = interstForTerm / 12;
+  const weeklyPayment = principal / 12;
+
+  const expectedWeeklyPayment = weeklyPayment + weeklyInterest;
+
+  return Math.floor(expectedWeeklyPayment);
+}
+
+export function calculateProcessingAndAdvanceFee(principal: number) {
+  const processingFee = (Number(principal) * 0.05).toFixed(2);
+  const advanceFee = (Number(principal) * 0.1).toFixed(2);
+
+  return [processingFee, advanceFee];
+}
+
+export function calculateNextPayment(lastPaymentDate: Date) {
+  const date = new Date(lastPaymentDate);
+
+  date.setDate(date.getDate() + 7);
+
+  return date.toISOString().split("T")[0];
+}
+
+
+export async function blobToFile(blobType: string, imageName: string) {
+  try{
+    const res = await fetch(blobType, {method: "GET"});
+    console.log(res)
+    if (!res.ok) {
+      // throw new Error(`Failed to fetch blob: ${res.statusText}`);
+      console.log(res.statusText)
+    }
+    const blob = await res.blob();
+    console.log({blob})
+    const file =  new File([blob], imageName, { type: blob.type });
+    return file
+
+  }catch (e:any){
+    console.log(e.message)
+  }
+}
+
+export function generateSystemID(prefix: string): string {
+  const year = new Date().getFullYear().toString().slice(-2); // Last two digits of the year
+
+  // Generate a random 4-character alphanumeric string
+  const randomPart = Math.random().toString(36).substring(2, 6).toUpperCase();
+
+  // Combine parts to create the client ID
+  return `${prefix}-${year}${randomPart}`;
+}
+
+type PaymentSchedule = {
+  week: number;
+  nextPayment: string; // ISO string for the date
+  amountToPay: number;
+  status: string;
+  principalPayment: number,
+  interestPayment: number,
+};
+
+export function generatePaymentSchedule(principal: number, startDate: Date, amountToPay: number): PaymentSchedule[] {
+  const schedule: PaymentSchedule[] = [];
+  
+  for (let i = 1; i <= 12; i++) {
+    const paymentDate = new Date(startDate);
+    paymentDate.setDate(startDate.getDate() + i * 7); // Add 7 days per week
+    schedule.push({
+      week: i,
+      nextPayment: paymentDate.toISOString().split("T")[0], // Format as YYYY-MM-DD
+      amountToPay,
+      status: "not paid",
+      principalPayment: Math.floor(Number(principal) / 12),
+      interestPayment: Math.ceil(Number(principal) * 0.0267)
+    });
+  }
+
+  return schedule;
+}
+
+
+  export const fetchClients = async (search: string = "") => {
+    try {
+      const clientResponse = await makeRequest(
+        `/api/clients?search=${search}`,
+        { method: "GET", cache: "no-store" }
+      );
+      return clientResponse;
+      console.log(clientResponse);
+    } catch (error) {
+      console.error("Error fetching clients:", error);
+    }
+  };

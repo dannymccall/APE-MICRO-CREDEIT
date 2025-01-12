@@ -7,11 +7,17 @@ import { Branch } from "@/app/lib/backend/models/branch.model";
 import { join } from "path";
 import { writeFile, mkdir } from "fs/promises";
 import {
+  LoanApplicationSchema,
+  ILoanApplication,
+} from "@/app/lib/backend/models/loans.model";
+
+import {
   validateNumber,
   createResponse,
   validateFields,
 } from "@/app/lib/utils";
 import { Client, IClient } from "@/app/lib/backend/models/client.model";
+import mongoose from "mongoose";
 
 await connectDB();
 const clientService = new ClientService();
@@ -37,36 +43,75 @@ export const saveFile = async (fileName: string, buffer: Buffer) => {
 
 export async function GET(req: NextRequest, res: NextResponse) {
   try {
+    if (!mongoose.models.LoanApplication) {
+      mongoose.model<ILoanApplication>(
+        "LoanApplication",
+        LoanApplicationSchema
+      );
+    }
+
     const searchParams = req.nextUrl.searchParams;
 
     const pageParam = searchParams.get("page");
     const limitParam = searchParams.get("limit");
     const clientId = searchParams.get("clientId");
+    const search = searchParams.get("search");
 
+    console.log(clientId);
     if (clientId) {
-      const client = await Client.findOne({ systemId: clientId })
-        .populate("staff")
-        .populate("branch");
+      console.log(mongoose.modelNames()); // Should include "LoanApplication", "Client", etc.
 
+      const client = await Client.findOne({ systemId: clientId })
+        .populate({
+          path: "staff",
+          select: [
+            "first_name",
+            "last_name",
+            "other_names",
+            "username",
+            "roles",
+          ],
+        })
+        .populate({ path: "branch", select: ["branchName"] })
+        .populate("loans");
+      // .exec();
+
+      console.log(client);
       return NextResponse.json(
         { success: true, message: "Generated", data: client },
         {
           status: 200,
           headers: {
-            'Cache-Control': 'no-store',  // Prevent caching
+            "Cache-Control": "no-store", // Prevent caching
           },
         }
       );
     }
 
+    if (search) {
+      const clients = await Client.find({
+        $and: [
+          {
+            $or: [
+              { first_name: { $regex: search, $options: "i" } },
+              { last_name: { $regex: search, $options: "i" } },
+            ],
+          },
+          { client_status: "active" },
+        ],
+      }).populate("loans");
+
+      return createResponse(true, "200", "", clients);
+    }
+
     if (!pageParam && !limitParam) {
-      const allClients = await Client.find({});
+      const allClients = await Client.find({}).populate("loans");
       return NextResponse.json(
         { success: true, message: "Fetched all clients.", data: allClients },
         {
           status: 200,
           headers: {
-            'Cache-Control': 'no-store',  // Prevent caching
+            "Cache-Control": "no-store", // Prevent caching
           },
         }
       );
@@ -95,11 +140,12 @@ export async function GET(req: NextRequest, res: NextResponse) {
       {
         status: 200,
         headers: {
-          'Cache-Control': 'no-store',  // Prevent caching
+          "Cache-Control": "no-store", // Prevent caching
         },
       }
     );
-  } catch (e) {
+  } catch (e: any) {
+    console.log(e.message);
     return NextResponse.json(
       { error: "An error occurred while processing the request." },
       { status: 500 }
@@ -117,8 +163,6 @@ export async function POST(req: NextRequest, res: NextResponse) {
   }
   try {
     const body = await req.formData();
-    const searchParams = req.nextUrl.searchParams;
-    const id: string | any = searchParams.get("id");
     const passport: File | null = body.get("passport") as unknown as File;
     // Define the keys to exclude
     const excludedKeys = new Set([
@@ -156,7 +200,6 @@ export async function POST(req: NextRequest, res: NextResponse) {
     await saveFile(newFileName, buffer);
 
     const systemId: string = clientService.generateClientSystemID();
-    console.log({ body, systemId });
     const client = {
       first_name: body.get("firstName") as string,
       last_name: body.get("lastName") as string,
@@ -181,7 +224,6 @@ export async function POST(req: NextRequest, res: NextResponse) {
 
     return createResponse(true, "001", "Client added successfully", newClient);
   } catch (error) {
-    console.error("Error handling POST request:", error);
     return NextResponse.json(
       { error: "An error occurred while processing the request." },
       { status: 500 }
@@ -216,7 +258,6 @@ export async function DELETE(req: NextRequest, res: NextResponse) {
   }
 }
 
-
 export async function PUT(req: NextRequest, res: NextResponse) {
   const contentType = req.headers.get("content-type");
   if (!contentType?.includes("multipart/form-data")) {
@@ -244,7 +285,7 @@ export async function PUT(req: NextRequest, res: NextResponse) {
     if (!branch)
       return createResponse(false, "001", "Branch does not exist", {});
 
-      // Utility function to check if a value is non-empty
+    // Utility function to check if a value is non-empty
     const isNotEmpty = (value: unknown) =>
       value !== undefined && value !== null && value !== "";
 
@@ -270,26 +311,33 @@ export async function PUT(req: NextRequest, res: NextResponse) {
       }
     });
 
-
     // Handle special cases like file upload
     const passport: File | null = body.get("passport") as unknown as File;
     if (passport.name !== "") {
       const bytes = await passport.arrayBuffer();
       const buffer = Buffer.from(bytes);
       const originalName = passport.name;
-      const fileExtension = originalName.substring(originalName.lastIndexOf("."));
+      const fileExtension = originalName.substring(
+        originalName.lastIndexOf(".")
+      );
       const newFileName = `${Date.now()}${fileExtension}`;
       await saveFile(newFileName, buffer);
       updatedFields["avarta"] = newFileName; // Update avatar if a new file is uploaded
     }
 
     updatedFields["staff"] = staff._id;
-    updatedFields["branch"] = branch._id
+    updatedFields["branch"] = branch._id;
+    updatedFields["client_status"] = body.get("clientStatus") as string;
+
     const updatedClient = await clientService.update(id, updatedFields);
 
-    return createResponse(true, "001", "Client updated successfully", updatedClient);
+    return createResponse(
+      true,
+      "001",
+      "Client updated successfully",
+      updatedClient
+    );
   } catch (error) {
-    console.error("Error handling PUT request:", error);
     return NextResponse.json(
       { error: "An error occurred while processing the request." },
       { status: 500 }

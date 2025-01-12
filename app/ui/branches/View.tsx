@@ -57,7 +57,6 @@ const ViewBranch: React.FC<IViewUser> = ({
       editBranch(updatedBranch, String(branch._id));
       form.reset();
       setOpenModalEdit(false);
-      console.log("Updated branch:", updatedBranch);
     }
   };
 

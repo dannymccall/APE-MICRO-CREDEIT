@@ -24,7 +24,6 @@ export async function GET(req: NextRequest, res: NextResponse) {
 
     if (!pageParam && !limitParam) {
       const allStaff = await User.find({});
-      console.log(allStaff)
       return createResponse(true, "200", "Fetched all staff.", allStaff);
     }
 
@@ -55,7 +54,6 @@ export async function GET(req: NextRequest, res: NextResponse) {
 export async function POST(req: NextRequest, res: NextResponse) {
   try {
     const body = await req.json();
-    console.log({ body });
 
     for (const [key, value] of Object.entries(body)) {
       if (key !== "dob" && key !== "roles") {
@@ -63,7 +61,6 @@ export async function POST(req: NextRequest, res: NextResponse) {
           value as string,
           key
         );
-        console.log(validateMessage);
         if (validateMessage) {
           return createResponse(false, "001", validateMessage, {});
         }
@@ -79,7 +76,6 @@ export async function POST(req: NextRequest, res: NextResponse) {
       body.otherNames
     );
 
-    console.log({ username }, { password });
     const hashedPassword = await userService.generateHashPassword(password);
 
     const fetchedUser = await userService.findOne({ username });
@@ -97,7 +93,6 @@ export async function POST(req: NextRequest, res: NextResponse) {
       username: username,
       password: hashedPassword,
     };
-    console.log({ newUser });
 
     const registeredUser = await userService.create(newUser);
 
@@ -108,7 +103,6 @@ export async function POST(req: NextRequest, res: NextResponse) {
       registeredUser
     );
   } catch (error) {
-    console.error("Error handling POST request:", error);
     return NextResponse.json(
       { error: "An error occurred while processing the request." },
       { status: 500 }
@@ -142,9 +136,7 @@ export async function DELETE(req: NextRequest, res: NextResponse) {
     );
   }
 }
-// return NextResponse.json({ data: "good" }, { status: 200 });
-// console.log(fetchedUser)
-// return NextResponse.json({ fetchedUser }, { status: 200 });
+
 
 export async function PUT(req: NextRequest, res: NextResponse) {
   try {

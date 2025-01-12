@@ -21,6 +21,9 @@ const BranchSchema: Schema = new Schema(
     timestamps: true,
   }
 );
+if (mongoose.models.Branch) {
+  // Delete the existing model to allow redefinition
+  delete mongoose.models.Branch;
+}
 
-export const Branch =
-  mongoose.models.Branch || mongoose.model<IBranch>("Branch", BranchSchema);
+export const Branch = mongoose.model<IBranch>("Branch", BranchSchema);

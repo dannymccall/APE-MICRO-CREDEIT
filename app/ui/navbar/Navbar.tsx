@@ -53,11 +53,11 @@ export default function Navbar() {
  
   
   return (
-    <nav className="bg-violet-700 text-white">
+    <nav className="bg-white text-white shadow-md border-b">
       <div className="max-w-screen-xl mx-auto flex items-center justify-between p-3">
         {/* Logo */}
-        <div className="text-2xl font-bold border-2 border-gray-400 rounded-lg hover:bg-slate-600">
-          <CgMenuGridO cursor={"pointer"} size={30} />
+        <div className="text-2xl font-bold  rounded-lg hover:bg-slate-600">
+          <CgMenuGridO cursor={"pointer"} size={30} className="text-gray-500"/>
         </div>
 
         {/* Navbar Links */}
@@ -68,8 +68,8 @@ export default function Navbar() {
               {!link.subLinks ? (
                 <Link
                   href={link.href}
-                  className={`flex items-center space-x-2 p-2 rounded-md hover:bg-violet-600 ${
-                    isActive(link.href) ? "bg-violet-600" : ""
+                  className={`flex text-gray-700 font-sans font-semibold items-center space-x-2 p-2 rounded-md hover:text-violet-600 ${
+                    isActive(link.href) ? "bg-white shadow-md" : ""
                   }`}
                 >
                   <link.icon />
@@ -80,7 +80,7 @@ export default function Navbar() {
                   {/* Links with Sublinks */}
                   <button
                     onClick={() => toggleDropdown(link.name)}
-                    className="flex items-center space-x-2 p-2 rounded-md hover:bg-violet-600"
+                    className="flex items-center font-sans font-semibold text-gray-700 space-x-2 p-2 rounded-md hover:text-violet-600"
                   >
                     <link.icon />
                     <span>{link.name}</span>
@@ -93,13 +93,13 @@ export default function Navbar() {
 
                   {/* Sublinks Dropdown */}
                   {openDropdown === link.name && (
-                    <ul className="absolute left-0 mt-2 bg-violet-800 rounded-md shadow-lg w-48">
+                    <ul className="absolute left-0 mt-2 bg-white rounded-md shadow-lg w-48 mb-2">
                       {link.subLinks.map((subLink) => (
                         <li key={subLink.name}>
                           <Link
                             href={subLink.href}
-                            className={`flex items-center space-x-2 p-2 hover:bg-violet-600 ${
-                              isActive(subLink.href) ? "bg-violet-600" : ""
+                            className={`flex items-center text-gray-700 space-x-2 p-2 hover:text-violet-600 ${
+                              isActive(subLink.href) ? "bg-white shadow-md" : ""
                             }`}
                           >
                             <subLink.icon />

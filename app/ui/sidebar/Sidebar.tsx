@@ -17,7 +17,8 @@ import { RxDashboard } from "react-icons/rx";
 import { useLogginIdentity } from "@/app/lib/customHooks";
 import { PiUsersThreeBold } from "react-icons/pi";
 import { FaCodeBranch } from "react-icons/fa6";
-
+import { GiCash } from "react-icons/gi";
+import ProfileImage from "@/public/profile.png";
 // Define the type for sidebar links
 interface SidebarLink {
   name: string;
@@ -40,8 +41,8 @@ export default function Sidebar() {
       href: "#",
       icon: FiUsers,
       subLinks: [
-        { name: "Add staff", href: "/addUser", icon: FiChevronRight },
-        { name: "Manage staff", href: "/manage-user", icon: FiChevronRight },
+        { name: "Add Staff", href: "/addUser", icon: FiChevronRight },
+        { name: "Manage Staff", href: "/manage-user", icon: FiChevronRight },
       ],
     },
     {
@@ -49,8 +50,18 @@ export default function Sidebar() {
       href: "#",
       icon: PiUsersThreeBold,
       subLinks: [
-        { name: "Add client", href: "/add-client", icon: FiChevronRight },
-        { name: "Manage client", href: "/manage-client", icon: FiChevronRight },
+        { name: "Add Client", href: "/add-client", icon: FiChevronRight },
+        { name: "Manage Client", href: "/manage-client", icon: FiChevronRight },
+      ],
+    },
+    {
+      name: "Loans",
+      href: "#",
+      icon: GiCash,
+      subLinks: [
+        { name: "Add Loans", href: "/add-loan", icon: FiChevronRight },
+        { name: "Manage Loans", href: "/manage-loan", icon: FiChevronRight },
+        { name: "Loan Recovery", href: "/loan-recovery", icon: FiChevronRight },
       ],
     },
     {
@@ -58,8 +69,8 @@ export default function Sidebar() {
       href: "#",
       icon: FaCodeBranch,
       subLinks: [
-        { name: "Add branch", href: "/add-branch", icon: FiChevronRight },
-        { name: "Manage branch", href: "/manage-branch", icon: FiChevronRight },
+        { name: "Add Branch", href: "/add-branch", icon: FiChevronRight },
+        { name: "Manage Branch", href: "/manage-branch", icon: FiChevronRight },
       ],
     },
     { name: "Settings", href: "/settings", icon: FiSettings },
@@ -74,15 +85,16 @@ export default function Sidebar() {
   const isActive = (href: string) => pathName === href;
 
   return (
-    <div className="min-h-screen bg-violet-700 text-white w-1/5 flex flex-col">
+    <div className="min-h-screen bg-[url('../public/checkout.jpg')] bg-cover bg-center text-white w-1/5 flex flex-col relative">
       {/* Sidebar Header */}
-      <div className="bg-violet-900 p-4 text-xl font-bold border-b border-violet-500 mb-7">
-        <div className="flex flex-row gap-3 w-full items-center  font-mono my-3"></div>
-        <div className="flex flex-col gap-5 items-center justify-center">
+      <div className="bg-violet-900 p-4 text-xl font-bold border-b border-violet-500 mb-7 relative">
+        <div className="flex flex-row gap-3 w-full items-center  font-mono my-3 relative"></div>
+        <div className="flex flex-col gap-5 items-center justify-center relative">
           {/* <Image src={OnlineIcon} alt="online-icon" /> */}
           <h1 className="font-mono">APE MCICRO CREDIT</h1>
-          <div className="flex flex-col items-center gap-2">
-            <div className="w-36 h-36 bg-slate-100 rounded-full"></div>
+          <div className="flex flex-col items-center gap-2 relative">
+            <div className="w-36 h-36 bg-slate-100 rounded-full items-center relative flex justify-center">
+            </div>
             <div className="flex flex-col justify-center items-center">
               <h1 className="font-semibold font-sans">{logginIdentity && logginIdentity.fullName }</h1>
               <h1 className="font-normal text-sm text-gray-300">
@@ -97,7 +109,7 @@ export default function Sidebar() {
       <nav className="flex-1 overflow-y-auto">
         <ul className="space-y-2 p-2">
           {sidebarLinks.map((link) => (
-            <li key={link.name}>
+            <li key={link.name} className="border-b border-b-gray-500">
               {/* Main Links */}
               {!link.subLinks ? (
                 <Link

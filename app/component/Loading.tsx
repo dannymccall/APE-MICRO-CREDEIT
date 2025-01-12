@@ -21,7 +21,7 @@ export const LoadingSpinner = () => {
 
 export const LoadingDivs = () => {
   return (
-    <div className="flex w-52 flex-col gap-4 m-auto">
+    <div className="flex w-full flex-col gap-4 m-auto p-5">
       <div className="skeleton h-32 w-full"></div>
       <div className="skeleton h-4 w-28"></div>
       <div className="skeleton h-4 w-full"></div>

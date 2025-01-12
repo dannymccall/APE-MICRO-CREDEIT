@@ -71,7 +71,7 @@ export async function addClient(state: AddClientState, formData: FormData) {
   console.log(formData);
 
   const url =
-    body.service === addClient ? "/api/clients" : `/api/clients?id=${body.id}`;
+    body.service === "addClient" ? "/api/clients" : `/api/clients?id=${body.id}`;
   const response = await makeRequest(url, options);
   console.log(response);
   const { success, message } = response;

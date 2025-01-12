@@ -58,7 +58,6 @@ const AllBranches = () => {
         branch._id === id ? { ...branch, ...updatedBranch } : branch
       )
     );
-    console.log(branches)
   };
   
 

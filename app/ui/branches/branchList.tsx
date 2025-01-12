@@ -28,16 +28,16 @@ const BranchList: React.FC<UserListProps> = ({
       <div className="w-full h-full bg-white relative shadow-md">
         <table className="table w-full ">
           {/* head */}
-          <thead className="relative bg-violet-700">
+          <thead className="relative bg-violet-200">
             <tr className="relative w-full">
-              <th className="text-lg font-sans font-semibold text-white text-left p-2">
+              <th className="text-base font-sans font-medium text-gray-700text-left p-2">
                 Branch name
               </th>
-              <th className="text-lg font-sans font-semibold text-white p-2">
+              <th className="text-base font-sans font-medium text-gray-700 p-2">
                 Branch code
               </th>
             
-              <th className="text-lg font-sans font-semibold text-white p-2">
+              <th className="text-base font-sans font-medium text-gray-700 p-2">
                 Actions{" "}
               </th>
             </tr>

@@ -1,5 +1,6 @@
 import { z } from "zod";
 import { makeRequest } from "./utils";
+import Client from "../ui/clients/client";
 
 export const loginFormSchema = z.object({
   username: z
@@ -157,6 +158,112 @@ export type AddClientState =
         gender?: [];
         maritalStatus?: [];
         passport?: [];
+      };
+      message?: string;
+    }
+  | undefined;
+
+export const loanSchema = z.object({
+  client: z.string().min(2, { message: "Client Required" }).trim(),
+  loanProduct: z.string().min(2, { message: "Loan Product Required" }).trim(),
+  principal: z
+    .string()
+    .refine(
+      (number) => parseFloat(number) >= 1000,
+      "Principal should not be less than GHS 1000.00"
+    )
+    .refine((number) => {
+      return number.trim() !== "";
+    }, "Principal Required"),
+  fund: z.enum(["Bank", "Cash"]),
+  loanTerms: z.string().min(1, { message: "Loan Terms Required" }).trim(),
+  repaymentFrequency: z.string().refine((value: string) => {
+    return value.trim() !== "";
+  }, "Repayment Frequency Required"),
+  expectedDisbursementDate: z
+    .string()
+    .min(1, "Date of birth is required")
+    .refine((date) => {
+      // Check if the date is valid
+      return !isNaN(Date.parse(date));
+    }, "Invalid date format. Expected format: YYYY-MM-DD"),
+  loanOfficer: z.string().refine((value: string) => {
+    return value.trim() !== "";
+  }, "Loan Officer Required"),
+  loanPurpose: z
+    .string()
+    .min(2, { message: "Loan  must atleast 2 characters" })
+    .trim(),
+  registrationFee: z.string().refine((value: string) => {
+    return value.trim() !== "";
+  }, "Registration Fee Required"),
+  type: z.enum(["Months", "Days", "Weeks"]),
+});
+
+export type loanState =
+  | {
+      errors?: {
+        client?: [];
+        loanProduct?: [];
+        principal?: [];
+        fund?: [];
+        loanTerms?: [];
+        repaymentFrequency?: [];
+        type?: [];
+        expectedDisbursementDate?: [];
+        loanOfficer?: [];
+        loanPurpose?: [];
+        registrationFee?: [];
+      };
+      message?: string;
+    }
+  | undefined;
+
+export const guarantorShema = z.object({
+  guarantorFullName: z
+    .string()
+    .min(2, { message: "Full Name must at least two charachers" })
+    .trim(),
+  guarantorOccupation: z
+    .string()
+    .min(2, { message: "Occupation must at least two charachers" })
+    .trim(),
+  guarantorUnionName: z
+    .string()
+    .min(2, { message: "Union Name must at least two charachers" })
+    .trim(),
+  guarantorResidence: z
+    .string()
+    .min(2, { message: "Full Name must at least two charachers" })
+    .trim(),
+  guarantorMobile: z
+    .string()
+    .length(10, { message: "Mobile must atleast 10 characters" })
+    .trim(),
+  guarantorPassport: z
+    .custom<File>((file) => file instanceof File, {
+      message: "Please upload a valid file.",
+    })
+    .refine((file) => file.size <= 5 * 1024 * 1024, {
+      message: "File size must be less than 5MB.",
+    })
+    .refine(
+      (file) => ["image/jpeg", "image/png", "image/jpg"].includes(file.type),
+      {
+        message: "File type must be JPEG, JPG or PNG.",
+      }
+    )
+    .optional(),
+});
+
+export type guarantorState =
+  | {
+      errors?: {
+        guarantorFullName?: [];
+        guarantorOccupation?: [];
+        guarantorUnionName?: [];
+        guarantorResidence?: [];
+        guarantorPassport?: [];
       };
       message?: string;
     }

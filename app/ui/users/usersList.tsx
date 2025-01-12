@@ -33,33 +33,33 @@ const UsersList: React.FC<UserListProps> = ({
 
   return (
     <div>
-      <div className="w-full h-full bg-white relative shadow-md border-t-4 border-violet-800">
+      <div className="w-full h-full bg-white relative shadow-md">
         <table className="table">
           {/* head */}
           <thead className="relative">
-            <tr className="relative bg-violet-800">
-              <th className="text-lg font-sans font-semibold text-white text-left p-2">
+            <tr className="relative bg-violet-200">
+              <th className="text-base font-sans font-medium text-gray-700 text-left p-2">
                 First name
               </th>
-              <th className="text-lg font-sans font-semibold text-white p-2">
+              <th className="text-base font-sans font-medium text-gray-700 p-2">
                 Last name
               </th>
-              <th className="text-lg font-sans font-semibold text-white p-2">
+              <th className="text-base font-sans font-medium text-gray-700 p-2">
                 Other names
               </th>
-              <th className="text-lg font-sans font-semibold text-white p-2">
+              <th className="text-base font-sans font-medium text-gray-700 p-2">
                 Sex
               </th>
-              <th className="text-lg font-sans font-semibold text-white p-2">
+              <th className="text-base font-sans font-medium text-gray-700 p-2">
                 Roles
               </th>
-              <th className="text-lg font-sans font-semibold text-white p-2">
+              <th className="text-base font-sans font-medium text-gray-700 p-2">
                 Username
               </th>
-              <th className="text-lg font-sans font-semibold text-white p-2">
+              <th className="text-base font-sans font-medium text-gray-700 p-2">
                 Online status
               </th>
-              <th className="text-lg font-sans font-semibold text-white p-2">
+              <th className="text-base font-sans font-medium text-gray-700 p-2">
                 Actions{" "}
               </th>
             </tr>

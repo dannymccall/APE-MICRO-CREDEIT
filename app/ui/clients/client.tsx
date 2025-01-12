@@ -14,6 +14,7 @@ import { makeRequest } from "@/app/lib/utils";
 import { useRouter } from "next/navigation";
 import ViewUser from "./View";
 import Link from "next/link";
+import EditClient from "./editClient";
 
 interface ClientProps {
   client: IClient | any;
@@ -61,19 +62,19 @@ const Client: React.FC<ClientProps> = ({ client, onDelete, editClient }) => {
       )}  
 
       <tr key={client.id} className="hover:bg-gray-100 relative">
-        <td className="p-2">{client.systemId}</td>
-        <td className="p-2">
+        <td className="p-2 text-sm">{client.systemId}</td>
+        <td className="p-2 text-sm">
           {client.gender.charAt(0).toUpperCase() +
             client.gender.slice(1).toLowerCase()}
         </td>
-        <td className="p-2">{client.mobile}</td>
-        <td className="p-2">
+        <td className="p-2 text-sm">{client.mobile}</td>
+        <td className="p-2 text-sm">
           {client.client_status === "in-active" ? "In Active" : "Active"}
         </td>
-        <td className="p-2"> {client.branch.branchName || "No Branch"}</td>
-        <td className="p-2"> {client.staff.first_name || "No Staff"} </td>
+        <td className="p-2 text-sm"> {client.branch.branchName || "No Branch"}</td>
+        <td className="p-2 text-sm"> {client.staff.first_name || "No Staff"} </td>
 
-        <td className="p-2 relative">
+        <td className="p-2 text-sm relative">
           <section
             className="dropdown flex items-center h-full relative"
             style={{ height: "100%" }}
@@ -101,10 +102,6 @@ const Client: React.FC<ClientProps> = ({ client, onDelete, editClient }) => {
                   <Link
                     role="menuitem"
                     className="w-full text-left flex flex-row gap-3"
-                    onClick={() => {
-                      setEditForm(false);
-                      setOpenModalEdit(true);
-                    }}
                     href={`/view-client/${client.systemId}`}
                   >
                     <MdViewCompact
@@ -178,15 +175,9 @@ const Client: React.FC<ClientProps> = ({ client, onDelete, editClient }) => {
               </div>
             </section>
           </Modal>
-          {/* <Modal modalOpen={openModalEdit} setModalOpen={setOpenModalEdit}>
-            <ViewUser
-              user={user}
-              editForm={editForm}
-              setEditForm={setEditForm}
-              editUser={editUser}
-              setOpenModalEdit={setOpenModalEdit}
-            />
-          </Modal> */}
+          <Modal modalOpen={openModalEdit} setModalOpen={setOpenModalEdit} width="max-w-3xl">
+           <EditClient setOpenModalEdit={setOpenModalEdit} client={client} />
+          </Modal>
         </td>
       </tr>
     </>

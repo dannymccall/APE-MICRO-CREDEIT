@@ -19,7 +19,8 @@ export interface IClient extends Document {
   staff: mongoose.Types.ObjectId;
   branch: mongoose.Types.ObjectId;
   systemId: string;
-  avarta: string
+  avarta: string;
+  loans: mongoose.Types.ObjectId;
 }
 
 // Define the Mongoose schema
@@ -48,7 +49,7 @@ const ClientSchema: Schema = new Schema<IClient>(
     branch: {
       type: Schema.Types.ObjectId,
       required: true,
-      ref: "Branch"
+      ref: "Branch",
     },
     union: {
       type: String,
@@ -90,7 +91,7 @@ const ClientSchema: Schema = new Schema<IClient>(
     },
     client_status: {
       type: String,
-      default: "in-active",
+      default: "in active",
     },
     staff: {
       type: Schema.Types.ObjectId,
@@ -103,14 +104,19 @@ const ClientSchema: Schema = new Schema<IClient>(
     },
     avarta: {
       type: String,
-      required: true
-    }
+      required: true,
+    },
+    loans: [{ type: mongoose.Schema.Types.ObjectId, ref: "LoanApplication" }],
   },
   {
     timestamps: true,
   }
 );
 
+if (mongoose.models.Client) {
+  // Delete the existing model to allow redefinition
+  delete mongoose.models.Client;
+}
+
 // Export the model
-export const Client =
-  mongoose.models.Client || mongoose.model<IClient>("Client", ClientSchema);
+export const Client = mongoose.model<IClient>("Client", ClientSchema);

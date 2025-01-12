@@ -68,5 +68,10 @@ const UserSchema: Schema = new Schema<IUser>(
   }
 );
 
+if (mongoose.models.User) {
+  // Delete the existing model to allow redefinition
+  delete mongoose.models.User;
+}
+
 // Export the model
-export const User = mongoose.models.User ||  mongoose.model<IUser>("User", UserSchema);
+export const User = mongoose.model<IUser>("User", UserSchema);

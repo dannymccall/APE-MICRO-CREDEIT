@@ -1,10 +1,15 @@
+import { lazy, Suspense } from "react";
+
 import { makeRequest } from "@/app/lib/utils";
-import ClientDetails from "../ClientDetails";
+// import ClientDetails from "../ClientDetails";
+import { LoadingDivs } from "@/app/component/Loading";
+
+const ClientDetails = lazy(() => import("../ClientDetails"));
 
 export default async function Page({
   params,
 }: {
-  params:Promise<{ clientId: string }>;
+  params: Promise<{ clientId: string }>;
 }) {
   const clientId = (await params).clientId;
   const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
@@ -13,18 +18,12 @@ export default async function Page({
   )}`;
 
   try {
+    const client = await makeRequest(fullUrl, {
+      method: "GET",
+      cache: "no-store",
+    });
 
-  
-      const client = await makeRequest(fullUrl, { method: "GET" , cache: "no-store",});
-      console.log(client)
-  
-    
-   
-
-    async function onEditClient(){
-      const client = await makeRequest(fullUrl, { method: "GET" });
-      return client.data
-    }
+    console.log(client)
     if (!client?.data) {
       return (
         <main>
@@ -33,7 +32,11 @@ export default async function Page({
       );
     }
 
-    return <ClientDetails client={client.data}/>;
+    return (
+      <Suspense fallback={<LoadingDivs />}>
+        <ClientDetails client={client.data} />;
+      </Suspense>
+    ) 
   } catch (error) {
     console.error("Error fetching client data:", error);
     return (

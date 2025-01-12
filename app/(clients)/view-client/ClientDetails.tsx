@@ -15,6 +15,7 @@ import {
 import Modal from "@/app/component/Modal";
 import EditClient from "@/app/ui/clients/editClient";
 import { FaTransgenderAlt } from "react-icons/fa";
+import Loan from "@/app/component/loans/Loan";
 
 export default function ClientDetails({ client }: { client: any }) {
   const [openModalEdit, setOpenModalEdit] = useState<boolean>(false);
@@ -22,16 +23,16 @@ export default function ClientDetails({ client }: { client: any }) {
   const avatarUrl = `/uploads/${client.avarta}`;
 
   return (
-    <main className="p-5 h-full flex flex-col w-full">
+    <main className="p-5 py-20 h-full flex flex-col w-full">
       <section className="flex h-full flex-col gap-5 w-full bg-white shadow-md p-2">
-        <div className="w-full flex flex-row">
+        <div className="w-full flex flex-row ml-10">
           <div className="w-full h-full flex flex-row items-center gap-10">
             <Image
               src={avatarUrl}
-              width={50}
-              height={50}
+              width={100}
+              height={100}
               alt="Profile image"
-              className="w-44 h-44 rounded-full"
+              className=" rounded-md"
             />
             <span className="text-lg font-sans font-bold">
               {client.first_name} {client.last_name}
@@ -52,15 +53,15 @@ export default function ClientDetails({ client }: { client: any }) {
           </p>
           <div className="w-full h-full flex flex-row  justify-between px-10">
             <div className="w-full">
-              <p className="text-base font-sans font-semibold">First name</p>
+              <p className="text-base font-sans font-semibold">First Name</p>
               <span>{client.first_name}</span>
             </div>
             <div className="w-full">
-              <p className="text-base font-sans font-semibold">Last name</p>
+              <p className="text-base font-sans font-semibold">Last Name</p>
               <span>{client.last_name}</span>
             </div>
             <div className="w-full">
-              <p className="text-base font-sans font-semibold">Nick name</p>
+              <p className="text-base font-sans font-semibold">Nick Name</p>
               <span>{client.nick_name}</span>
             </div>
             <div className="w-full">
@@ -114,7 +115,7 @@ export default function ClientDetails({ client }: { client: any }) {
           <p className="text-lg font-sans font-bold">Union and Branch</p>
           <div className="w-full h-full flex flex-row justify-between">
             <div className="w-full">
-              <p className="text-base font-sans font-semibold">Union name</p>
+              <p className="text-base font-sans font-semibold">Union Name</p>
               <span>{client.union}</span>
             </div>
             <div className="w-full">
@@ -136,7 +137,7 @@ export default function ClientDetails({ client }: { client: any }) {
         <div className="divider"></div>
         <div className="w-full h-full flex flex-col gap-3 justify-between px-10">
           <p className="text-lg font-sans font-bold">
-            Marriage details and gender
+            Marriage Details and Gender
           </p>
           <div className="w-full h-full flex flex-row justify-between">
             <div className="w-full">
@@ -155,7 +156,7 @@ export default function ClientDetails({ client }: { client: any }) {
             <div className="w-full">
               <p className="text-base font-sans font-semibold flex items-center gap-3">
                 <MdDateRange />
-                Date of birth
+                Date of Birth
               </p>
               <span>{formatDate(client.dob)}</span>
             </div>
@@ -164,11 +165,11 @@ export default function ClientDetails({ client }: { client: any }) {
         <div className="divider"></div>
         <div className="w-full h-full flex flex-col gap-3 justify-between px-10">
           <p className="text-lg font-sans font-bold">
-            Staff associated and client status
+            Loan Officer and Client Status
           </p>
           <div className="w-full h-full flex flex-row justify-between">
             <div className="w-full">
-              <p className="text-base font-sans font-semibold">Staff name</p>
+              <p className="text-base font-sans font-semibold">Staff Name</p>
               <span>
                 {client.staff.first_name} {client.staff.other_names}{" "}
                 {client.staff.last_name}
@@ -179,19 +180,54 @@ export default function ClientDetails({ client }: { client: any }) {
               <span>{client.staff.roles.join(", ")}</span>
             </div>
             <div className="w-full">
-              <p className="text-base font-sans font-semibold">Client status</p>
+              <p className="text-base font-sans font-semibold">Client Status</p>
               <span>
-                {client.client_status === "in-active"
-                  ? "In active"
-                  : "Active"}
+                {toCapitalized(client.client_status)}
               </span>
             </div>
           </div>
         </div>
         <Modal setModalOpen={setOpenModalEdit} modalOpen={openModalEdit} width="max-w-3xl">
-          <EditClient client={client}/>
+          <EditClient client={client} setOpenModalEdit={setOpenModalEdit}/>
         </Modal>
+        <div className="divider"></div>
+        <div className="px-10 mb-14">
+          <h1 className=" font-semibold font-sans text-lg mb-2">Loans Acquired</h1>
+          <table className="table">
+          {/* head */}
+          <thead className="relative">
+            <tr className="relative bg-violet-100 rounded">
+            <th className="text-base font-sans font-medium text-gray-700 p-2">
+                System ID
+              </th>
+              <th className="text-base font-sans font-medium text-gray-700 text-left p-2">
+                Loan Product
+              </th>
+              <th className="text-base font-sans font-medium text-gray-700 p-2">
+                Principal
+              </th>
+              <th className="text-base font-sans font-medium text-gray-700 p-2">
+                Loan Officer
+              </th>
+              <th className="text-base font-sans font-medium text-gray-700 p-2">
+                Interest Rate
+              </th>
+              <th className="text-base font-sans font-medium text-gray-700 p-2">
+                Loan Payment Status
+              </th>
+              <th className="text-base font-sans font-medium text-gray-700 p-2">
+                Actions{" "}
+              </th>
+            </tr>
+          </thead>
+          <tbody className="relative">
+            {client.loans.map((loan: any | any) => (
+              <Loan key={client._id} loan={loan} loanOfficer={`${client.staff.first_name} ${client.staff.other_names} ${client.staff.last_name}`} />
+            ))}
+          </tbody>
+        </table>
+        </div>
       </section>
     </main>
-  );
+  )
 }

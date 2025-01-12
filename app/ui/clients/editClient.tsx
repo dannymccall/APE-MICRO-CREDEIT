@@ -1,30 +1,29 @@
 "use client";
-import InfoHeaderComponent from "@/app/component/Info-header/Info-Header";
 import React, { useActionState, useEffect, useState, useRef } from "react";
-import { MyTextInput, Label } from "@/app/lib/MyFormInput/FormTemplates";
+import {  Label } from "@/app/lib/MyFormInput/FormTemplates";
 import { addClient } from "@/app/actions/addClientAuth";
 import Toast from "@/app/component/toast/Toast";
 import { FaCircleCheck } from "react-icons/fa6";
 import { LoadingSpinner } from "@/app/component/Loading";
-import QuickAccess from "@/app/component/QuickAccess";
-import { useRouter } from "next/navigation";
-import { formatDate, makeRequest } from "@/app/lib/utils";
+import { formatDate, makeRequest, toCapitalized } from "@/app/lib/utils";
 import Image from "next/image";
 import { IClient } from "@/app/lib/backend/models/client.model";
+import { useRouter } from "next/navigation";
+
 
 export interface IEditClient {
   client: IClient | any;
- 
+ setOpenModalEdit: React.Dispatch<React.SetStateAction<boolean>>
 }
 
-const EditClient: React.FC<IEditClient> = ({ client }) => {
+const EditClient: React.FC<IEditClient> = ({ client, setOpenModalEdit }) => {
   const formRef = useRef<HTMLFormElement>(null);
   const [state, action, pending] = useActionState(addClient, undefined);
   const [showMessage, setShowMessage] = useState<boolean>(false);
-  const router = useRouter();
   const [branches, setBranches] = useState<any>([]);
   const [users, setUsers] = useState<any>([]);
   const [passport, setPassport] = useState<string>("");
+  const router = useRouter()
 
   useEffect(() => {
     const fetchBranches = async () => {
@@ -59,6 +58,10 @@ const EditClient: React.FC<IEditClient> = ({ client }) => {
     }
   };
 
+  const onEditClient = () => {
+    setOpenModalEdit(false)
+    router.refresh()
+  } 
   // useEffect(() => {
   //   fetchBranches();
   // },[]);
@@ -246,6 +249,38 @@ const EditClient: React.FC<IEditClient> = ({ client }) => {
                   className="text-sm font-sans"
                 >
                   {branch.branchName}
+                </option>
+              ))}
+            </select>
+          </div>
+          {state?.errors?.branch && (
+            <p className=" text-red-500 p-3 font-semibold">
+              {state.errors.branch}
+            </p>
+          )}
+          <div className="flex flex-col my-5">
+            <div className="flex flex-row w-32 gap-0 items-center">
+              <Label
+                className="font-sans font-semibold text-gray-500"
+                labelName="Client status"
+              />
+              <span className="text-red-500 ml-1">*</span>
+            </div>
+            <select
+              name="clientStatus"
+              className="block text-sm font-sans w-full px-5 py-2 border border-gray-200 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm cursor-pointer"
+              defaultValue=""
+            >
+              <option disabled value={client.client_status.toLowerCase()}>
+              { toCapitalized(client.client_status)}
+              </option>
+              {["Active", "Dormant", "In Active"].map((status: any) => (
+                <option
+                  value={status.toLowerCase()}
+                  key={status.toLowerCase()}
+                  className="text-sm font-sans"
+                >
+                  {status}
                 </option>
               ))}
             </select>
@@ -542,7 +577,7 @@ const EditClient: React.FC<IEditClient> = ({ client }) => {
 
           <button
             className={`btn w-24 flex items-center font-sans rounded-md justify-center gap-3 ${"bg-gradient-to-r from-violet-500 to-violet-700 hover:from-violet-700 hover:to-violet-900"} text-white py-2 rounded-md focus:outline-none font-bold font-mono transition`}
-            
+            onClick={() => onEditClient()}
           >
             {pending && <LoadingSpinner />}
             Update

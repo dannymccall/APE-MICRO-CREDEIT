@@ -50,10 +50,10 @@ const AddUser: React.FC<IAddUser> = ({ route }) => {
   }, []); // Empty dependency array ensures this runs once on mount
 
   // Monitor changes to `branches`
-  useEffect(() => {
-    console.log("Updated branches state:", branches);
-    console.log(users, branches);
-  }, [branches]); // Logs whenever `branches` changes // Empty dependency array ensures this runs once on mount
+  // useEffect(() => {
+  //   console.log("Updated branches state:", branches);
+  //   console.log(users, branches);
+  // }, [branches]); // Logs whenever `branches` changes // Empty dependency array ensures this runs once on mount
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]; // Get the selected file
@@ -440,7 +440,7 @@ const AddUser: React.FC<IAddUser> = ({ route }) => {
               </div>
             )}
           </div>
-          <input type="hidden" name="service"  value="addClient"/>
+          <input type="hidden" name="service" value="addClient" />
           {state?.errors?.passport && (
             <p className=" text-red-500 p-3 font-semibold">
               {state.errors.passport}
