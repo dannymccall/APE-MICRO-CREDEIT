@@ -338,7 +338,7 @@ export async function PUT(req: NextRequest) {
     const id: string | any = searchParams.get("id");
     if (!id) return createResponse(false, "001", "Client ID is required", {});
 
-    const client = await clientService.findById(id);
+    const client = await clientService.findById(body.get('id') as string);
     if (!client) return createResponse(false, "001", "Client not found", {});
 
     const [staff, branch] = await Promise.all([

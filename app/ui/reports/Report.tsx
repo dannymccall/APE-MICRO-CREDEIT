@@ -41,7 +41,7 @@ const Report = () => {
     else setSelectedFilters([...selectedFilters, filter]);
   }
 
-  const reportGenerationRef = useRef<HTMLDivElement>(null);
+  const reportGenerationRef = useRef<HTMLDivElement>(null!);
   useEffect(() => {
     if (state?.response) {
       console.log(state.response.data);
