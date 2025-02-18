@@ -7,7 +7,7 @@ import {
 } from "../lib/helperFunctions";
 
 export async function changePassword(
-  state: ChangePasswordState,
+  state: ChangePasswordState | undefined,
   formData: FormData
 ) {
   const expectedFields = [
@@ -39,13 +39,13 @@ export async function changePassword(
 
   const isPasswordValid = validatePassword(body["password"] as string);
   console.log(isPasswordValid);
-  //   if (isPasswordValid !== "success")  {
-  //     return {
-  //       errors: {
-  //         password: isPasswordValid,
-  //       },
-  //     };
-  //   }
+    if (isPasswordValid !== "success")  {
+      return {
+        errors: {
+          password: isPasswordValid,
+        },
+      };
+    }
 
   const options: RequestInit = {
     method: "PUT",
