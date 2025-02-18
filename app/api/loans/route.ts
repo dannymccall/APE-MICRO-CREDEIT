@@ -195,7 +195,7 @@ export async function GET(req: NextRequest) {
   }
 }
 
-export async function POST(req: NextRequest, res: NextResponse) {
+export async function POST(req: NextRequest) {
   const contentType = req.headers.get("content-type");
   if (!contentType?.includes("multipart/form-data")) {
     return NextResponse.json(
@@ -351,7 +351,7 @@ export async function POST(req: NextRequest, res: NextResponse) {
   }
 }
 
-export async function DELETE(req: NextRequest, res: NextResponse) {
+export async function DELETE(req: NextRequest) {
   try {
     const searchParams = req.nextUrl.searchParams;
     const loanId: string | any = searchParams.get("_id");
@@ -386,7 +386,7 @@ export async function DELETE(req: NextRequest, res: NextResponse) {
   }
 }
 
-export async function PUT(req: NextRequest, res: NextResponse) {
+export async function PUT(req: NextRequest) {
   try {
     const searchParams = req.nextUrl.searchParams;
 

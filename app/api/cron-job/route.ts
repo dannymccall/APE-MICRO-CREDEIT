@@ -23,7 +23,7 @@ interface ILoan extends Omit<ILoanApplication, "paymentStatus" | "paymentSchedul
 }
 
 
-export async function GET(request: NextRequest) {
+export async function GET() {
   await connectDB();
 
   if (!mongoose.models.PaymentSchedule) {

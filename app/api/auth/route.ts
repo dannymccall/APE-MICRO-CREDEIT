@@ -129,7 +129,7 @@ export async function POST(req: NextRequest) {
   }
 }
 
-export async function DELETE(req: NextRequest, res: NextResponse) {
+export async function DELETE(req: NextRequest) {
   try {
     const searchParams = req.nextUrl.searchParams;
     const id: string | any = searchParams.get("id");
@@ -162,7 +162,7 @@ export async function DELETE(req: NextRequest, res: NextResponse) {
 // console.log(fetchedUser)
 // return NextResponse.json({ fetchedUser }, { status: 200 });
 
-export async function PUT(req: NextRequest, res: NextResponse) {
+export async function PUT(req: NextRequest) {
   try {
     const body = await req.json();
     const searchParams = req.nextUrl.searchParams;
