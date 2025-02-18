@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
- import { Activitymanagement } from "@/app/lib/backend/models/activitymanagement.model";
- import { revalidatePath } from "next/cache";
+import { Activitymanagement } from "@/app/lib/backend/models/activitymanagement.model";
+import { revalidatePath } from "next/cache";
 
 export async function GET(req: NextRequest) {
   try {
@@ -9,20 +9,15 @@ export async function GET(req: NextRequest) {
     const pageParam = searchParams.get("page");
     const limitParam = searchParams.get("limit");
     const search = searchParams.get("search");
-    const query = searchParams.get("query")
-  
+    const query = searchParams.get("query");
 
     if (!pageParam && !limitParam) {
       const allActivities = await Activitymanagement.find({});
-      return NextResponse.json(
-        { success: true, message: "Fetched all clients.", data: allActivities },
-        {
-          status: 200,
-          headers: {
-            "Cache-Control": "no-store", // Prevent caching
-          },
-        }
-      );
+      return NextResponse.json({
+        success: true,
+        message: "Fetched all clients.",
+        data: allActivities,
+      });
     }
 
     const page = parseInt(pageParam || "1", 10);
@@ -35,7 +30,7 @@ export async function GET(req: NextRequest) {
       .populate({
         path: "user",
         select: ["first_name", "other_names", "last_name"],
-      })
+      });
 
     const totalLoans = await Activitymanagement.countDocuments();
     const totalPages = Math.ceil(totalLoans / limit);
@@ -46,19 +41,23 @@ export async function GET(req: NextRequest) {
       totalPages,
     };
 
-
-    revalidatePath("activities")
+    revalidatePath("/activities");
     return NextResponse.json(
-      { success: true, message: "", data: loans, pagination },
+      {
+        success: true,
+        message: "",
+        data: loans,
+        pagination,
+      },
       {
         status: 200,
-       headers: {
-        "Cache-Control": "s-maxage=60, stale-while-revalidate=30", // Cache for 1 min
-      }
+        headers: {
+          "Cache-Control": "s-maxage=60, stale-while-revalidate=30", // Cache for 1 min
+        },
       }
     );
   } catch (e: any) {
-    console.log(e.message);
+    console.error("Error:", e.message);
     return NextResponse.json(
       { error: "An error occurred while processing the request." },
       { status: 500 }
