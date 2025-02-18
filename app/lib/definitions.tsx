@@ -1,6 +1,4 @@
 import { z } from "zod";
-import { makeRequest } from "./utils";
-import Client from "../ui/clients/client";
 
 export const loginFormSchema = z.object({
   username: z
@@ -20,7 +18,10 @@ export type FormState =
         username?: string[];
         password?: string[];
       };
-      message?: string;
+      response?: {
+        message?: string;
+        success?: boolean;
+      };
     }
   | undefined;
 
@@ -33,7 +34,7 @@ export const addUserSchema = z.object({
     .string()
     .min(2, { message: "Last name  must be at least 2 characters long" })
     .trim(),
-
+  email: z.string().email(),
   dob: z
     .string()
     .min(1, "Date of birth is required")
@@ -54,8 +55,10 @@ export type AddUserState =
         dob?: [];
         sex?: [];
         roles?: [];
+        email?: [];
       };
-      message?: string;
+
+      response?: { message?: string; success?: boolean };
     }
   | undefined;
 
@@ -194,9 +197,9 @@ export const loanSchema = z.object({
     .string()
     .min(2, { message: "Loan  must atleast 2 characters" })
     .trim(),
-  registrationFee: z.string().refine((value: string) => {
-    return value.trim() !== "";
-  }, "Registration Fee Required"),
+  // registrationFee: z.string().refine((value: string) => {
+  //   return value.trim() !== "";
+  // }, "Registration Fee Required"),
   type: z.enum(["Months", "Days", "Weeks"]),
 });
 
@@ -215,7 +218,7 @@ export type loanState =
         loanPurpose?: [];
         registrationFee?: [];
       };
-      message?: string;
+      response?: { message?: string; success?: boolean };
     }
   | undefined;
 
@@ -268,3 +271,25 @@ export type guarantorState =
       message?: string;
     }
   | undefined;
+
+export const ChangePasswordSchema = z.object({
+  current_password: z.string().refine((value: string) => {
+    return value.trim() !== "";
+  }, "Current Password is Required"),
+  password: z.string().refine((value: string) => {
+    return value.trim() !== "";
+  }, "Password is Required"),
+  confirm_password: z.string().refine((value: string) => {
+    return value.trim() !== "";
+  }, "Confirm Password is Required"),
+});
+
+export type ChangePasswordState = {
+  errors?: {
+    current_password?: [];
+    password?: [];
+    confirm_password?: [];
+  };
+
+  response?: { message?: string; success?: string };
+};

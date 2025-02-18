@@ -1,10 +1,15 @@
 "use client";
-import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { usePathname } from "next/navigation";
-import Sidebar from "@/app/component/sidebar/Sidebar";
-import NavbarComponent from "./component/navbar/Navbar";
+import Sidebar from "./ui/sidebar/Sidebar";
+import Navbar from "./ui/navbar/Navbar";
+import { useEffect, useState } from "react";
+import Notifications from "./component/Notification";
+import { ProfileProvider } from "./context/ProfileContext";
+// import { ErrorBoundary } from "next/dist/client/components/error-boundary";
+import { ErrorBoundary } from "react-error-boundary";
+import GlobalError from "./error";
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
@@ -26,24 +31,65 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   const pathName = usePathname();
-  const showLayout = pathName === "/" ? false : true;
+  const [isSidebarOpen, setIsSidebarOpen] = useState<boolean>(false);
+  const [hasError, setHasError] = useState<boolean>(false); // Track errors
+
+  const showLayout = pathName !== "/"; // Hide layout on the error page
+
+  // useEffect(() => {
+  //   // Set the sidebar state when the component mounts
+  //   setIsSidebarOpen(false);
+  // }, []);
+  useEffect(() => {
+    console.log(window.innerWidth);
+    if (window.innerWidth >= 1024) {
+      console.log("width >= 1024");
+      setIsSidebarOpen(false);
+    }
+    document.documentElement.classList.remove("dark");
+    document.documentElement.classList.add("light");
+  }, []);
   return (
     <html lang="en">
-      <body className={`${geistSans.variable} ${geistMono.variable}`}>
-        {showLayout && (
-          <div className="min-w-screen min-h-screen flex flex-row">
-            <Sidebar />
-            <div className="w-full h-full flex flex-col">
-              <NavbarComponent />
-              <div className="w-full h-full">
-              {children}
-
+      <body
+        className={`${geistSans.variable} ${geistMono.variable} ${
+          isSidebarOpen ? 'phone:overflow-hidden tablet:overflow-hidden' : ''
+        }`}
+      >
+        {showLayout && !hasError ? (
+          <ErrorBoundary
+            fallbackRender={({ error, resetErrorBoundary }) => {
+              setHasError(true);
+              return <GlobalError error={error} reset={resetErrorBoundary} />;
+            }}
+            onReset={() => setHasError(false)}
+          >
+            <ProfileProvider>
+              <div className="min-w-screen min-h-screen flex flex-row bg-slate-50">
+                <Sidebar
+                  isSidebarOpen={isSidebarOpen}
+                  setIsSidebarOpen={setIsSidebarOpen}
+                />
+                <div
+                  className={`w-full h-full flex-col transition-all duration-300 ${
+                    isSidebarOpen ? "desktop:ml-72 laptop:ml-64" : "ml-0"
+                  } ${isSidebarOpen ? 'phone:fixed tablet:fixed' : ''}`}
+                >
+                  <Notifications />
+                  <Navbar
+                    isSidebarOpen={isSidebarOpen}
+                    setIsSidebarOpen={setIsSidebarOpen}
+                  />
+                  <main className="w-full min-h-screen bg-gray-100">
+                    {children}
+                  </main>
+                </div>
               </div>
-            </div>
-          </div>
+            </ProfileProvider>
+          </ErrorBoundary>
+        ) : (
+          children
         )}
-
-        {!showLayout && children}
       </body>
     </html>
   );

@@ -15,13 +15,16 @@ import {
   validateNumber,
   createResponse,
   validateFields,
-} from "@/app/lib/utils";
+} from "@/app/lib/helperFunctions";
 import { Client, IClient } from "@/app/lib/backend/models/client.model";
 import mongoose from "mongoose";
+import { generateFileName } from "../loans/route";
+import { getUserId } from "../auth/route";
+import { ActivitymanagementService } from "@/app/lib/backend/services/ActivitymanagementService";
 
 await connectDB();
 const clientService = new ClientService();
-
+const activitymanagementService = new ActivitymanagementService();
 export const saveFile = async (fileName: string, buffer: Buffer) => {
   try {
     // Define the directory and file path
@@ -56,8 +59,58 @@ export async function GET(req: NextRequest, res: NextResponse) {
     const limitParam = searchParams.get("limit");
     const clientId = searchParams.get("clientId");
     const search = searchParams.get("search");
+    const query = searchParams.get("query");
 
-    console.log(clientId);
+    if (query && query.length > 0) {
+      console.log(query);
+      try {
+        const clients = await Client.find({
+          $and: [
+            {
+              $or: [
+                { first_name: { $regex: query, $options: "i" } },
+                { last_name: { $regex: query, $options: "i" } },
+                { systemId: { $regex: query, $options: "i" } },
+              ],
+            },
+            { client_status: "active" },
+          ],
+        })
+          .populate("loans")
+          .populate({ path: "branch", select: ["branchName"] })
+          .populate({
+            path: "staff",
+            select: [
+              "first_name",
+              "last_name",
+              "other_names",
+              "username",
+              "roles",
+            ],
+          })
+          .lean();
+
+        // const matchedLoans = loans.filter(loan => loan.client !== null);
+        if (clients.length === 0) {
+          return NextResponse.json(
+            {
+              success: false,
+              message: "No loans found matching the search criteria",
+              data: [],
+            },
+            { status: 404, headers: { "Cache-Control": "no-store" } }
+          );
+        }
+
+        return NextResponse.json(
+          { success: true, data: clients },
+          { status: 200, headers: { "Cache-Control": "no-store" } }
+        );
+      } catch (error) {
+        console.error("Error searching loans:", error);
+        return createResponse(false, "500", "Error searching loans", {});
+      }
+    }
     if (clientId) {
       console.log(mongoose.modelNames()); // Should include "LoanApplication", "Client", etc.
 
@@ -120,13 +173,15 @@ export async function GET(req: NextRequest, res: NextResponse) {
     const page = parseInt(pageParam || "1", 10);
     const limit = parseInt(limitParam || "10", 10);
 
-    const users = await Client.find({})
-      .skip((page - 1) * limit)
-      .limit(limit)
-      .populate("staff")
-      .populate("branch");
+    const [users, totalUsers] = await Promise.all([
+      Client.find({})
+        .skip((page - 1) * limit)
+        .limit(limit)
+        .populate("staff")
+        .populate("branch"),
+      Client.countDocuments(),
+    ]);
 
-    const totalUsers = await Client.countDocuments();
     const totalPages = Math.ceil(totalUsers / limit);
 
     const pagination = {
@@ -188,16 +243,16 @@ export async function POST(req: NextRequest, res: NextResponse) {
     ]);
 
     if (!staff) return createResponse(false, "001", "Staff does not exist", {});
+
     if (!branch)
       return createResponse(false, "001", "Branch does not exist", {});
 
-    const bytes = await passport.arrayBuffer();
-    const buffer = Buffer.from(bytes);
-
-    const originalName = passport.name;
-    const fileExtension = originalName.substring(originalName.lastIndexOf("."));
-    const newFileName = `${Date.now()}${fileExtension}`;
-    await saveFile(newFileName, buffer);
+    let newFileName: string = "";
+    if (passport.name) {
+      const result = await generateFileName(passport);
+      newFileName = result.newFileName;
+      await saveFile(newFileName, result.buffer);
+    }
 
     const systemId: string = clientService.generateClientSystemID();
     const client = {
@@ -221,7 +276,12 @@ export async function POST(req: NextRequest, res: NextResponse) {
     };
 
     const newClient = await clientService.create(client);
+    const userId = await getUserId();
 
+    await activitymanagementService.createActivity(
+      "New Client Addition",
+      new mongoose.Types.ObjectId(userId)
+    );
     return createResponse(true, "001", "Client added successfully", newClient);
   } catch (error) {
     return NextResponse.json(
@@ -243,7 +303,12 @@ export async function DELETE(req: NextRequest, res: NextResponse) {
     const deleteClient = await clientService.delete(id);
     if (!deleteClient)
       return createResponse(false, "001", "Something happened", {});
+    const userId = await getUserId();
 
+    await activitymanagementService.createActivity(
+      "Client Deletion",
+      new mongoose.Types.ObjectId(userId)
+    );
     return createResponse(
       true,
       "001",
@@ -330,7 +395,12 @@ export async function PUT(req: NextRequest, res: NextResponse) {
     updatedFields["client_status"] = body.get("clientStatus") as string;
 
     const updatedClient = await clientService.update(id, updatedFields);
+    const userId = await getUserId();
 
+    await activitymanagementService.createActivity(
+      "Client Information Update",
+      new mongoose.Types.ObjectId(userId)
+    );
     return createResponse(
       true,
       "001",

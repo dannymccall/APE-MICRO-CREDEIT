@@ -1,6 +1,6 @@
 import { addBranchSchema, AddBranchState } from "../lib/definitions";
-import { extractFormFields, formatZodErrors } from "../lib/utils";
-import { makeRequest } from "../lib/utils";
+import { extractFormFields, formatZodErrors } from "../lib/helperFunctions";
+import { makeRequest } from "../lib/helperFunctions";
 
 export async function addBranch(state: AddBranchState, formData: FormData) {
   const body = extractFormFields(formData, ["branchName"]);

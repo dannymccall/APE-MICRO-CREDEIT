@@ -42,29 +42,29 @@ const AddBranch = () => {
   }, [state?.message]); // Depend on state.message to run when it changes
   return (
     <main>
+      {showMessage && (
+        <Toast
+          message={state?.message}
+          Icon={FaCircleCheck}
+          title="Branch Addition Response"
+        />
+      )}
       <InfoHeaderComponent
         route={"ADD BRANCH"}
         links={breadcrumbsLinks}
         title="Manage branch"
         onClick={onClick}
       />
-      <div className="w-full h-full p-20">
+      <div className="w-full h-full desktop:p-20 laptop:p-10 tablet:p-5 phone:p-2">
         <form
           action={action}
-          className="bg-white shadow-md w-full  border-t-4 border-t-violet-900 py-3 px-7"
+          className="bg-white w-full  border-t-4 border-t-violet-900 py-3 px-7"
         >
-          {showMessage && (
-            <Toast
-              message={state?.message}
-              Icon={FaCircleCheck}
-              title="Branch Addition Response"
-            />
-          )}
           <p className=" text-red-600 p-3 font-bold">
             {!state?.errors && state?.message}
           </p>
 
-          <div className="flex flex-row items-center my-5 relative">
+          <div className="flex flex-row  my-5 relative  desktop:flex-row laptop:flex-row tablet:flex-row phone:flex-col">
             <div className="flex flex-row w-32 gap-0 items-center">
               <Label
                 className="font-sans font-semibold text-gray-800"
@@ -74,7 +74,7 @@ const AddBranch = () => {
             </div>
             <input
               type="text"
-              className="block w-96 px-5 py-2 border-2 border-gray-200 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+              className="block text-sm w-full px-5 py-2 border-2 border-gray-200 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
               name="branchName"
               placeholder="Enter Branch name"
             />
@@ -86,7 +86,7 @@ const AddBranch = () => {
           )}
 
           <button
-            className={`btn w-24 flex items-center font-sans rounded-md justify-center gap-3 ${"bg-gradient-to-r from-violet-500 to-violet-700 hover:from-violet-700 hover:to-violet-900"} text-white py-2 rounded-md focus:outline-none font-bold font-mono transition`}
+            className={`btn btn-sm w-24 flex items-center font-sans rounded-md justify-center gap-3 ${"bg-gradient-to-r from-violet-500 to-violet-700 hover:from-violet-700 hover:to-violet-900"} text-white py-2 rounded-md focus:outline-none font-bold font-mono transition`}
           >
             {pending && <LoadingSpinner />}
             Save

@@ -9,7 +9,7 @@ import { LoadingSpinner } from "@/app/component/Loading";
 import { useRouter } from "next/navigation";
 import { FiEdit } from "react-icons/fi";
 import { IUser } from "@/app/lib/backend/models/user.model";
-import { formatDate } from "@/app/lib/utils";
+import { formatDate } from "@/app/lib/helperFunctions";
 
 export interface IViewUser {
   user: IUser;

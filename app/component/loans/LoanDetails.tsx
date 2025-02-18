@@ -1,5 +1,5 @@
 import { ILoanApplication } from "@/app/lib/backend/models/loans.model";
-import { formatDate } from "@/app/lib/utils";
+import { formatDate } from "@/app/lib/helperFunctions";
 import React from "react";
 import { CgDetailsMore } from "react-icons/cg";
 
@@ -27,7 +27,7 @@ const LoanAccountDetails = ({
       <div className="divider"></div>
       <div className="w-full h-full flex flex-col gap-3 justify-between px-10">
         <p className="text-lg font-sans font-bold">Terms</p>
-        <div className="w-full h-full flex flex-row justify-between">
+        <div className="w-full h-full flex flex-row justify-between desktop:flex-row laptop:flex-row phone:flex-col gap-4">
           <div className="w-full">
             <p className="text-base font-sans font-semibold flex items-center">
               Principal
@@ -79,7 +79,7 @@ const LoanAccountDetails = ({
       <div className="divider"></div>
       <div className="w-full h-full flex flex-col gap-3 justify-between px-10">
         <p className="text-lg font-sans font-bold">Settings</p>
-        <div className="w-full h-full flex flex-row justify-between">
+        <div className="w-full h-full flex flex-row justify-between desktop:flex-row laptop:flex-row phone:flex-col gap-4">
           <div className="w-full">
             <p className="text-base font-sans font-semibold">Loan Officer</p>
             <span className="text-sm">
@@ -102,33 +102,6 @@ const LoanAccountDetails = ({
         </div>
       </div>
       <div className="divider"></div>
-      <div className="w-full h-full flex flex-col gap-3 justify-between px-10">
-        <p className="text-lg font-sans font-bold">Charges</p>
-        <div className="w-full h-full flex flex-row justify-between">
-          <div className="w-full">
-            <p className="text-base font-sans font-semibold">Processing Fee</p>
-            <span className="text-sm">
-              GHS {Number(loan.processingFee).toFixed(2)}
-            </span>
-          </div>
-          <div className="w-full">
-            <p className="text-base font-sans font-semibold flex items-center gap-3">
-              Advance Fee
-            </p>
-            <span className="text-sm">
-              GHS {Number(loan.advanceFee).toFixed(2)}
-            </span>{" "}
-          </div>
-          <div className="w-full">
-            <p className="text-base font-sans font-semibold flex items-center gap-3">
-              Registration Fee
-            </p>
-            <span className="text-sm">
-              GHS {Number(loan.registrationFee).toFixed(2)}
-            </span>{" "}
-          </div>
-        </div>
-      </div>
     </div>
   );
 };

@@ -17,7 +17,7 @@ export async function createSession(user: any) {
   });
 }
 
-async function updateSession() {
+export async function updateSession() {
   const session = (await cookies()).get("session")?.value;
   const payload = decrypt(session);
 
@@ -35,7 +35,13 @@ async function updateSession() {
   });
 }
 
-async function deleteSession() {
+export async function deleteSession() {
   const cookieStore = await cookies();
   cookieStore.delete("session");
+}
+
+export async function getSession(name: string){
+  const session = (await cookies()).get(name)?.value;
+  console.log({session})
+  return session;
 }

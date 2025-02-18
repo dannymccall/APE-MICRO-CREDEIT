@@ -3,25 +3,27 @@ import { IGuatantor } from "@/app/lib/backend/models/guarantor.models";
 
 const LoanGuarantorDetails = ({ guarantor }: { guarantor: IGuatantor }) => {
   return (
+    <main className="w-full overflow-x-auto">
+
     <table className="w-full">
       <thead>
         <tr className="bg-violet-200">
-          <th className="text-base font-sans font-medium text-gray-700 p-2 border text-left">
+          <th className="text-sm font-sans font-medium text-gray-700 p-2 border text-left">
             System ID
           </th>
-          <th className="text-base font-sans font-medium text-gray-700 p-2 border text-left">
+          <th className="text-sm font-sans font-medium text-gray-700 p-2 border text-left">
             Guarantor Full Name
           </th>
-          <th className="text-base font-sans font-medium text-gray-700 p-2 border text-left">
+          <th className="text-sm font-sans font-medium text-gray-700 p-2 border text-left">
             Guarantor Occupation
           </th>
-          <th className="text-base font-sans font-medium text-gray-700 p-2 border text-left">
+          <th className="text-sm font-sans font-medium text-gray-700 p-2 border text-left">
           Guarantor Union Name
           </th>
-          <th className="text-base font-sans font-medium text-gray-700 p-2 border text-left">
+          <th className="text-sm font-sans font-medium text-gray-700 p-2 border text-left">
           Guarantor Residence
           </th>
-          <th className="text-base font-sans font-medium text-gray-700 p-2 border text-left">
+          <th className="text-sm font-sans font-medium text-gray-700 p-2 border text-left">
           Guarantor Mobile
           </th>
         </tr>
@@ -49,6 +51,7 @@ const LoanGuarantorDetails = ({ guarantor }: { guarantor: IGuatantor }) => {
         </tr>
       </tbody>
     </table>
+    </main>
   );
 };
 

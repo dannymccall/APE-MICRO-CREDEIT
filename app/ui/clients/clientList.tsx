@@ -12,7 +12,7 @@ interface ClientListProps {
   onDelete: () => void;
   currentPage?: number;
   totalPages: number | 1;
-  setCurrentPage: React.Dispatch<React.SetStateAction<number>>;
+  setCurrentPage: (page: number) => void;
   editClient: (client: IClient, id: string) => void,
 }
 const ClientList: React.FC<ClientListProps> = ({
@@ -33,7 +33,7 @@ const ClientList: React.FC<ClientListProps> = ({
 
   return (
     <div>
-      <div className="w-full h-full bg-white relative shadow-md">
+      <div className="w-full h-full bg-white relative">
         <table className="table">
           {/* head */}
           <thead className="relative">
@@ -71,19 +71,19 @@ const ClientList: React.FC<ClientListProps> = ({
           <button
             className="px-4 py-2 bg-gray-300 rounded disabled:opacity-50"
             onClick={() =>
-              setCurrentPage((prev: number) => Math.max(prev - 1, 1))
+              setCurrentPage(Math.max((currentPage ?? 1) - 1, 1))
             }
             disabled={currentPage === 1}
           >
             <IoCaretBackSharp className="text-violet-700" />
           </button>
           <span className="font-semibold font-sans">
-            Page {currentPage} of {totalPages}
+            Page {currentPage ?? 1} of {totalPages}
           </span>
           <button
             className="px-4 py-2 bg-gray-300 rounded disabled:opacity-50"
             onClick={() =>
-              setCurrentPage((prev: number) => Math.min(prev + 1, totalPages))
+              setCurrentPage(Math.min((currentPage ?? 1) + 1, totalPages))
             }
             disabled={currentPage === totalPages}
           >

@@ -4,12 +4,13 @@ import React, { useState } from "react";
 import Modal from "@/app/component/Modal";
 import Toast from "@/app/component/toast/Toast";
 import { FaCircleCheck } from "react-icons/fa6";
-import { makeRequest, toCapitalized } from "@/app/lib/utils";
+import { makeRequest, toCapitalized } from "@/app/lib/helperFunctions";
 import { useRouter } from "next/navigation";
 import { ILoanApplication } from "@/app/lib/backend/models/loans.model";
 import { IoIosArrowRoundForward } from "react-icons/io";
 
 import Link from "next/link";
+import { useLogginIdentity } from "@/app/lib/customHooks";
 
 interface LoanProps {
   loan: ILoanApplication | any;
@@ -18,6 +19,8 @@ interface LoanProps {
 
 const Loan: React.FC<LoanProps> = ({ loan, loanOfficer }) => {
   const [showToast, setShowToast] = useState<boolean>(false);
+ 
+
   const router = useRouter();
 
   return (
@@ -55,9 +58,9 @@ const Loan: React.FC<LoanProps> = ({ loan, loanOfficer }) => {
         <td className="p-2 relative">
           <Link
             href={`/view-loan/${loan.systemId}`}
-            className="text-violet-600 hover:text-violet-800 flex gap-2 items-center"
+            className="text-violet-600 hover:text-violet-800 flex gap-3 items-center link-btn"
           >
-            View Full Details <IoIosArrowRoundForward />
+            View Full Details <IoIosArrowRoundForward size={20} className="relative icon-move-left"/>
           </Link>
         </td>
       </tr>

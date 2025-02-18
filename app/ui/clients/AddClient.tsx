@@ -8,7 +8,7 @@ import { FaCircleCheck } from "react-icons/fa6";
 import { LoadingSpinner } from "@/app/component/Loading";
 import QuickAccess from "@/app/component/QuickAccess";
 import { useRouter } from "next/navigation";
-import { makeRequest } from "@/app/lib/utils";
+import { makeRequest } from "@/app/lib/helperFunctions";
 import Image from "next/image";
 
 export interface IAddUser {
@@ -118,10 +118,10 @@ const AddUser: React.FC<IAddUser> = ({ route }) => {
         title="Manage client"
         onClick={onClick}
       />
-      <div className="w-full h-full p-20">
+      <div className="w-full h-full p-20 phone:p-5 desktop:p-20 laptop:p-20">
         <form
           action={action}
-          className="bg-white shadow-md w-full  border-t-4 border-t-violet-900 py-3 px-7"
+          className="bg-white  w-full  border-t-4 border-t-violet-900 py-3 px-7"
           ref={formRef}
         >
           {showMessage && (
@@ -247,7 +247,7 @@ const AddUser: React.FC<IAddUser> = ({ route }) => {
               className="block text-sm font-sans w-full px-5 py-2 border border-gray-200 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm cursor-pointer"
               defaultValue=""
             >
-              <option disabled value="" selected>
+              <option disabled value="">
                 Select branch
               </option>
               {branches.map((branch: any) => (
@@ -378,7 +378,7 @@ const AddUser: React.FC<IAddUser> = ({ route }) => {
               className="block text-sm font-sans  w-full px-5 py-2 border border-gray-200 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm cursor-pointer"
               defaultValue=""
             >
-              <option disabled value="" selected className="text-sm font-sans">
+              <option disabled value="" className="text-sm font-sans">
                 Select ID Type
               </option>
               {idType.map((id: any) => (
@@ -459,7 +459,7 @@ const AddUser: React.FC<IAddUser> = ({ route }) => {
               className="block w-full text-sm font-sans px-5 py-2 border border-gray-200 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm cursor-pointer"
               defaultValue=""
             >
-              <option disabled value="" selected className="text-sm font-sans">
+              <option disabled value="" className="text-sm font-sans">
                 Select staff
               </option>
               {users.map((user: any) => (
@@ -478,7 +478,7 @@ const AddUser: React.FC<IAddUser> = ({ route }) => {
               {state.errors.staff}
             </p>
           )}
-          <div className="flex flex-row my-2 relative">
+          <div className="flex flex-row my-2 relative phone:flex-col desktop:flex-row laptop:flex-row">
             <div className="flex flex-row w-32 items-center my-5">
               <Label
                 className="font-sans font-semibold text-gray-500"
@@ -512,7 +512,7 @@ const AddUser: React.FC<IAddUser> = ({ route }) => {
               {state.errors.sex}
             </p>
           )}
-          <div className="flex flex-row my-2 relative">
+          <div className="flex flex-row my-2 relative phone:flex-col desktop:flex-row laptop:flex-row">
             <div className="flex flex-row w-32 items-center my-5">
               <Label
                 className="font-sans font-semibold text-gray-500"

@@ -24,8 +24,7 @@ const BranchList: React.FC<UserListProps> = ({
 
 
   return (
-    <div>
-      <div className="w-full h-full bg-white relative shadow-md">
+      <div className="w-full h-full bg-white relative overflow-x-auto">
         <table className="table w-full ">
           {/* head */}
           <thead className="relative bg-violet-200">
@@ -72,7 +71,7 @@ const BranchList: React.FC<UserListProps> = ({
           </button>
         </div>
       </div>
-    </div>
+  
   );
 };
 

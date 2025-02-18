@@ -1,5 +1,12 @@
-import { useEffect, useMemo, useState, useReducer } from "react";
-import { getFromLocalStorage } from "./utils";
+"use client";
+
+import { useEffect, useMemo, useState } from "react";
+import { getFromLocalStorage, makeRequest } from "./helperFunctions";
+import { io, Socket } from "socket.io-client";
+import Toast from "../component/toast/Toast";
+import { FaCircleCheck } from "react-icons/fa6";
+// import { useDebounceValue } from '@/app/lib/customHooks';
+
 // Utility function to fetch from localStorage
 
 // Custom hook
@@ -65,10 +72,10 @@ export const initialState: any = {
   client: "",
   guarantorFullName: "",
   guarantorOccupation: "",
-  guarantorPassport:null,
+  guarantorPassport: null,
   guarantorResidence: "",
   guarantorUnionName: "",
-  guarantorMobile: ""
+  guarantorMobile: "",
 };
 
 // Define action types
@@ -105,7 +112,7 @@ type Action =
   | { type: "SET_GUARANTOR_UNION_NAME"; payload: string }
   | { type: "SET_GUARANTOR_MOBILE"; payload: string }
   | { type: "SET_GUARANTOR_MOBILE"; payload: string }
-  | { type: "RESET_STATE" }; 
+  | { type: "RESET_STATE" };
 // Reducer function
 export const useReducerHook = (state: typeof initialState, action: Action) => {
   switch (action.type) {
@@ -171,7 +178,7 @@ export const useReducerHook = (state: typeof initialState, action: Action) => {
       return { ...state, guarantorUnionName: action.payload };
     case "SET_GUARANTOR_MOBILE":
       return { ...state, guarantorMobile: action.payload };
-      case "RESET_STATE":
+    case "RESET_STATE":
       return { ...initialState };
     default:
       return state;
@@ -190,3 +197,253 @@ export function getLoanInfomation(type: string) {
 
   return interestRate;
 }
+
+
+export const usefetchBranches = async () => {
+  try {
+    const [clientResponse, usersResponse] = await Promise.all([
+      makeRequest("/api/clients", { method: "GET", cache: "no-store" }),
+      makeRequest("/api/users", { method: "GET", cache: "no-store" }),
+    ]);
+
+    return { clientResponse, usersResponse };
+  } catch (error) {
+    console.error("Error fetching branches:", error);
+    // Return a fallback value to ensure the return type is consistent
+    return { clientResponse: null, usersResponse: null };
+  }
+};
+
+export function useDebounceValue(value: string, time = 250) {
+  const [debounceValue, setDebounceValue] = useState(value);
+
+  useEffect(() => {
+    const timeOut: NodeJS.Timeout = setTimeout(() => {
+      setDebounceValue(value);
+    }, time);
+
+    return () => clearTimeout(timeOut);
+  }, [value, time]);
+
+  return debounceValue;
+}
+
+
+const SOCKET_URL = "http://localhost:3001";
+
+interface ILogginIdentity {
+  fullName: string,
+  userRoles: string[];
+  userName: string
+}
+
+
+
+export const useSocket = (logginIdentity: ILogginIdentity) => {
+  const [message, setMessage] = useState<string>("");
+  const [showNotification, setShowNotification] = useState<boolean>(false);
+
+
+  const clearToast = () => {
+    let timeOut: NodeJS.Timeout;
+    timeOut = setTimeout(() => {
+      setMessage("");
+      setShowNotification(false)
+    }, 5000);
+
+    return () => clearTimeout(timeOut)
+  }
+  useEffect(() => {
+    if (!logginIdentity) return; // Ensure logginIdentity exists before running
+
+    const socket = io(SOCKET_URL);
+
+    const userRoles: string[] = logginIdentity.userRoles || [];
+    console.log(userRoles)
+
+    switch (true) {
+      case userRoles.includes("Admin"):
+        socket.on("notifyAdmin", (msg) => {
+          setMessage(msg);
+          setShowNotification(true);
+          clearToast()
+        });
+
+        socket.on("loanApproved", (msg) => {
+          setMessage(msg);
+          setShowNotification(true);
+          clearToast()
+        });
+
+        break;
+
+      case userRoles.includes("Loan officer"):
+        console.log("connecting...")
+        socket.on("connect", () => {
+          console.log("Connected to WebSocket server");
+          socket.emit("join", logginIdentity.userName);
+        });
+
+        
+        socket.on("notifyLoanofficer", (msg) => {
+          setMessage(msg);
+          setShowNotification(true);
+          clearToast()
+        });
+
+        socket.on("loanApproved", (msg) => {
+          setMessage(msg);
+          setShowNotification(true);
+          clearToast()
+        });
+        break;
+
+      default:
+        console.warn("No matching role for WebSocket events.");
+    }
+
+   
+    return () => {
+     
+      socket.disconnect(); // Cleanup on unmount
+    };
+  }, [logginIdentity]); // Only run when logginIdentity changes
+
+  return { message, showNotification };
+};
+
+export const useGenerateDocument = async (
+  reportGenerationRef: React.RefObject<HTMLDivElement>,
+  type: "pdf" | "excel",
+  setLoading: React.Dispatch<React.SetStateAction<boolean>>
+) => {
+  if (!reportGenerationRef.current) return;
+
+  setLoading(true);
+
+  // Get the HTML content of the report
+  const html = reportGenerationRef.current.outerHTML;
+
+  try {
+    const res = await fetch(`http://localhost:3000/api/generate-document/${type}`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ html }),
+    });
+
+    if (!res.ok) throw new Error(`Failed to generate ${type.toUpperCase()}`);
+
+    const blob = await res.blob();
+    const url = window.URL.createObjectURL(blob);
+
+    // Download the file
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `report.${type === "pdf" ? "pdf" : "xlsx"}`;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+
+  } catch (error) {
+    console.error(`Error generating ${type.toUpperCase()}:`, error);
+  } finally {
+    setLoading(false);
+  }
+};
+
+interface UseSearchProps<T> {
+  endpoint: string;
+  initialPage?: number;
+  limit?: number;
+}
+
+interface SearchState<T> {
+  data: T[];
+  loading: boolean;
+  error: string | null;
+  totalPages: number;
+  currentPage: number;
+  response: string;
+}
+
+export function useSearch<T>({ endpoint, initialPage = 1, limit = 10 }: UseSearchProps<T>) {
+  const [state, setState] = useState<SearchState<T>>({
+    data: [],
+    loading: true,
+    error: null,
+    totalPages: 1,
+    currentPage: initialPage,
+    response: ''
+  });
+  const [query, setQuery] = useState<string>('');
+  const debouncedQuery = useDebounceValue(query);
+
+  const fetchData = async (searchQuery = '') => {
+    setState(prev => ({ ...prev, loading: true, error: null }));
+    try {
+      const url = searchQuery.trim()
+        ? `${endpoint}?query=${searchQuery}`
+        : `${endpoint}?page=${state.currentPage}&limit=${limit}`;
+
+      const response = await makeRequest(url, {
+        method: 'GET',
+        cache: 'no-store',
+      });
+
+      if (!response.success) {
+        setState(prev => ({
+          ...prev,
+          data: [],
+          response: 'No results found',
+          loading: false
+        }));
+        return;
+      }
+
+      setState(prev => ({
+        ...prev,
+        data: response.data,
+        totalPages: response.pagination?.totalPages || 0,
+        loading: false,
+        response: ''
+      }));
+    } catch (error) {
+      setState(prev => ({
+        ...prev,
+        data: [],
+        error: 'Error fetching data',
+        loading: false,
+        response: 'Error fetching data'
+      }));
+    }
+  };
+
+  const handleSearch = (value: string) => {
+    setQuery(value);
+  };
+
+  const setCurrentPage = (page: number) => {
+    setState(prev => ({ ...prev, currentPage: page }));
+  };
+
+  useEffect(() => {
+    if (debouncedQuery !== undefined) {
+      fetchData(debouncedQuery);
+    }
+  }, [debouncedQuery]);
+
+  useEffect(() => {
+    if (state.currentPage === 1 && !query) {
+      fetchData('');
+    }
+  }, [state.currentPage]);
+
+  return {
+    ...state,
+    query,
+    handleSearch,
+    setCurrentPage,
+    refresh: () => fetchData(query)
+  };
+}
+

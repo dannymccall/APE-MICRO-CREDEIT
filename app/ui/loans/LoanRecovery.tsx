@@ -5,13 +5,13 @@ import InfoHeaderComponent from "@/app/component/Info-header/Info-Header";
 import { useRouter } from "next/navigation";
 import SinglePayment from "@/app/component/loans/SinglePayment";
 import TabsComponent from "@/app/component/loans/TabsComponent";
-import { fetchClients } from "@/app/lib/utils";
-import { IClient } from "@/app/lib/backend/models/client.model";
+import {  fetchPaymentClients } from "@/app/lib/helperFunctions";
 import BulkPayment from "@/app/component/loans/BulkPayment";
+import { PaymentClientDetails } from "@/app/component/loans/BulkPayment";
 
 const LoanRecovery = () => {
   const router = useRouter();
-  const [clients, setClients] = useState<IClient[]>([]);
+  const [clients, setClients] = useState<PaymentClientDetails | any>();
 
   const breadcrumbsLinks = [
     { name: "Dashboard", href: "/dashboard" },
@@ -21,6 +21,21 @@ const LoanRecovery = () => {
     },
   ];
 
+  useEffect(() => {
+    (async () => {
+      try {
+        const res: PaymentClientDetails | any = await fetchPaymentClients(
+          "",
+          "bulkPayment"
+        );
+        console.log(res)
+        setClients(res);
+      } catch (error) {
+        console.error("Failed to fetch clients:", error);
+      }
+    })();
+  }, []);
+
   const tabs = [
     {
       label: "Single Payment",
@@ -28,30 +43,10 @@ const LoanRecovery = () => {
     },
     {
       label: "Bulk Payment",
-      content: <BulkPayment clients={clients} paymentDate={""} />,
+      content: <BulkPayment loans={clients} />,
     },
   ];
 
-  useEffect(() => {
-    (async () => {
-      try {
-        const clientsData = await fetchClients();
-        console.log(clientsData.data);
-        setClients(
-          clientsData.data.filter((client: any) => {
-            // Filter clients that have at least one loan with paymentStatus "not completed"
-            return client.loans.some((loan: any) => loan.paymentStatus === "not completed");
-          })
-        );
-      } catch (error) {
-        console.error("Failed to fetch clients:", error);
-      }
-    })();
-  }, []);
-
-  useEffect(() => {
-    console.log(clients)
-  },[clients])
   const onClick = () => router.push("/");
   return (
     <>
@@ -61,7 +56,7 @@ const LoanRecovery = () => {
         title="Dashboard"
         onClick={onClick}
       />
-      <main className="m-5 p-5 bg-white shadow-md rounded">
+      <main className="m-5 p-5 bg-white rounded">
         <TabsComponent tabs={tabs} />
       </main>
     </>

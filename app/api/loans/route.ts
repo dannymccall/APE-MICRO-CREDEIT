@@ -12,13 +12,19 @@ import {
   calculateLoanInformaion,
   generatePaymentSchedule,
   calculateNextPayment,
-} from "@/app/lib/utils";
+  makeRequest,
+} from "@/app/lib/helperFunctions";
 import { Client } from "@/app/lib/backend/models/client.model";
 import { saveFile } from "../clients/route";
 import { LoanApplication } from "@/app/lib/backend/models/loans.model";
+import { getUserId } from "../auth/route";
+import mongoose from "mongoose";
+import { ActivitymanagementService } from "@/app/lib/backend/services/ActivitymanagementService";
+
 await connectDB();
 const clientService = new ClientService();
 const loanService = new LoanService();
+const activitymanagementService = new ActivitymanagementService();
 const isNotEmpty = (value: unknown) =>
   value !== undefined && value !== null && value !== "";
 
@@ -35,15 +41,72 @@ const generateModelFields = (
   });
   return loanFields;
 };
+
+export async function generateFileName(passport: File | null) {
+  const bytes = await passport?.arrayBuffer();
+  if (!bytes) {
+    throw new Error("Failed to read file bytes");
+  }
+  const buffer = Buffer.from(bytes);
+  const originalName = passport?.name;
+  const fileExtension = originalName?.substring(originalName.lastIndexOf("."));
+  console.log(fileExtension);
+  const newFileName = `${Date.now()}${fileExtension}`;
+  return { newFileName, buffer };
+}
 export async function GET(req: NextRequest, res: NextResponse) {
   try {
     const searchParams = req.nextUrl.searchParams;
-
     const pageParam = searchParams.get("page");
     const limitParam = searchParams.get("limit");
     const loanId = searchParams.get("loanId");
     const search = searchParams.get("search");
+    const query = searchParams.get("query");
 
+    // Handle loan search by query
+    if (query) {
+      try {
+        const loans = await LoanApplication.find({})
+          .populate({
+            path: "client",
+            match: {
+              $or: [
+                { first_name: { $regex: query, $options: "i" } },
+                { last_name: { $regex: query, $options: "i" } },
+              ],
+            },
+            select: "first_name last_name"
+          })
+          .populate({
+            path: "loanOfficer",
+            select: "first_name other_names last_name"
+          })
+          .lean();
+
+        const matchedLoans = loans.filter(loan => loan.client !== null);
+
+        if (matchedLoans.length === 0) {
+          return NextResponse.json(
+            {
+              success: false,
+              message: "No loans found matching the search criteria",
+              data: []
+            },
+            { status: 404, headers: { "Cache-Control": "no-store" } }
+          );
+        }
+
+        return NextResponse.json(
+          { success: true, data: matchedLoans },
+          { status: 200, headers: { "Cache-Control": "no-store" } }
+        );
+      } catch (error) {
+        console.error("Error searching loans:", error);
+        return createResponse(false, "500", "Error searching loans", {});
+      }
+    }
+
+    // Handle loan lookup by ID
     if (loanId) {
       const loan = await LoanApplication.findOne({ systemId: loanId })
         .populate({
@@ -53,17 +116,14 @@ export async function GET(req: NextRequest, res: NextResponse) {
         .populate({ path: "guarantor" })
         .populate({ path: "client" })
         .populate({ path: "paymentSchedule" });
+
       return NextResponse.json(
         { success: true, message: "Generated", data: loan },
-        {
-          status: 200,
-          headers: {
-            "Cache-Control": "no-store", // Prevent caching
-          },
-        }
+        { status: 200, headers: { "Cache-Control": "no-store" } }
       );
     }
 
+    // Handle search by first/last name
     if (search) {
       const loans = await LoanApplication.find({
         $and: [
@@ -80,49 +140,56 @@ export async function GET(req: NextRequest, res: NextResponse) {
       return createResponse(true, "200", "", loans);
     }
 
-    if (!pageParam && !limitParam) {
-      const allLoans = await LoanApplication.find({});
-      return NextResponse.json(
-        { success: true, message: "Fetched all clients.", data: allLoans },
-        {
-          status: 200,
-          headers: {
-            "Cache-Control": "no-store", // Prevent caching
-          },
-        }
-      );
-    }
-
+    // Handle paginated results
     const page = parseInt(pageParam || "1", 10);
     const limit = parseInt(limitParam || "10", 10);
 
-    const loans = await LoanApplication.find({})
-      .skip((page - 1) * limit)
-      .limit(limit)
-      .populate({path: "loanOfficer", select: ["first_name", "other_names", "last_name"]})
+    // If no pagination params, return all loans
+    if (!pageParam && !limitParam) {
+      const allLoans = await LoanApplication.find({});
+      return NextResponse.json(
+        { success: true, message: "Fetched all loans", data: allLoans },
+        { status: 200, headers: { "Cache-Control": "no-store" } }
+      );
+    }
 
-    const totalLoans = await LoanApplication.countDocuments();
-    const totalPages = Math.ceil(totalLoans / limit);
-
-    const pagination = {
-      totalLoans,
-      currentPage: page,
-      totalPages,
-    };
+    // Get paginated loans with populated fields
+    const [loans, totalLoans] = await Promise.all([
+      LoanApplication.find({})
+        .skip((page - 1) * limit)
+        .limit(limit)
+        .populate({
+          path: "loanOfficer",
+          select: ["first_name", "other_names", "last_name"],
+        })
+        .populate({ path: "client", select: ["first_name", "last_name"] }),
+      LoanApplication.countDocuments()
+    ]);
 
     return NextResponse.json(
-      { success: true, message: "", data: loans, pagination },
+      {
+        success: true,
+        data: loans,
+        pagination: {
+          totalLoans,
+          currentPage: page,
+          totalPages: Math.ceil(totalLoans / limit),
+        }
+      },
       {
         status: 200,
         headers: {
-          "Cache-Control": "no-store", // Prevent caching
-        },
+          "Cache-Control": "no-store, no-cache, must-revalidate, proxy-revalidate",
+          "Pragma": "no-cache",
+          "Expires": "0"
+        }
       }
     );
-  } catch (e: any) {
-    console.log(e.message);
+
+  } catch (error: any) {
+    console.error("Error in GET /api/loans:", error);
     return NextResponse.json(
-      { error: "An error occurred while processing the request." },
+      { error: "An error occurred while processing the request" },
       { status: 500 }
     );
   }
@@ -153,14 +220,15 @@ export async function POST(req: NextRequest, res: NextResponse) {
     if (!client)
       return createResponse(false, "001", "Client does not exist", {});
     const passport: File | null = body.get("file") as unknown as File;
+    let newFileName: string = "";
 
-    const bytes = await passport.arrayBuffer();
-    const buffer = Buffer.from(bytes);
-    const originalName = passport.name;
-    const fileExtension = originalName.substring(originalName.lastIndexOf("."));
-    const newFileName = `${Date.now()}${fileExtension}`;
-    console.log({ newFileName });
-    await saveFile(newFileName, buffer);
+    if (passport.name) {
+      let result: { newFileName: string; buffer: any } = await generateFileName(
+        passport
+      );
+      newFileName = result.newFileName;
+      await saveFile(newFileName, result.buffer);
+    }
 
     const guarantorSystemId: string = generateSystemID("GUA");
     const loanSystemId: string = generateSystemID("LOA");
@@ -175,12 +243,10 @@ export async function POST(req: NextRequest, res: NextResponse) {
       new Date(body.get("expectedDisbursementDate")),
       Number(weeklyPayment)
     );
-    console.log(schedule);
     const nextPayment = calculateNextPayment(
       new Date(body.get("expectedDisbursementDate"))
     );
 
-    console.log("interest", body.get("interest"));
     const lonaFieldMapping: Record<string, string> = {
       loanProduct: "loanProduct",
       principal: "principal",
@@ -190,9 +256,9 @@ export async function POST(req: NextRequest, res: NextResponse) {
       type: "type",
       expectedDisbursementDate: "expectedDisbursementDate",
       loanPurpose: "loanPurpose",
-      registrationFee: "registrationFee",
-      advanceFee: "advanceFee",
-      processingFee: "processingFee",
+      // registrationFee: "registrationFee",
+      // advanceFee: "advanceFee",
+      // processingFee: "processingFee",
     };
 
     // Dynamically construct updatedFields object
@@ -208,26 +274,28 @@ export async function POST(req: NextRequest, res: NextResponse) {
     generatedLoanModelFields["weeklyAmount"] = Number(weeklyPayment);
     generatedLoanModelFields["systemId"] = loanSystemId;
     generatedLoanModelFields["client"] = client._id;
+    generatedLoanModelFields["maturityDate"] = new Date(
+      schedule[schedule.length - 1].nextPayment
+    );
     const principal = Number(body.get("principal"));
 
     // Ensure principal is a valid number
     if (isNaN(principal) || principal <= 0) {
       throw new Error("Invalid principal amount");
     }
-    
+
     // Monthly principal payment
     generatedLoanModelFields["principalPayment"] = (principal / 12).toFixed(2);
-    
+
     // Monthly interest payment
     const interestRate = 0.0267; // 2.67%
-    generatedLoanModelFields["interestPayment"] = (principal * interestRate).toFixed(2);
-    
-    console.log(generatedLoanModelFields);
+    generatedLoanModelFields["interestPayment"] = (
+      principal * interestRate
+    ).toFixed(2);
 
     const newLoanApplication = await loanService.create(
       generatedLoanModelFields
     );
-    console.log({ newLoanApplication });
 
     fields = {};
 
@@ -243,6 +311,7 @@ export async function POST(req: NextRequest, res: NextResponse) {
       fields,
       body
     );
+    console.log({ newFileName });
     generatedGuarantorModelFields["systemId"] = guarantorSystemId;
     generatedGuarantorModelFields["avarta"] = newFileName;
     generatedGuarantorModelFields["loan"] = newLoanApplication._id;
@@ -256,22 +325,23 @@ export async function POST(req: NextRequest, res: NextResponse) {
       schedule: schedule,
     };
     const newPaymentSchedule = await PaymentSchedule.create(paymentSchedule);
-    await loanService.update(newLoanApplication._id, {
-      guarantor: newGuarantor._id,
-      paymentSchedule: newPaymentSchedule._id,
-    });
+    await Promise.all([
+      loanService.update(newLoanApplication._id, {
+        guarantor: newGuarantor._id,
+        paymentSchedule: newPaymentSchedule._id,
+      }),
+      Client.updateOne(
+        { _id: client._id }, // Match the document with this _id
+        { $push: { loans: newLoanApplication._id } } // Push the new loan ID into the loans array
+      ),
+    ]);
 
-    await Client.updateOne(
-      { _id: client._id }, // Match the document with this _id
-      { $push: { loans: newLoanApplication._id } } // Push the new loan ID into the loans array
+    const userId = await getUserId();
+    await activitymanagementService.createActivity(
+      "New Loan Application",
+      new mongoose.Types.ObjectId(userId)
     );
-    console.log(newGuarantor);
-    return createResponse(
-      true,
-      "001",
-      "Loan application added successfully",
-      {}
-    );
+    return createResponse(true, "001", "Loan application successfully", {});
   } catch (error) {
     console.log(error);
     return NextResponse.json(
@@ -284,21 +354,29 @@ export async function POST(req: NextRequest, res: NextResponse) {
 export async function DELETE(req: NextRequest, res: NextResponse) {
   try {
     const searchParams = req.nextUrl.searchParams;
-    const id: string | any = searchParams.get("id");
+    const loanId: string | any = searchParams.get("_id");
 
-    const client = await clientService.findById(id);
-    if (!client)
-      return createResponse(false, "001", "Client does not exists", client);
+    const loan = await loanService.findById(loanId);
+    if (!loan) return createResponse(false, "001", "Loan does not exist");
 
-    const deleteClient = await clientService.delete(id);
-    if (!deleteClient)
+    const deletedLoan = await loanService.delete(loanId);
+    if (!deletedLoan)
       return createResponse(false, "001", "Something happened", {});
 
+    await Promise.all([
+      PaymentSchedule.findByIdAndDelete(loan.paymentSchedule),
+      Guarantor.findByIdAndDelete(loan.guarantor),
+    ]);
+    const userId = await getUserId();
+    await activitymanagementService.createActivity(
+      "Loan Deletion",
+      new mongoose.Types.ObjectId(userId)
+    );
     return createResponse(
       true,
       "001",
-      "Client deleted successfully",
-      deleteClient
+      "Loan deleted successfully",
+      deletedLoan
     );
   } catch (error) {
     return NextResponse.json(
@@ -308,89 +386,48 @@ export async function DELETE(req: NextRequest, res: NextResponse) {
   }
 }
 
-// export async function PUT(req: NextRequest, res: NextResponse) {
-//   const contentType = req.headers.get("content-type");
-//   if (!contentType?.includes("multipart/form-data")) {
-//     return NextResponse.json(
-//       { error: "Unsupported Content-Type" },
-//       { status: 400 }
-//     );
-//   }
+export async function PUT(req: NextRequest, res: NextResponse) {
+  try {
+    const searchParams = req.nextUrl.searchParams;
 
-//   try {
-//     const body = await req.formData();
-//     const searchParams = req.nextUrl.searchParams;
-//     const id: string | any = searchParams.get("id");
-//     if (!id) return createResponse(false, "001", "Client ID is required", {});
+    const approveLoan = searchParams.get("approveLoan");
+    const loanId = searchParams.get("_id") as string;
+    if (approveLoan) {
+      const loan = await LoanApplication.findById(loanId).populate({
+        path: "loanOfficer",
+        select: ["username"],
+      });
 
-//     const client = await clientService.findById(id);
-//     if (!client) return createResponse(false, "001", "Client not found", {});
+      if (!loan) return createResponse(false, "400", "Loan ID is Invalid");
 
-//     const [staff, branch] = await Promise.all([
-//       User.findOne({ username: body.get("staff") }),
-//       Branch.findOne({ branchName: body.get("branch") }),
-//     ]);
-
-//     if (!staff) return createResponse(false, "001", "Staff does not exist", {});
-//     if (!branch)
-//       return createResponse(false, "001", "Branch does not exist", {});
-
-//     // Utility function to check if a value is non-empty
-//     const isNotEmpty = (value: unknown) =>
-//       value !== undefined && value !== null && value !== "";
-
-//     // Mapping between formData keys and client object keys
-//     const fieldMapping: Record<string, string> = {
-//       firstName: "first_name",
-//       lastName: "last_name",
-//       nickName: "nick_name",
-//       title: "title",
-//       mobile: "mobile",
-//       residence: "residence",
-//       maritalStatus: "maritalStatus",
-//       gender: "gender",
-//     };
-
-//     // Dynamically construct updatedFields object
-//     const updatedFields: Partial<typeof client> = {};
-
-//     Object.entries(fieldMapping).forEach(([formKey, clientKey]) => {
-//       const formValue = body.get(formKey);
-//       if (isNotEmpty(formValue)) {
-//         updatedFields[clientKey] = formValue;
-//       }
-//     });
-
-//     // Handle special cases like file upload
-//     const passport: File | null = body.get("passport") as unknown as File;
-//     if (passport.name !== "") {
-//       const bytes = await passport.arrayBuffer();
-//       const buffer = Buffer.from(bytes);
-//       const originalName = passport.name;
-//       const fileExtension = originalName.substring(
-//         originalName.lastIndexOf(".")
-//       );
-//       const newFileName = `${Date.now()}${fileExtension}`;
-//       await saveFile(newFileName, buffer);
-//       updatedFields["avarta"] = newFileName; // Update avatar if a new file is uploaded
-//     }
-
-//     updatedFields["staff"] = staff._id;
-//     updatedFields["branch"] = branch._id;
-//     updatedFields["client_status"] = body.get("clientStatus") as string;
-
-//     const updatedClient = await clientService.update(id, updatedFields);
-
-//     return createResponse(
-//       true,
-//       "001",
-//       "Client updated successfully",
-//       updatedClient
-//     );
-//   } catch (error) {
-//     return NextResponse.json(
-//       { error: "An error occurred while processing the request." },
-//       { status: 500 }
-//     );
-//   }
-// }
+      await Promise.all([
+        loanService.update(loanId, {
+          loanApprovalStatus: "Approved",
+        }),
+        makeRequest(
+          `${process.env.NEXT_PUBLIC_SOCKET_URL}/notify-loan-officer`,
+          {
+            method: "POST",
+            body: JSON.stringify({
+              loanOfficer: loan.loanOfficer.username,
+              message: "Your loan application has approved",
+            }),
+            headers: { "Content-Type": "application/json" },
+          }
+        ),
+      ]);
+      const userId = await getUserId();
+      await activitymanagementService.createActivity(
+        "Loan Application Approval",
+        new mongoose.Types.ObjectId(userId)
+      );
+      return createResponse(true, "200", "Loan Approval Successful");
+    }
+  } catch (error) {
+    console.log(error);
+    return NextResponse.json(
+      { error: "An error occurred while processing the request." },
+      { status: 500 }
+    );
+  }
+}

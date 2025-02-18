@@ -1,16 +1,15 @@
 "use client";
-
-import React, { useState, useActionState } from "react";
-import { useFormStatus } from "react-dom";
+import React, { useState, useActionState, useEffect } from "react";
 import { Label } from "@/app/lib/MyFormInput/FormTemplates";
 import { FaUserCircle } from "react-icons/fa";
 import { FaLock } from "react-icons/fa6";
 import { BiSolidLogInCircle } from "react-icons/bi";
 import { signin } from "@/app/actions/loginAuth";
 import { LoadingSpinner } from "@/app/component/Loading";
+import { useRouter } from "next/navigation";
 const Signin = () => {
-  const [loading, setLoading] = useState(false);
   const [state, action, pending] = useActionState(signin, undefined);
+  const router = useRouter();
   // const handleSubmit = (e) => {
   //   e.preventDefault();
   //   setLoading(true);
@@ -21,11 +20,22 @@ const Signin = () => {
   //   }, 2000);
   // };
 
+  useEffect(() => {
+    let timeOut: NodeJS.Timeout;
+    if (state?.response?.success) {
+      timeOut = setTimeout(() => {
+        router.push("/dashboard");
+      }, 500);
+    }
+
+    return () => clearTimeout(timeOut);
+  });
+
   return (
-    <div className="min-h-screen w-full flex items-center justify-center bg-gray-50">
-      <div className="bg-white shadow-lg rounded-md w-full max-w-md ">
+    <div className="w-full flex items-center justify-center desktop:bg-gray-50 laptop:bg-gray-50  phone:bg-transparent">
+      <div className="bg-white shadow-sm rounded-md w-full max-w-md">
         {/* Header Section */}
-        <div className="bg-white shadow-xl px-5 py-5 flex justify-between items-center rounded-t-md">
+        <div className="bg-white shadow-md px-5 py-5 flex justify-between items-center rounded-t-md phone:mx-5 desktop:mx-0 laptop:mx-0">
           <div>
             <h1 className="text-lg text-violet-800 uppercase font-sans font-semibold">
               Welcome Back
@@ -38,7 +48,7 @@ const Signin = () => {
         </div>
 
         <p className="text-center my-2 text-red-600 font-semibold font-sans">
-          {!state?.errors && state?.message}
+          {!state?.response?.success && state?.response?.message}
         </p>
 
         {/* Form Section */}
@@ -103,12 +113,12 @@ const Signin = () => {
               <button
                 type="submit"
                 disabled={pending}
-                className={`w-full flex items-center justify-center gap-3 ${"bg-gradient-to-r from-violet-500 to-violet-700 hover:from-violet-700 hover:to-violet-900"} text-white py-2 rounded-md focus:outline-none font-bold font-mono transition`}
+                className={`btn disabled:bg-gray-300 text-base py-1 w-full flex items-center justify-center gap-3 ${"bg-gradient-to-r from-violet-500 to-violet-700 hover:from-violet-700 hover:to-violet-900"} text-white py-2 rounded-md focus:outline-none font-bold font-mono transition`}
               >
                 {pending && <LoadingSpinner />}
                 {!pending && (
                   <>
-                    <BiSolidLogInCircle />
+                    <BiSolidLogInCircle className="icon-move-left"/>
                     SIGN IN
                   </>
                 )}

@@ -9,11 +9,13 @@ export interface IPaymentSchedule extends Document {
     status: string;
     week: number;
     principalPayment: number,
-    interestPayment: number
+    interestPayment: number,
+    outStandingBalance: number,
+    amountPaid: number
   }>;
 }
 
-const PaymentScheduleSchema: Schema = new Schema<IPaymentSchedule>({
+export const PaymentScheduleSchema: Schema = new Schema<IPaymentSchedule>({
   loan: {
     type: Schema.Types.ObjectId,
     ref: "LoanApplication", // Reference to the Loan model
@@ -21,7 +23,7 @@ const PaymentScheduleSchema: Schema = new Schema<IPaymentSchedule>({
   },
   client: {
     type: Schema.Types.ObjectId,
-    ref: "LoanApplication", // Reference to the Loan model
+    ref: "Client", // Reference to the Loan model
     required: true,
   },
 
@@ -50,10 +52,18 @@ const PaymentScheduleSchema: Schema = new Schema<IPaymentSchedule>({
       interestPayment: {
         type: Number,
         required: true
+      },
+      outStandingBalance: {
+        type: Number,
+        required: true
+      },
+      amountPaid:{
+        type:Number,
+        default: 0
       }
     },
   ],
-});
+},{timestamps:true});
 
 if (mongoose.models.PaymentSchedule) {
   // Delete the existing model to allow redefinition

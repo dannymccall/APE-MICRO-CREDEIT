@@ -11,11 +11,13 @@ export interface IUser extends Document {
   sex: "male" | "female" | "others";
   password: string,
   online_status?: string,
-  number_of_password_changes?: number
+  number_of_password_changes?: number,
+  email: string;
+  avarta: string
 }
 
 // Define the Mongoose schema
-const UserSchema: Schema = new Schema<IUser>(
+export const UserSchema: Schema = new Schema<IUser>(
   {
     first_name: {
       type: String,
@@ -61,6 +63,15 @@ const UserSchema: Schema = new Schema<IUser>(
     number_of_password_changes: {
       type: Number,
       default: 0
+    },
+    email: {
+      type: String,
+      required: true
+    }, 
+
+    avarta: {
+      type:String,
+      required: false
     }
   },
   {

@@ -1,5 +1,4 @@
 import { CrudService } from "../crudService";
-import bcrypt from "bcrypt";
 import { Branch } from "@/app/lib/backend/models/branch.model";
 
 class BranchService extends CrudService<any> {

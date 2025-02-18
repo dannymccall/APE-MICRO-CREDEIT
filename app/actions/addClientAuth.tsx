@@ -5,7 +5,7 @@ import {
   extractFormFields,
   formatZodErrors,
   getImageDimensions,
-} from "@/app/lib/utils";
+} from "@/app/lib/helperFunctions";
 
 export async function addClient(state: AddClientState, formData: FormData) {
   const expectedFields = [

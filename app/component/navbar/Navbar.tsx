@@ -1,8 +1,13 @@
-import React from 'react'
+"use client"
+
+import React, { useState } from 'react'
 import Navbar from '@/app/ui/navbar/Navbar'
 const NavbarComponent = () => {
+
+  const [isSidebarOpen, setIsSidebarOpen] = useState<boolean>(true)
+
   return (
-    <Navbar />
+    <Navbar isSidebarOpen={isSidebarOpen} setIsSidebarOpen={setIsSidebarOpen}/>
   )
 }
 

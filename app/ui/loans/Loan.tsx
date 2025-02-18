@@ -4,10 +4,10 @@ import React, { useState } from "react";
 import Modal from "@/app/component/Modal";
 import Toast from "@/app/component/toast/Toast";
 import { FaCircleCheck } from "react-icons/fa6";
-import { makeRequest, toCapitalized } from "@/app/lib/utils";
+import { makeRequest, toCapitalized } from "@/app/lib/helperFunctions";
 import { useRouter } from "next/navigation";
 import { ILoanApplication } from "@/app/lib/backend/models/loans.model";
-import { IoIosArrowRoundForward } from "react-icons/io";
+import { FcApprove } from "react-icons/fc";
 
 import Link from "next/link";
 import {
@@ -28,22 +28,60 @@ const Loan: React.FC<LoanProps> = ({ loan }) => {
   const [openDropdown, setOpenDropdown] = useState<boolean>(false);
   const [openModalEdit, setOpenModalEdit] = useState<boolean>(false);
   const [openModalDeleted, setOpenModalDeleted] = useState<boolean>(false);
+  const [openApprodalModal, setOpenApprodalModal] = useState<boolean>(false);
+  const [message, setMessage] = useState<string>("");
   const router = useRouter();
 
+  const approveLoan = async (loanId: string) => {
+    const response = await makeRequest(
+      `/api/loans?_id=${loanId}&approveLoan=${true}`,
+      { method: "PUT" }
+    );
+    console.log(response);
+    const { success, message } = response;
+    if (success) {
+      setOpenApprodalModal(false);
+      setShowToast(true);
+      setMessage(message);
+      let timeOut: NodeJS.Timeout;
+      
+      timeOut = setTimeout(() => {
+        window.location.reload();
+        setShowToast(false);
+      }, 1000);
+
+      return () => clearTimeout(timeOut);
+    }
+  };
+
+
+  const deleteLoan = async(loanId:string) => {
+    const response = await makeRequest(`/api/loans?_id=${loanId}`,{method: "DELETE"});
+    const { success, message } = response;
+    if (success) {
+      setOpenModalDeleted(false);
+      setShowToast(true);
+      setMessage(message);
+      let timeOut: NodeJS.Timeout;
+
+      timeOut = setTimeout(() => {
+        setShowToast(false);
+        window.location.reload();
+
+      }, 1000);
+
+      return () => clearTimeout(timeOut);
+    }
+  }
   return (
     <>
-      {showToast && (
-        <Toast
-          message={"User deleted successfully"}
-          Icon={FaCircleCheck}
-          title="User Deletion Response"
-        />
-      )}
+      {showToast && <Toast message={message} Icon={FaCircleCheck} title="" />}
 
       <tr key={loan.id} className="hover:bg-gray-100 relative">
         <td className="p-2 text-sm">{loan.systemId}</td>
         <td className="p-2 text-sm">{loan.loanProduct}</td>
         <td className="p-2 text-sm">GHS {Number(loan.principal).toFixed(2)}</td>
+        <td className="p-2 text-sm">{`${loan.client.first_name}  ${loan.client.last_name}`}</td>
         <td className="p-2 text-sm">{`${loan.loanOfficer.first_name}  ${loan.loanOfficer.other_names} ${loan.loanOfficer.last_name}`}</td>
         <td className="p-2 text-sm"> {loan.monthlyInterest}</td>
         <td className="p-2 text-sm">
@@ -61,12 +99,20 @@ const Loan: React.FC<LoanProps> = ({ loan }) => {
             {toCapitalized(loan.paymentStatus)}
           </span>{" "}
         </td>
+        <td className="p-2 text-sm">
+          {" "}
+          <span
+            className={`${
+              loan.loanApprovalStatus === "Pending"
+                ? "bg-red-200"
+                : "bg-green-200"
+            } p-1 rounded`}
+          >
+            {loan.loanApprovalStatus}
+          </span>{" "}
+        </td>
 
         <td className="p-2 text-sm relative">
-          <section
-            className="dropdown flex items-center h-full relative"
-            style={{ height: "100%" }}
-          >
             <button
               tabIndex={0}
               role="button"
@@ -83,7 +129,7 @@ const Loan: React.FC<LoanProps> = ({ loan }) => {
               <ul
                 tabIndex={0}
                 role="menu"
-                className="dropdown-content menu absolute right-0 bg-white rounded z-10 w-28 p-2 shadow-lg"
+                className="dropdown-content menu absolute right-0 bg-white rounded z-10 w-32 p-2 shadow-lg"
                 style={{ top: "100%" }}
               >
                 <li>
@@ -132,9 +178,24 @@ const Loan: React.FC<LoanProps> = ({ loan }) => {
                     Delete
                   </button>
                 </li>
+                {loan.loanApprovalStatus === "Pending" && (
+                  <li>
+                    <button
+                      role="menuitem"
+                      className="w-full text-left flex flex-row gap-3"
+                      onClick={() => setOpenApprodalModal(true)}
+                    >
+                      <FcApprove
+                        size={20}
+                        className="font-semibold text-red-800"
+                      />
+                      Approve
+                    </button>
+                  </li>
+                )}
               </ul>
             )}
-          </section>
+          {/*</section>*/}
 
           <Modal
             modalOpen={openModalDeleted}
@@ -151,10 +212,10 @@ const Loan: React.FC<LoanProps> = ({ loan }) => {
                 <strong>{loan.systemId}</strong>
               </h1>
 
-              <div className="flex gap-2 mt-3">
+              <section className="flex gap-2 mt-3">
                 <button
                   className="btn btn-primary w-16 h-7"
-                  // onClick={() => deleteUser(user._id)}
+                  onClick={() => deleteLoan(loan._id)}
                 >
                   YES
                 </button>
@@ -164,7 +225,38 @@ const Loan: React.FC<LoanProps> = ({ loan }) => {
                 >
                   NO
                 </button>
-              </div>
+              </section>
+            </section>
+          </Modal>
+          <Modal
+            modalOpen={openApprodalModal}
+            setModalOpen={setOpenApprodalModal}
+          >
+            <section className="w-full h-full flex flex-col gap-2">
+              <section className="w-full h-full flex gap-1 items-center">
+                <h1 className="text-lg font-sans font-semibold">Question</h1>
+                <BsQuestionCircleFill className="text-red-500" />
+              </section>
+
+              <h1 className="font-sans">
+                Are you sure you want to approve this loan application:{" "}
+                <strong>{loan.systemId}</strong>
+              </h1>
+
+              <section className="flex gap-2 mt-3">
+                <button
+                  className="btn btn-primary w-16 h-7"
+                  onClick={() => approveLoan(loan._id)}
+                >
+                  YES
+                </button>
+                <button
+                  className="btn btn-error text-white"
+                  onClick={() => setOpenModalDeleted(false)}
+                >
+                  NO
+                </button>
+              </section>
             </section>
           </Modal>
           <Modal modalOpen={openModalEdit} setModalOpen={setOpenModalEdit}>

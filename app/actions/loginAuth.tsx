@@ -1,8 +1,8 @@
 import { loginFormSchema, FormState } from "@/app/lib/definitions";
 import { CgPassword } from "react-icons/cg";
-import { saveToLocalStorage } from "@/app/lib/utils";
-import { extractFormFields } from "@/app/lib/utils";
-import { makeRequest } from "@/app/lib/utils";
+import { saveToLocalStorage } from "@/app/lib/helperFunctions";
+import { extractFormFields } from "@/app/lib/helperFunctions";
+import { makeRequest } from "@/app/lib/helperFunctions";
 import { encryptData } from "@/app/lib/session/security";
 
 export async function signin(state: FormState, formData: FormData) {
@@ -24,21 +24,23 @@ export async function signin(state: FormState, formData: FormData) {
     body: JSON.stringify(body),
     method: "POST",
     headers: { "Content-Type": "application/json" },
-
   });
 
-  console.log(res)
+  console.log(res);
 
   const { success, message, data: user } = res;
-  if (!success) return { message: message };
+  if (!success) {
+    console.log(success, message)
+    return { response: { success, message } };
+  } 
 
   const logginIdentity = {
-   fullName: `${user.first_name} ${user.other_names} ${user.last_name}`,
-   userName: user.username,
-   userRoles: user.roles
-  }
-  saveToLocalStorage("logginIdentity", JSON.stringify(logginIdentity))
+    fullName: `${user.first_name} ${user.other_names} ${user.last_name}`,
+    userName: user.username,
+    userRoles: user.roles,
+  };
+  saveToLocalStorage("logginIdentity", JSON.stringify(logginIdentity));
 
   console.log({ user });
-  return {message}
+  return { response: { success: success, message: message } };
 }

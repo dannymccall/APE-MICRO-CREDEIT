@@ -5,7 +5,7 @@ import {
   formatZodErrors,
   getImageDimensions,
   makeRequest,
-} from "../lib/utils";
+} from "../lib/helperFunctions";
 
 export async function processLoan(state: guarantorState, formData: FormData) {
   const expectedFields = [
@@ -19,9 +19,9 @@ export async function processLoan(state: guarantorState, formData: FormData) {
     "expectedDisbursementDate",
     "loanOfficer",
     "loanPurpose",
-    "registrationFee",
-    "advanceFee",
-    "processingFee",
+    // "registrationFee",
+    // "advanceFee",
+    // "processingFee",
     "expectedFirstRepayment",
     "guarantorFullName",
     "guarantorOccupation",
@@ -89,5 +89,5 @@ export async function processLoan(state: guarantorState, formData: FormData) {
     return {
       errors: message,
     };
-  return { message: message };
+  return { response: { message, success } };
 }

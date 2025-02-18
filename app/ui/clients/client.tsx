@@ -10,7 +10,7 @@ import { MdViewCompact } from "react-icons/md";
 import { BsQuestionCircleFill } from "react-icons/bs";
 import Toast from "@/app/component/toast/Toast";
 import { FaCircleCheck } from "react-icons/fa6";
-import { makeRequest } from "@/app/lib/utils";
+import { makeRequest } from "@/app/lib/helperFunctions";
 import { useRouter } from "next/navigation";
 import ViewUser from "./View";
 import Link from "next/link";

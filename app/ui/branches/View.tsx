@@ -9,7 +9,7 @@ import { LoadingSpinner } from "@/app/component/Loading";
 import { useRouter } from "next/navigation";
 import { FiEdit } from "react-icons/fi";
 import { IBranch } from "@/app/lib/backend/models/branch.model";
-import { formatDate } from "@/app/lib/utils";
+import { formatDate } from "@/app/lib/helperFunctions";
 
 export interface IViewUser {
   branch: IBranch;
@@ -94,7 +94,7 @@ const ViewBranch: React.FC<IViewUser> = ({
             {!state?.error && state?.message}
           </p>
 
-          <div className="flex flex-row items-center my-5 relative">
+          <div className="flex desktop:flex-row laptop:flex-row tablet:flex-row phone:flex-col  my-5 relative">
             <div className="flex flex-row w-32 gap-0 items-center">
               <Label
                 className="font-sans font-semibold text-gray-800"
@@ -104,7 +104,7 @@ const ViewBranch: React.FC<IViewUser> = ({
             </div>
             <input
               type="text"
-              className="block w-96 px-5 py-2 border-2 border-gray-200 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+              className="block w-full px-5 py-2 border-2 border-gray-200 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
               name="branchName"
               placeholder="Enter branch name"
               defaultValue={branch.branchName}

@@ -11,10 +11,10 @@ export const LoadingBars = () => {
   );
 };
 
-export const LoadingSpinner = () => {
+export const LoadingSpinner = ({color}:{color?:string}) => {
   return (
     <div>
-      <span className="loading loading-spinner text-white"></span>
+      <span className={`loading loading-spinner ${color ? color : "text-white"}`}></span>
     </div>
   );
 };

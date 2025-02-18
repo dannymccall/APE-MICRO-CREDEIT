@@ -1,6 +1,6 @@
 import { lazy, Suspense } from "react";
 
-import { makeRequest } from "@/app/lib/utils";
+import { makeRequest } from "@/app/lib/helperFunctions";
 // import ClientDetails from "../ClientDetails";
 import { LoadingDivs } from "@/app/component/Loading";
 
@@ -31,12 +31,11 @@ export default async function Page({
         </main>
       );
     }
-
-    
+ 
 
     return (
       <Suspense fallback={<LoadingDivs />}>
-        <LoanDetails loan={loan.data} />;
+        <LoanDetails loan={loan.data} loanId={loanId}/>;
       </Suspense>
     ) 
   } catch (error) {

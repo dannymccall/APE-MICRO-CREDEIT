@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useState, Suspense, lazy } from "react";
-import { makeRequest } from "@/app/lib/utils";
+import { makeRequest } from "@/app/lib/helperFunctions";
 // import UsersList from "./usersList";
 import { useRouter } from "next/navigation";
 
@@ -15,7 +15,7 @@ const AllBranches = () => {
   const [branches, setBranches] = useState<IBranch[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
-
+  const [loading, setLoading] = useState(true);
   async function fetchBranches() {
     try {
       const branches: any = await makeRequest(
@@ -27,6 +27,7 @@ const AllBranches = () => {
       );
       setBranches(branches.data);
       setTotalPages(branches.pagination.totalPages);
+      setLoading(false)
     } catch (error) {
       console.error("Failed to fetch users:", error);
     }
@@ -62,26 +63,36 @@ const AllBranches = () => {
   
 
   return (
-    <main className="min-w-full min-h-full mx-auto   bg-white ">
+    <main className="min-w-full min-h-full mx-auto">
       <InfoHeaderComponent
         route={"All Branches"}
         links={breadcrumbsLinks}
         title="Add branch"
         onClick={onClick}
       />
-      <div className="w-full h-full text-center mg-5 flex flex-col gap-4 bg-white shadow-lg"></div>
+      <div className="w-full h-full text-center mg-5 flex flex-col gap-4 bg-white"></div>
+      {
+        loading ? <>
+          <LoadingDivs />
+        </>:
       <Suspense fallback={<LoadingDivs />}>
         <div className="p-10">
-          <BranchList
-            branches={branches}
-            onDelete={handleDelete}
-            currentPage={currentPage}
-            totalPages={totalPages}
-            setCurrentPage={setCurrentPage}
-            editBranch={editBranch}
-          />
+          {
+            branches.length > 0 ? 
+            <BranchList
+              branches={branches}
+              onDelete={handleDelete}
+              currentPage={currentPage}
+              totalPages={totalPages}
+              setCurrentPage={setCurrentPage}
+              editBranch={editBranch}
+            />: <div className="bg-white p-3 rounded-md border-t-2 border-t-violet-600">
+            <span>No Branches</span>
+          </div>
+          }
         </div>
       </Suspense>
+      }
     </main>
   );
 };

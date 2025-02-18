@@ -5,7 +5,7 @@ import { addClient } from "@/app/actions/addClientAuth";
 import Toast from "@/app/component/toast/Toast";
 import { FaCircleCheck } from "react-icons/fa6";
 import { LoadingSpinner } from "@/app/component/Loading";
-import { formatDate, makeRequest, toCapitalized } from "@/app/lib/utils";
+import { formatDate, makeRequest, toCapitalized } from "@/app/lib/helperFunctions";
 import Image from "next/image";
 import { IClient } from "@/app/lib/backend/models/client.model";
 import { useRouter } from "next/navigation";
@@ -107,10 +107,10 @@ const EditClient: React.FC<IEditClient> = ({ client, setOpenModalEdit }) => {
   // };
   return (
     <div className="w-full h-full">
-      <div className="w-full h-full p-14">
+      <div className="w-full h-full tablet:p-5 desktop:14 laptop:p-10 phone:p-3">
         <form
           action={action}
-          className="bg-white shadow-sm w-full  border-t-4 border-t-violet-900 py-1 px-4"
+          className="bg-white shadow-sm w-full  border-t-4 border-t-violet-900 "
           ref={formRef}
         >
           {showMessage && (
@@ -134,7 +134,7 @@ const EditClient: React.FC<IEditClient> = ({ client, setOpenModalEdit }) => {
             </div>
             <input
               type="text"
-              className="block  text-sm  w-full px-5 py-2 border border-gray-200 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+              className="block text-sm  w-full px-5 py-2 border border-gray-200 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm tablet:w-96 desktop:w-full laptop:w-full phone:w-64"
               name="firstName"
               placeholder="Enter First name"
               defaultValue={client.first_name}
@@ -155,7 +155,7 @@ const EditClient: React.FC<IEditClient> = ({ client, setOpenModalEdit }) => {
             </div>
             <input
               type="text"
-              className="block text-sm  w-full px-5 py-2 border border-gray-200 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+              className="block text-sm  w-full px-5 py-2 border border-gray-200 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm tablet:w-96 desktop:w-full laptop:w-full phone:w-64"
               name="lastName"
               placeholder="Enter Last name"
               defaultValue={client.last_name}
@@ -176,7 +176,7 @@ const EditClient: React.FC<IEditClient> = ({ client, setOpenModalEdit }) => {
             </div>
             <input
               type="text"
-              className="block text-sm  w-full px-5 py-2 border border-gray-200 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+              className="block text-sm  w-full px-5 py-2 border border-gray-200 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm tablet:w-96 desktop:w-full laptop:w-full phone:w-64"
               placeholder={"Enter nick name"}
               name="nickName"
               defaultValue={client.nick_name}
@@ -199,7 +199,7 @@ const EditClient: React.FC<IEditClient> = ({ client, setOpenModalEdit }) => {
             <select
               name="title"
               defaultValue=""
-              className="block text-sm font-sans w-full px-5 py-2 border border-gray-200 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm cursor-pointer"
+              className="block text-sm font-sans w-full px-5 py-2 border border-gray-200 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm cursor-pointer tablet:w-96 desktop:w-full laptop:w-full phone:w-64"
             >
               <option disabled value={client.title}>
                 {client.title}
@@ -236,7 +236,7 @@ const EditClient: React.FC<IEditClient> = ({ client, setOpenModalEdit }) => {
             </div>
             <select
               name="branch"
-              className="block text-sm font-sans w-full px-5 py-2 border border-gray-200 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm cursor-pointer"
+              className="block text-sm font-sans w-full px-5 py-2 border border-gray-200 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm cursor-pointer tablet:w-96 desktop:w-full laptop:w-full phone:w-64"
               defaultValue=""
             >
               <option disabled value={client.branch.branchName}>
@@ -268,7 +268,7 @@ const EditClient: React.FC<IEditClient> = ({ client, setOpenModalEdit }) => {
             </div>
             <select
               name="clientStatus"
-              className="block text-sm font-sans w-full px-5 py-2 border border-gray-200 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm cursor-pointer"
+              className="block text-sm font-sans w-full px-5 py-2 border border-gray-200 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm cursor-pointer tablet:w-96 desktop:w-full laptop:w-full phone:w-64"
               defaultValue=""
             >
               <option disabled value={client.client_status.toLowerCase()}>
@@ -300,7 +300,7 @@ const EditClient: React.FC<IEditClient> = ({ client, setOpenModalEdit }) => {
             </div>
             <input
               type="text"
-              className="block text-sm font-sans w-full px-5 py-2 border border-gray-200 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+              className="block text-sm font-sans w-full px-5 py-2 border border-gray-200 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm tablet:w-96 desktop:w-full laptop:w-full phone:w-64"
               placeholder={"Enter union"}
               name="union"
               defaultValue={client.union}
@@ -321,7 +321,7 @@ const EditClient: React.FC<IEditClient> = ({ client, setOpenModalEdit }) => {
             </div>
             <input
               type="text"
-              className="block text-sm font-sans  w-full px-5 py-2 border border-gray-200 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+              className="block text-sm font-sans  w-full px-5 py-2 border border-gray-200 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm tablet:w-96 desktop:w-full laptop:w-full phone:w-64"
               placeholder={"Enter union location"}
               name="unionLocation"
               defaultValue={client.unionLocation}
@@ -342,7 +342,7 @@ const EditClient: React.FC<IEditClient> = ({ client, setOpenModalEdit }) => {
             </div>
             <input
               type="text"
-              className="block text-sm font-sans w-full px-5 py-2 border border-gray-200 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+              className="block text-sm font-sans w-full px-5 py-2 border border-gray-200 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm tablet:w-96 desktop:w-full laptop:w-full phone:w-64"
               placeholder={"Enter mobile"}
               name="mobile"
               defaultValue={client.mobile}
@@ -363,7 +363,7 @@ const EditClient: React.FC<IEditClient> = ({ client, setOpenModalEdit }) => {
             </div>
             <input
               type="text"
-              className="block text-sm font-sans w-full px-5 py-2 border border-gray-200 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+              className="block text-sm font-sans w-full px-5 py-2 border border-gray-200 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm tablet:w-96 desktop:w-full laptop:w-full phone:w-64" 
               placeholder={"Enter residence"}
               name="residence"
               defaultValue={client.residence}
@@ -384,7 +384,7 @@ const EditClient: React.FC<IEditClient> = ({ client, setOpenModalEdit }) => {
             </div>
             <input
               type="date"
-              className="block w-full text-sm font-sans px-5 py-2 border border-gray-200 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+              className="block w-full text-sm font-sans px-5 py-2 border border-gray-200 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm tablet:w-96 desktop:w-full laptop:w-full phone:w-64"
               name="dob"
               defaultValue={formatDate(client.dob)}
             />
@@ -404,7 +404,7 @@ const EditClient: React.FC<IEditClient> = ({ client, setOpenModalEdit }) => {
             </div>
             <select
               name="idType"
-              className="block text-sm font-sans  w-full px-5 py-2 border border-gray-200 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm cursor-pointer"
+              className="block text-sm font-sans  w-full px-5 py-2 border border-gray-200 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm cursor-pointer tablet:w-96 desktop:w-full laptop:w-full phone:w-64"
               defaultValue=""
             >
               <option disabled value={client.idType} className="text-sm font-sans">
@@ -437,7 +437,7 @@ const EditClient: React.FC<IEditClient> = ({ client, setOpenModalEdit }) => {
             </div>
             <input
               type="text"
-              className="block text-sm font-sans w-full px-5 py-2 border border-gray-200 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+              className="block text-sm font-sans w-full px-5 py-2 border border-gray-200 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm tablet:w-96 desktop:w-full laptop:w-full phone:w-64"
               placeholder={"Enter ID Number"}
               name="idNumber"
               defaultValue={client.idNumber}
@@ -459,7 +459,7 @@ const EditClient: React.FC<IEditClient> = ({ client, setOpenModalEdit }) => {
               </div>
               <input
                 type="file"
-                className="file-input text-sm font-sans block w-full px-5 py-2 border border-gray-200 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                className="file-input text-sm font-sans block w-full px-5 py-2 border border-gray-200 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm tablet:w-96 desktop:w-full laptop:w-full phone:w-64"
                 name="passport"
                 onChange={handleFileChange}
               />
@@ -485,7 +485,7 @@ const EditClient: React.FC<IEditClient> = ({ client, setOpenModalEdit }) => {
             </div>
             <select
               name="staff"
-              className="block w-full text-sm font-sans px-5 py-2 border border-gray-200 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm cursor-pointer"
+              className="block w-full text-sm font-sans px-5 py-2 border border-gray-200 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm cursor-pointer tablet:w-96 desktop:w-full laptop:w-full phone:w-64"
               defaultValue=""
             >
               <option disabled value={client.staff.username} className="text-sm font-sans">
@@ -516,7 +516,7 @@ const EditClient: React.FC<IEditClient> = ({ client, setOpenModalEdit }) => {
               />
               <span className="text-red-500 ml-1">*</span>
             </div>
-            <div className="w-full flex flex-row">
+            <div className="w-full flex flex-row tablet:w-96 desktop:flex-row laptop:flex-row phone:flex-col">
             {["Single", "Married", "Divorced", "Widowed"].map(
               (maritalStatus, index) => (
                 <div
@@ -545,7 +545,7 @@ const EditClient: React.FC<IEditClient> = ({ client, setOpenModalEdit }) => {
               {state.errors.sex}
             </p>
           )}
-          <div className="flex flex-row my-2 relative">
+          <div className="flex flex-row my-2 relative tablet:w-96 desktop:flex-row laptop:flex-row phone:flex-col">
             <div className="flex flex-row w-32 items-center my-5">
               <Label
                 className="font-sans font-semibold text-gray-500"

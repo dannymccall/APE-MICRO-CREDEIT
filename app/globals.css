@@ -1,4 +1,18 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+/* Ensure Tailwind CSS is installed and configured correctly */
 
+@import "tailwindcss/base";
+@import "tailwindcss/components";
+@import "tailwindcss/utilities";
+.icon-move-left {
+    transition: transform 0.3s ease;
+}
+
+.icon-move-left:hover {
+    transform: translateX(-10px);
+}
+
+.btn:hover .icon-move-left,
+.link-btn:hover .icon-move-left {
+    transform: translateX(-10px);
+    transition: transform 0.3s ease;
+}

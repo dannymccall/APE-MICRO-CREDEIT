@@ -1,6 +1,6 @@
 import { lazy, Suspense } from "react";
 
-import { makeRequest } from "@/app/lib/utils";
+import { makeRequest } from "@/app/lib/helperFunctions";
 // import ClientDetails from "../ClientDetails";
 import { LoadingDivs } from "@/app/component/Loading";
 
@@ -23,7 +23,6 @@ export default async function Page({
       cache: "no-store",
     });
 
-    console.log(client)
     if (!client?.data) {
       return (
         <main>
@@ -34,7 +33,7 @@ export default async function Page({
 
     return (
       <Suspense fallback={<LoadingDivs />}>
-        <ClientDetails client={client.data} />;
+        <ClientDetails client={client.data} clientId={clientId}/>;
       </Suspense>
     ) 
   } catch (error) {

@@ -1,15 +1,37 @@
 import React, { useState } from "react";
 import { IClient } from "@/app/lib/backend/models/client.model";
 import { Label } from "@/app/lib/MyFormInput/FormTemplates";
+import {
+  formatCurrency,
+  formatDate,
+  makeRequest,
+  processFormSubmissions,
+} from "@/app/lib/helperFunctions";
 
-interface ClientDetailsProps {
-  clients: IClient[] | any;
+export interface PaymentClientDetails {
+  loans: Array<{
+    weeklyAmount: number;
+    nextPayment: Date;
+    systemId: string;
+    _id: string;
+    client: {
+      first_name: string;
+      last_name: string;
+      systemId: string;
+      _id: string;
+    };
+  }>;
 }
-
-const BulkPayment: React.FC<ClientDetailsProps> = ({ clients }) => {
+const BulkPayment: React.FC<PaymentClientDetails> = ({ loans }) => {
   const [formData, setFormData] = useState<Record<number, { amount: string }>>(
     {}
   );
+  const [successMessage, setSuccessMessage] = useState<{
+    showMessage: boolean;
+    message: string;
+    messageType: string;
+  }>({ showMessage: false, message: "", messageType: "" });
+  const [pending, setPending] = useState<boolean>(false);
   // const handleSubmit = (event: React.FormEvent, index: number) => {
   //   event.preventDefault();
   //   const formData = new FormData(event.target as HTMLFormElement);
@@ -37,20 +59,38 @@ const BulkPayment: React.FC<ClientDetailsProps> = ({ clients }) => {
   //   });
   // };
 
-    // Submit all forms
-    const handleSubmitAll = async () => {
-      try {
-        // await processLoan({ payments: formData });
-        console.log("All payments submitted:", formData);
-      } catch (error) {
-        console.error("Error submitting payments:", error);
-      }
-    };
-  
+  // Submit all forms
+  const handleSubmitAll = async () => {
+    await processFormSubmissions(
+      "/api/payments",
+      setPending,
+      setSuccessMessage,
+      makeRequest
+    );
+    // try {
+    //   // await processLoan({ payments: formData });
+    //   console.log("All payments submitted:", formData);
+    //   setFormData({});
+    // } catch (error) {
+    //   console.error("Error submitting payments:", error);
+    // }
+  };
+
   return (
     <>
+      {successMessage.showMessage && (
+        <h1
+          className={`font-mono ${
+            successMessage.messageType === "errMessage"
+              ? "background: bg-red-200 text-red-600 border-red-700"
+              : "background: bg-green-200 text-green-600 border-green-700"
+          }   border-2 p-3 my-5 max-w-xl rounded-md`}
+        >
+          {successMessage.message}
+        </h1>
+      )}
       <div className="w-full flex gap-10">
-        {clients.map((client: IClient, index: number) => (
+        {loans.map((loan, index: number) => (
           <div
             className="max-w-80 gap-5 flex flex-col bg-[url('../public/checkout.jpg')] bg-cover bg-center rounded-md"
             key={index}
@@ -58,25 +98,26 @@ const BulkPayment: React.FC<ClientDetailsProps> = ({ clients }) => {
             <div className="h-full gap-5 flex flex-col justify-evenly mt-5 w-72">
               <div className="w-full flex gap-1 flex-col ml-5">
                 <p className="text-Base font-mono text-slate-50">NAME</p>
-                <span className="w-full text-xl font-mono text-slate-50">
-                  {client.first_name} {client.last_name}
+                <span className="w-full text-xl font-mono text-amber-500">
+                  {loan.client.first_name} {loan.client.last_name}
                 </span>
               </div>
               <div className="w-full flex gap-1 flex-col ml-5">
                 <p className="text-Base font-mono text-slate-50">TOTAL</p>
-                <span className="w-full text-3xl font-mono text-slate-50">
-                  GHS {Number(client.loans[0]?.weeklyAmount).toFixed(2)}
+                <span className="w-full text-xl font-mono text-amber-500">
+                  {formatCurrency(loan.weeklyAmount)}
                 </span>
               </div>
               <div className="w-full flex gap-1 flex-col ml-5">
                 <p className="text-Base font-mono text-slate-50">DATE</p>
-                <span className="w-full text-xl font-mono text-white">
-                  {new Date(client.nextPayment).toDateString()}
+                <span className="w-full text-xl font-mono text-amber-500">
+                  {formatDate(loan.nextPayment)}
                 </span>
               </div>
             </div>
             <form
               className="w-full h-full flex items-center ml-5"
+              id="bulk-payment-form"
               // onSubmit={(event) => handleSubmit(event, index)}
             >
               <div className="flex flex-col gap-2 my-5 justify-center">
@@ -97,6 +138,23 @@ const BulkPayment: React.FC<ClientDetailsProps> = ({ clients }) => {
                     handleInputChange(index, "amount", e.target.value)
                   }
                 />
+
+                <input
+                  type="hidden"
+                  name="nextPayment"
+                  defaultValue={String(loan.nextPayment)}
+                />
+                <input
+                  type="hidden"
+                  name="loanId"
+                  defaultValue={loan.systemId}
+                />
+
+                <input
+                  type="hidden"
+                  name="clientId"
+                  defaultValue={loan.client.systemId}
+                />
               </div>
             </form>
           </div>
@@ -104,8 +162,12 @@ const BulkPayment: React.FC<ClientDetailsProps> = ({ clients }) => {
         {/* A global button to process all forms */}
       </div>
       <button
+        type="button"
         className="btn w-28 h-10 mt-5 flex items-center rounded-md justify-center gap-3 bg-slate-200 hover:bg-gradient-to-r from-violet-700 to-violet-900 text-slate-600 hover:text-slate-400 font-bold font-sans transition ease-in-out"
         onClick={handleSubmitAll}
+        form="bulk-payment-form"
+        disabled={pending}
+        aria-busy={pending}
       >
         Submit All
       </button>

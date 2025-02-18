@@ -11,18 +11,21 @@ export interface ILoanApplication extends Document {
   expectedDisbursementDate: string; // or Date
   loanOfficer: mongoose.Types.ObjectId;
   loanPurpose: string;
-  registrationFee: number;
+  // registrationFee: number;
   systemId: string;
   paymentSchedule: mongoose.Types.ObjectId;
   guarantor: mongoose.Types.ObjectId;
   nextPayment: Date;
   monthlyInterest: number;
-  processingFee: number;
-  advanceFee: number;
+  // processingFee: number;
+  // advanceFee: number;
   weeklyAmount: number;
   paymentStatus: string
   principalPayment: number;
-  interestPayment: number
+  interestPayment: number;
+  nextPaymentStatus: string;
+  loanApprovalStatus: string;
+  maturityDate: string
 }
 
 export const LoanApplicationSchema: Schema = new Schema<ILoanApplication>(
@@ -73,11 +76,11 @@ export const LoanApplicationSchema: Schema = new Schema<ILoanApplication>(
       min: [3, "Loan purpose must be at least 3 characters long"],
       required: true,
     },
-    registrationFee: {
-      type: Number,
-      min: [0, "Registration fee must be at least 0"],
-      required: true,
-    },
+    // registrationFee: {
+    //   type: Number,
+    //   min: [0, "Registration fee must be at least 0"],
+    //   required: true,
+    // },
     systemId: {
       type: String,
       required: true,
@@ -105,14 +108,14 @@ export const LoanApplicationSchema: Schema = new Schema<ILoanApplication>(
       type: Number,
       required: true,
     },
-    processingFee: {
-      type: Number,
-      required: true,
-    },
-    advanceFee: {
-      type: Number,
-      required: true,
-    },
+    // processingFee: {
+    //   type: Number,
+    //   required: true,
+    // },
+    // advanceFee: {
+    //   type: Number,
+    //   required: true,
+    // },
     paymentStatus: {
       type: String,
       default: "not completed"
@@ -123,6 +126,18 @@ export const LoanApplicationSchema: Schema = new Schema<ILoanApplication>(
     },
     interestPayment: {
       type: Number,
+      required: true
+    },
+    nextPaymentStatus: {
+      type: String,
+      default: ""
+    },
+    loanApprovalStatus: {
+      type: String,
+      default: "Pending"
+    },
+    maturityDate: {
+      type: String,
       required: true
     }
   },

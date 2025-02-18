@@ -1,21 +1,21 @@
 "use client";
 import InfoHeaderComponent from "@/app/component/Info-header/Info-Header";
-import React, { useActionState, useEffect, useState, useRef } from "react";
+import React, { useActionState, useEffect, useState, useRef, startTransition } from "react";
 import { MyTextInput, Label } from "@/app/lib/MyFormInput/FormTemplates";
-import { addUser, updateUser } from "@/app/actions/addUserAuth";
+import { addUser } from "@/app/actions/addUserAuth";
 import Toast from "@/app/component/toast/Toast";
 import { FaCircleCheck } from "react-icons/fa6";
 import { LoadingSpinner } from "@/app/component/Loading";
 import { useRouter } from "next/navigation";
 import { FiEdit } from "react-icons/fi";
 import { IUser } from "@/app/lib/backend/models/user.model";
-import { formatDate } from "@/app/lib/utils";
+import { formatDate, toCapitalized } from "@/app/lib/helperFunctions";
 
 export interface IViewUser {
   user: IUser;
   editForm: boolean;
   setEditForm: React.Dispatch<React.SetStateAction<boolean>>;
-  editUser: (user: IUser, id: string) => void;
+  editUser: () => void;
   setOpenModalEdit: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
@@ -29,7 +29,7 @@ const ViewUser: React.FC<IViewUser> = ({
   const availableRoles = ["Loan officer", "Admin"];
   const [selectedRoles, setSelectedRoles] = useState<string[]>(user.roles); // State to hold selected roles
   const roles: string[] = selectedRoles;
-  const [state, action, pending] = useActionState(updateUser, undefined);
+  const [state, action, pending] = useActionState(addUser, undefined);
   const [showMessage, setShowMessage] = useState<boolean>(false);
   const router = useRouter();
   const formRef = useRef<HTMLFormElement | null>(null);
@@ -45,8 +45,9 @@ const ViewUser: React.FC<IViewUser> = ({
   useEffect(() => {
     let timeout: NodeJS.Timeout;
 
-    if (state?.message) {
+    if (state?.response?.success) {
       setShowMessage(true);
+      editUser();
       timeout = setTimeout(() => {
         setShowMessage(false);
       }, 3000);
@@ -79,38 +80,23 @@ const ViewUser: React.FC<IViewUser> = ({
     // console.log({ editForm });
     // Cleanup the timeout when the component unmounts or when state changes
     return () => clearTimeout(timeout);
-  }, [state?.message]); // Depend on state.message to run when it changes
+  }, [state?.response]); // Depend on state.message to run when it changes
 
-  const handleClick = () => {
+  const handleClick = async (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    // let formData: FormData | any;
+  
     if (formRef.current) {
       const form = formRef.current;
-      const firstName =
-        (form.elements.namedItem("firstName") as HTMLInputElement)?.value || "";
-      const lastName =
-        (form.elements.namedItem("lastName") as HTMLInputElement)?.value || "";
-      const otherNames =
-        (form.elements.namedItem("otherNames") as HTMLInputElement)?.value ||
-        "";
-      const dob =
-        (form.elements.namedItem("dob") as HTMLInputElement)?.value || "";
-      const sex =
-        (form.elements.namedItem("sex") as HTMLInputElement)?.value || "";
-      const roles =
-        (form.elements.namedItem("roles") as HTMLInputElement)?.value || "";
-
-      const updatedUser: any = {
-        first_name: firstName,
-        last_name: lastName,
-        other_names: otherNames,
-        dob,
-        sex,
-        roles: roles.split(","),
-      };
-      editUser(updatedUser, String(user._id));
+      const formData = new FormData(form);
+      startTransition(() => {
+        action(formData);
+      });
       form.reset();
-      setOpenModalEdit(false);
-      console.log("Updated User:", updatedUser);
+      setOpenModalEdit(false);      
+      // Wrap the action call in startTransition
     }
+      
   };
 
   return (
@@ -139,12 +125,11 @@ const ViewUser: React.FC<IViewUser> = ({
 
       <div className="w-full h-full ">
         <form
-          action={action}
           ref={formRef}
           className="bg-white w-full py-3 px-7"
         >
           <p className=" text-red-600 p-3 font-bold">
-            {!state?.error && state?.message}
+            {!state?.error && state?.response?.message}
           </p>
 
           <div className="flex flex-row items-center my-5 relative">
@@ -170,6 +155,7 @@ const ViewUser: React.FC<IViewUser> = ({
             </p>
           )}
           <input type="hidden" name="id" value={String(user._id)} />
+          <input type="hidden" name="service" value="update"/>
           <div className="flex flex-row items-center my-5 relative">
             <div className="flex flex-row w-32 gap-0 items-center">
               <Label
@@ -209,6 +195,25 @@ const ViewUser: React.FC<IViewUser> = ({
           {state?.errors?.otherNames && (
             <p className=" text-red-500 p-3 font-semibold">
               {state.errors.otherNames}
+            </p>
+          )}
+          <div className="flex flex-row items-center my-5">
+            <Label
+              className="w-32 font-sans font-semibold text-gray-800"
+              labelName="Email:"
+            />
+            <input
+              type="email"
+              className="block w-96 px-5 py-2 border-2 border-gray-200 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+              placeholder={"Email"}
+              name="email"
+              defaultValue={user.email}
+              disabled={!editForm}
+            />
+          </div>
+          {state?.errors?.email && (
+            <p className=" text-red-500 p-3 font-semibold">
+              {state.errors.email}
             </p>
           )}
           <div className="flex flex-row items-center my-5 relative">
@@ -257,8 +262,7 @@ const ViewUser: React.FC<IViewUser> = ({
                 type="text"
                 className="block w-96 px-5 py-2 border-2 border-gray-200 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                 defaultValue={
-                  user.sex.charAt(0).toUpperCase() +
-                  user.sex.slice(1).toLowerCase()
+                 toCapitalized(user.sex)
                 }
                 disabled={!editForm}
               />
@@ -360,6 +364,7 @@ const ViewUser: React.FC<IViewUser> = ({
             <button
               className={`btn w-24 flex items-center font-sans rounded-md justify-center gap-3 ${"bg-gradient-to-r from-violet-500 to-violet-700 hover:from-violet-700 hover:to-violet-900"} text-white py-2 rounded-md focus:outline-none font-bold font-mono transition`}
               onClick={handleClick}
+              type="submit"
             >
               {pending && <LoadingSpinner />}
               Save

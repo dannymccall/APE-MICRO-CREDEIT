@@ -12,7 +12,7 @@ export interface IGuatantor extends Document {
   client: mongoose.Types.ObjectId
 }
 
-const GuarantorSchema: Schema = new Schema<IGuatantor>(
+export const GuarantorSchema: Schema = new Schema<IGuatantor>(
   {
     guarantorFullName: {
       type: String,

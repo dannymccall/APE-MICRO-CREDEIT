@@ -1,3 +1,4 @@
+"use client"
 import React, { JSX, useState } from "react";
 
 interface Tab {
@@ -17,9 +18,11 @@ const TabComponent: React.FC<TabComponentProps> = ({
   const [activeTab, setActiveTab] = useState<number>(initialTab);
 
   return (
+    <>
+    
     <div>
       {/* Tab Navigation */}
-      <div className="flex space-x-2">
+      <div className="flex space-x-2 flex-wrap gap-2">
         {tabs.map((tab, index) => (
           <button
             key={index}
@@ -37,10 +40,11 @@ const TabComponent: React.FC<TabComponentProps> = ({
       </div>
 
       {/* Tab Content */}
-      <div className="mt-4 p-4 border w-full rounded-md">
+      <div className="mt-4 p-4 border w-full rounded-md flex-wrap">
         {tabs[activeTab].content}
       </div>
     </div>
+    </>
   );
 };
 

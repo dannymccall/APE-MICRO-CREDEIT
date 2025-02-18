@@ -41,20 +41,21 @@ const AddUser: React.FC<IAddUser> = ({ route }) => {
   useEffect(() => {
     let timeout: NodeJS.Timeout;
 
-    if (state?.message) {
+    if (state?.response?.success) {
       setShowMessage(true);
+      setSelectedRoles([])
       timeout = setTimeout(() => {
         setShowMessage(false);
       }, 3000);
     }
-    if(state?.message === "success"){
+    if(state?.response?.success){
       formRef.current?.reset()
     }
 
     // Cleanup the timeout when the component unmounts or when state changes
     return () => clearTimeout(timeout);
 
-  }, [state?.message]); // Depend on state.message to run when it changes
+  }, [state?.response]); // Depend on state.message to run when it changes
 
   const onClick = () => {
     router.push("/manage-user");
@@ -67,96 +68,117 @@ const AddUser: React.FC<IAddUser> = ({ route }) => {
         title="Manage staff"
         onClick={onClick}
       />
-      <div className="w-full h-full p-20">
+      <div className="w-full h-full desktop:p-20 laptop:p-15 tablet:p-10 phone:p-5">
         <form
           action={action}
-          className="bg-white shadow-md w-full  border-t-4 border-t-violet-900 py-3 px-7"
+          className="bg-white w-full  border-t-4 border-t-violet-900 py-3 px-7"
           ref={formRef}
         >
           {showMessage && (
             <Toast
-              message={state?.message}
+              message={state?.response?.message}
               Icon={FaCircleCheck}
               title="User Addition Response"
             />
           )}
           <p className=" text-red-600 p-3 font-bold">
-            {!state?.error && state?.message}
+            {!state?.error && state?.response?.message}
           </p>
 
-          <div className="flex flex-row items-center my-5 relative">
+          <div className="flex flex-row  my-5 relative desktop:flex-row laptop:flex-row tablet:flex-col phone:flex-col">
             <div className="flex flex-row w-32 gap-0 items-center">
               <Label
-                className="font-sans font-semibold text-gray-800"
+                className="font-sans text-sm font-semibold text-gray-800"
                 labelName="First name:"
               />
               <span className="text-red-500 ml-1">*</span>
             </div>
             <input
               type="text"
-              className="block w-96 px-5 py-2 border-2 border-gray-200 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+              className="block text-sm desktop:w-96 laptop:w-96 tablet:w-96 phone:w-full px-5 py-2 border-2 border-gray-200 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
               name="firstName"
               placeholder="Enter First name"
             />
           </div>
           {state?.errors?.firstName && (
-            <p className=" text-red-500 p-3 font-semibold">
+            <p className=" text-red-500 p-1 text-sm font-semibold">
               {state.errors.firstName}
             </p>
           )}
-          <div className="flex flex-row items-center my-5 relative">
+          <div className="flex desktop:flex-row laptop:flex-row tablet:flex-col phone:flex-col my-5 relative">
             <div className="flex flex-row w-32 gap-0 items-center">
               <Label
-                className="font-sans font-semibold text-gray-800"
+                className="font-sans text-sm font-semibold text-gray-800"
                 labelName="Last name:"
               />
               <span className="text-red-500 ml-1">*</span>
             </div>
             <input
               type="text"
-              className="block w-96 px-5 py-2 border-2 border-gray-200 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+              className="block text-sm desktop:w-96 laptop:w-96 tablet:w-96 phone:w-full  px-5 py-2 border-2 border-gray-200 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
               name="lastName"
               placeholder="Enter Last name"
             />
           </div>
           {state?.errors?.lastName && (
-            <p className=" text-red-500 p-3 font-semibold">
+            <p className=" text-red-500 p-1 text-sm font-semibold">
               {state.errors.lastName}
             </p>
           )}
-          <div className="flex flex-row items-center my-5">
+          <div className="flex desktop:flex-row laptop:flex-row tablet:flex-col phone:flex-col my-5">
             <Label
-              className="w-32 font-sans font-semibold text-gray-800"
+              className="w-32 font-sans text-sm font-semibold text-gray-800"
               labelName="Other names:"
             />
             <input
               type="text"
-              className="block w-96 px-5 py-2 border-2 border-gray-200 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+              className="block text-sm desktop:w-96 laptop:w-96 tablet:w-96 phone:w-full px-5 py-2 border-2 border-gray-200 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
               placeholder={"Other names"}
               name="otherNames"
             />
           </div>
           {state?.errors?.otherNames && (
-            <p className=" text-red-500 p-3 font-semibold">
+            <p className=" text-red-500 p-1 text-sm font-semibold">
               {state.errors.otherNames}
             </p>
           )}
-          <div className="flex flex-row items-center my-5 relative">
+          <div className="flex desktop:flex-row laptop:flex-row tablet:flex-col phone:flex-col my-5">
+          <div className="flex flex-row w-32 gap-0 items-center">
+            <Label
+              className="w-32 font-sans text-sm font-semibold text-gray-800"
+              labelName="Working Email:"
+            />
+             <span className="text-red-500 ml-1">*</span>
+             </div>
+            <input
+              type="email"
+              className="block text-sm desktop:w-96 laptop:w-96 tablet:w-96 phone:w-full px-5 py-2 border-2 border-gray-200 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+              placeholder={"email"}
+              name="email"
+            />
+          </div>
+          {state?.errors?.email && (
+            <p className="text-red-500 p-1 text-sm font-semibold">
+              {state.errors.email}
+            </p>
+          )}
+          <div className="flex desktop:flex-row laptop:flex-row tablet:flex-col phone:flex-col my-5 relative">
             <div className="flex flex-row w-32 gap-0 items-center">
               <Label
-                className="font-sans font-semibold text-gray-800"
+                className="font-sans font-semibold text-gray-800 text-sm"
                 labelName="Date of Birth:"
               />
               <span className="text-red-500 ml-1">*</span>
             </div>
             <input
               type="date"
-              className="block w-96 px-5 py-2 border-2 border-gray-200 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+              className="block text-sm desktop:w-96 laptop:w-96 tablet:w-96 phone:w-full px-5 py-2 border-2 border-gray-200 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
               name="dob"
             />
           </div>
+          <input type="hidden" name="service" value="add"/>
           {state?.errors?.dob && (
-            <p className=" text-red-500 p-3 font-semibold">
+            <p className=" text-red-500 p-1 text-sm font-semibold">
               {state.errors.dob}
             </p>
           )}
@@ -172,17 +194,17 @@ const AddUser: React.FC<IAddUser> = ({ route }) => {
               </ul>
             </div>
           )} */}
-          <div className="flex flex-row  items-center my-2 relative">
-            <div className="flex flex-row w-32 items-center my-5">
+          <div className="flex flex-row flex-wrap  my-2 relative">
+            <div className="flex flex-row desktop:w-32 laptop:w-32 tablet:w-32 phone:w-16 items-center my-5">
               <Label
-                className="font-sans font-semibold text-gray-800"
+                className="font-sans font-semibold text-gray-800 text-sm"
                 labelName="Sex:"
               />
               <span className="text-red-500 ml-1">*</span>
             </div>
-            <div className="flex flex-row items-center mr-10">
+            <div className="flex flex-row mr-10 items-center">
               <Label
-                className="w-12 font-sans font-semibold text-gray-800"
+                className="w-16 font-sans font-semibold text-gray-800"
                 labelName="Male"
               />
               <input
@@ -195,7 +217,7 @@ const AddUser: React.FC<IAddUser> = ({ route }) => {
             </div>
             <div className="flex flex-row items-center mr-10">
               <Label
-                className="w-16 font-sans font-semibold text-gray-800"
+                className="w-16 font-sans font-semibold text-gray-800 text-sm"
                 labelName="Female"
               />
               <input
@@ -207,7 +229,7 @@ const AddUser: React.FC<IAddUser> = ({ route }) => {
             </div>
             <div className="flex flex-row items-center">
               <Label
-                className="w-16 font-sans font-semibold text-gray-800"
+                className="w-16 font-sans font-semibold text-gray-800 text-sm"
                 labelName="Others"
               />
               <input
@@ -219,14 +241,14 @@ const AddUser: React.FC<IAddUser> = ({ route }) => {
             </div>
           </div>
           {state?.errors?.sex && (
-            <p className=" text-red-500 p-3 font-semibold">
+            <p className=" text-red-500 p-1 text-sm font-semibold">
               {state.errors.sex}
             </p>
           )}
           <div className="flex flex-row  items-center my-5 relative">
             <div className="flex flex-row w-32 items-center my-5">
               <Label
-                className=" font-sans font-semibold text-gray-800"
+                className=" font-sans font-semibold text-gray-800 text-sm"
                 labelName="Role (s):"
               />
               <span className="text-red-500 ml-1">*</span>
@@ -242,7 +264,7 @@ const AddUser: React.FC<IAddUser> = ({ route }) => {
                       selectedRoles.includes(role)
                         ? "bg-violet-600 text-white"
                         : "bg-white text-violet-600"
-                    } flex flex-row justify-between  border-2 border-violet-600 px-2 py-1 rounded-md font-medium hover:bg-violet-700 hover:text-white focus:outline-none focus:ring-2 focus:ring-violet-600 focus:ring-opacity-50`}
+                    } btn btn-sm flex flex-row justify-between  border-2 border-violet-600 px-2 py-1 rounded-md font-medium hover:bg-violet-700 hover:text-white focus:outline-none focus:ring-2 focus:ring-violet-600 focus:ring-opacity-50`}
                   >
                     {role}
                   </button>
@@ -275,12 +297,12 @@ const AddUser: React.FC<IAddUser> = ({ route }) => {
           </div>
           <input type="hidden" name="roles" value={selectedRoles} />
           {state?.errors?.roles && (
-            <p className=" text-red-500 p-3 font-semibold">
+            <p className=" text-red-500 p-1 text-sm font-semibold">
               {state.errors.roles}
             </p>
           )}
           <button
-            className={`btn w-24 flex items-center font-sans rounded-md justify-center gap-3 ${"bg-gradient-to-r from-violet-500 to-violet-700 hover:from-violet-700 hover:to-violet-900"} text-white py-2 rounded-md focus:outline-none font-bold font-mono transition`}
+            className={`btn desktop:w-24 laptop:w-24 tablet:w-24 phone:w-full flex items-center font-sans rounded-md justify-center gap-3 ${"bg-gradient-to-r from-violet-500 to-violet-700 hover:from-violet-700 hover:to-violet-900"} text-white py-2 rounded-md focus:outline-none font-bold font-mono transition`}
           >
             {pending && <LoadingSpinner />}
             Save

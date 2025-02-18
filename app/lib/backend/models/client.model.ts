@@ -24,7 +24,7 @@ export interface IClient extends Document {
 }
 
 // Define the Mongoose schema
-const ClientSchema: Schema = new Schema<IClient>(
+export const ClientSchema: Schema = new Schema<IClient>(
   {
     first_name: {
       type: String,

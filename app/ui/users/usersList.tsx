@@ -12,8 +12,8 @@ interface UserListProps {
   onDelete: () => void;
   currentPage?: number;
   totalPages: number | 1;
-  setCurrentPage: React.Dispatch<React.SetStateAction<number>>;
-  editUser: (user: IUser, id: string) => void,
+  setCurrentPage: (page: number) => void;
+  editUser: () => void,
 }
 const UsersList: React.FC<UserListProps> = ({
   users,
@@ -23,29 +23,22 @@ const UsersList: React.FC<UserListProps> = ({
   setCurrentPage,
   editUser
 }) => {
-  const breadcrumbsLinks = [
-    { name: "Dashboard", href: "/dashboard" },
-    {
-      name: "add-user",
-      href: "/addUser",
-    },
-  ];
-
+ 
   return (
-    <div>
-      <div className="w-full h-full bg-white relative shadow-md">
+    <div className="bg-white w-full">
+      <div className="w-full h-full bg-white relative">
         <table className="table">
           {/* head */}
           <thead className="relative">
             <tr className="relative bg-violet-200">
               <th className="text-base font-sans font-medium text-gray-700 text-left p-2">
-                First name
+                First Name
               </th>
               <th className="text-base font-sans font-medium text-gray-700 p-2">
-                Last name
+                Last Name
               </th>
               <th className="text-base font-sans font-medium text-gray-700 p-2">
-                Other names
+                Other Names
               </th>
               <th className="text-base font-sans font-medium text-gray-700 p-2">
                 Sex
@@ -57,7 +50,7 @@ const UsersList: React.FC<UserListProps> = ({
                 Username
               </th>
               <th className="text-base font-sans font-medium text-gray-700 p-2">
-                Online status
+                Online Status
               </th>
               <th className="text-base font-sans font-medium text-gray-700 p-2">
                 Actions{" "}
@@ -74,7 +67,7 @@ const UsersList: React.FC<UserListProps> = ({
           <button
             className="px-4 py-2 bg-gray-300 rounded disabled:opacity-50"
             onClick={() =>
-              setCurrentPage((prev: number) => Math.max(prev - 1, 1))
+              setCurrentPage(Math.max((currentPage ?? 1) - 1, 1))
             }
             disabled={currentPage === 1}
           >
@@ -86,7 +79,7 @@ const UsersList: React.FC<UserListProps> = ({
           <button
             className="px-4 py-2 bg-gray-300 rounded disabled:opacity-50"
             onClick={() =>
-              setCurrentPage((prev: number) => Math.min(prev + 1, totalPages))
+              setCurrentPage(Math.min((currentPage ?? 1) + 1, totalPages))
             }
             disabled={currentPage === totalPages}
           >

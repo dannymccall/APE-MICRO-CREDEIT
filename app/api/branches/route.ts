@@ -2,7 +2,7 @@ import { NextResponse, type NextRequest } from "next/server";
 import { Db, Collection } from "mongodb";
 import { BranchService } from "@/app/lib/backend/services/branchService";
 import { connectDB } from "@/app/lib/mongodb";
-import { createResponse } from "@/app/lib/utils";
+import { createResponse } from "@/app/lib/helperFunctions";
 import { IBranch } from "@/app/lib/backend/models/branch.model";
 import { Branch } from "@/app/lib/backend/models/branch.model";
 
