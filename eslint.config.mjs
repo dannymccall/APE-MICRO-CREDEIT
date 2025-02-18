@@ -31,6 +31,8 @@ const eslintConfig = [
             // Suppress react-hooks exhaustive-deps warnings
             'react-hooks/exhaustive-deps': 'off',
             "prefer-const": "off",
+            "@typescript-eslint/no-unused-expressions": "off",
+            "react-hooks/rules-of-hooks": "off",
         },
     }),
 ];

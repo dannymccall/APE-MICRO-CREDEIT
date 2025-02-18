@@ -54,7 +54,6 @@ const ClientDetails: React.FC<PaymentClientDetails> = ({ client }) => {
       },
     }));
 
-    console.log(formData);
   };
 
   const handleSubmitAll = async () => {
