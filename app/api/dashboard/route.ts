@@ -149,11 +149,7 @@ export async function GET() {
         todayDisbursement: todayDisbursement[0]?.todayDisbursement || 0,
         activities,
       },
-      {
-        headers: {
-          "Cache-Control": "no-store",
-        },
-      }
+      
     );
   } catch (error: any) {
     console.error("Error fetching dashboard data:", error);
