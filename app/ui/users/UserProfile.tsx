@@ -57,10 +57,9 @@ const UserProfile = () => {
     console.log({ user });
   }, [user]);
 
-  interface HandleImageUploadEvent
-    extends React.ChangeEvent<HTMLInputElement> {}
 
-  const handleImageUpload = (event: HandleImageUploadEvent): void => {
+
+  const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>): void => {
     const file = event.target.files?.[0];
     if (file) {
       // const reader = new FileReader();

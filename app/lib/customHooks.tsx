@@ -95,7 +95,7 @@ type Action =
   | { type: "SET_USERS"; payload: any[] }
   | { type: "SET_PASSPORT"; payload: string }
   | { type: "SET_FORM_ERRORS"; payload: any }
-  | { type: "SET_ACTIVE_TAB"; payload: Number }
+  | { type: "SET_ACTIVE_TAB"; payload: number }
   | { type: "SET_LOADING_PRODUCT"; payload: string }
   | { type: "SET_FUND"; payload: string }
   | { type: "SET_LOAN_TERMS"; payload: number }
