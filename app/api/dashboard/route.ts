@@ -7,7 +7,7 @@ import { Activitymanagement } from "@/app/lib/backend/models/activitymanagement.
 import { connectDB } from "@/app/lib/mongodb";
 
 // Force Dynamic Rendering
-// export const dynamic = "force-dynamic";
+export const dynamic = "force-dynamic";
 
 export async function GET() {
   try {
@@ -149,7 +149,11 @@ export async function GET() {
         todayDisbursement: todayDisbursement[0]?.todayDisbursement || 0,
         activities,
       },
-      
+      {
+        headers: {
+          "Cache-Control": "no-store",
+        },
+      }
     );
   } catch (error: any) {
     console.error("Error fetching dashboard data:", error);

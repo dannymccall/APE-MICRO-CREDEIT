@@ -11,9 +11,9 @@ const InfoHeaderComponent = ({
   route: string;
   links: IInfoHeader[];
  title: string,
-  onClick: () => void
+  onClick?: () => void
 }) => {
-  return <InfoHeader route={route} links={links} title={title} onClick={onClick}/>;
+  return <InfoHeader route={route} links={links} title={title} onClick={onClick || (() => {})}/>;
 };
 
 export default InfoHeaderComponent;
