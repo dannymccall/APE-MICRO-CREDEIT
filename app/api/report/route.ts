@@ -70,7 +70,7 @@ const getPaymentScheduleData = async (
     throw new Error("Invalid type specified");
   }
 
-  let matchFilter: any = {
+  const matchFilter: any = {
     "schedule.status": status,
   };
 

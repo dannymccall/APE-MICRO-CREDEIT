@@ -223,7 +223,7 @@ export async function POST(req: NextRequest, res: NextResponse) {
     let newFileName: string = "";
 
     if (passport.name) {
-      let result: { newFileName: string; buffer: any } = await generateFileName(
+      const result: { newFileName: string; buffer: any } = await generateFileName(
         passport
       );
       newFileName = result.newFileName;

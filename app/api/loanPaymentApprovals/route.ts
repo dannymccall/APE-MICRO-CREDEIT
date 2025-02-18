@@ -34,7 +34,7 @@ export async function POST(req: NextRequest, res: NextResponse) {
       return createResponse(false, "404", "Loan data not found");
     }
 
-    let amountPaid = pendingLoan.amountPaid;
+    const amountPaid = pendingLoan.amountPaid;
     const paymentSchedule = loanPaymentSchedule.schedule;
     let balance = amountPaid;
 

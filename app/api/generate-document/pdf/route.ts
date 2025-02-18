@@ -6,39 +6,42 @@ export async function POST(req: Request) {
   try {
     const { html } = await req.json();
 
-    let browser;
-    let puppeteer;
+    // Use puppeteer-core in production and puppeteer in development
+    const puppeteer =
+      process.env.NODE_ENV === "development"
+        ? await import("puppeteer")
+        : await import("puppeteer-core");
 
-    if (process.env.NODE_ENV === "development") {
-      puppeteer = await import("puppeteer");
-      browser = await puppeteer.default.launch({ headless: "new" });
-    } else {
-      const chrome = await import("chrome-aws-lambda");
-      puppeteer = await import("puppeteer-core");
-
-      browser = await puppeteer.default.launch({
-        args: chrome.args,
-        executablePath: await chrome.executablePath,
-        headless: chrome.headless,
-      });
-    }
+    const browser = await puppeteer.default.launch({
+      headless: true,
+      args: [
+        "--no-sandbox",
+        "--disable-setuid-sandbox",
+        "--disable-dev-shm-usage",
+        "--disable-gpu",
+      ],
+      executablePath:
+        process.env.NODE_ENV === "development"
+          ? (await import("puppeteer")).executablePath() // Local path
+          : "/usr/bin/chromium", // Vercel’s Chromium path
+    });
 
     const page = await browser.newPage();
 
-    // ✅ Read compiled Tailwind CSS from the output file
+    // ✅ Read compiled Tailwind CSS
     const tailwindCSSPath = path.join(process.cwd(), "public", "styles.css");
     const tailwindCSS = fs.readFileSync(tailwindCSSPath, "utf8");
 
-    // ✅ Inject compiled Tailwind CSS
+    // ✅ Inject HTML and Tailwind CSS
     const fullHtml = `
       <html>
         <head>
           <meta charset="utf-8">
           <meta name="viewport" content="width=device-width, initial-scale=1">
-          <style>${tailwindCSS}</style> <!-- ✅ Pre-compiled Tailwind -->
+          <style>${tailwindCSS}</style>
         </head>
         <body class="p-6 text-gray-800">
-          ${html} <!-- ✅ Inject your React component -->
+          ${html}
         </body>
       </html>
     `;
@@ -46,16 +49,10 @@ export async function POST(req: Request) {
     await page.setContent(fullHtml, { waitUntil: "networkidle0" });
 
     const pdfBuffer = await page.pdf({
-      format: "A4",
+      format: "a4",
       printBackground: true,
-      width: "11in",
-  height: "8.5in",
-      margin: { 
-        top: "10mm", 
-       
-        
-      },
-      landscape:true
+      margin: { top: "10mm", left: "10mm", right: "10mm", bottom: "10mm" },
+      landscape: true,
     });
 
     await browser.close();
@@ -68,6 +65,9 @@ export async function POST(req: Request) {
     });
   } catch (error) {
     console.error("Error generating PDF:", error);
-    return NextResponse.json({ error: "Failed to generate PDF" }, { status: 500 });
+    return NextResponse.json(
+      { error: "Failed to generate PDF" },
+      { status: 500 }
+    );
   }
 }

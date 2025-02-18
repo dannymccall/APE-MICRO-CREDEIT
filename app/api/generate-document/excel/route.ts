@@ -4,33 +4,37 @@ import path from "path";
 import ExcelJS from "exceljs";
 
 export async function POST(req: Request) {
+  let browser;
   try {
     const { html } = await req.json();
 
-    let browser;
-    let puppeteer;
+    // ✅ Use puppeteer-core in production and puppeteer in development
+    const puppeteer =
+      process.env.NODE_ENV === "development"
+        ? await import("puppeteer")
+        : await import("puppeteer-core");
 
-    if (process.env.NODE_ENV === "development") {
-      puppeteer = await import("puppeteer");
-      browser = await puppeteer.default.launch({ headless: "new" });
-    } else {
-      const chrome = await import("chrome-aws-lambda");
-      puppeteer = await import("puppeteer-core");
-
-      browser = await puppeteer.default.launch({
-        args: chrome.args,
-        executablePath: await chrome.executablePath,
-        headless: chrome.headless,
-      });
-    }
+    browser = await puppeteer.default.launch({
+      headless: true,
+      args: [
+        "--no-sandbox",
+        "--disable-setuid-sandbox",
+        "--disable-dev-shm-usage",
+        "--disable-gpu",
+      ],
+      executablePath:
+      process.env.NODE_ENV === "development"
+        ? (await import("puppeteer")).executablePath() // Local path
+        : "/usr/bin/chromium", // Vercel’s Chromium path
+    });
 
     const page = await browser.newPage();
 
-    // ✅ Read compiled Tailwind CSS
+    // ✅ Read Tailwind CSS
     const tailwindCSSPath = path.join(process.cwd(), "public", "styles.css");
     const tailwindCSS = fs.readFileSync(tailwindCSSPath, "utf8");
 
-    // ✅ Inject Tailwind CSS
+    // ✅ Inject Tailwind CSS into the HTML
     const fullHtml = `
       <html>
         <head>
@@ -46,43 +50,52 @@ export async function POST(req: Request) {
 
     await page.setContent(fullHtml, { waitUntil: "networkidle0" });
 
-    // ✅ Extract table data
+    // ✅ Extract table data from the HTML
     const tableData = await page.evaluate(() => {
       const rows = Array.from(document.querySelectorAll("table tr"));
       return rows.map(row =>
-        Array.from(row.querySelectorAll("td, th")).map(cell => cell.innerText)
+        Array.from(row.querySelectorAll("td, th")).map(cell => (cell as HTMLElement).innerText)
       );
     });
 
     await browser.close();
 
-    // ✅ Generate Excel file
+    // ✅ Create Excel workbook and worksheet
     const workbook = new ExcelJS.Workbook();
     const worksheet = workbook.addWorksheet("Report");
 
-    // ✅ Normalize column length
-    const maxColumns = Math.max(...tableData.map(row => row.length));
+    // ✅ Determine max columns length
+    const maxColumns: number = Math.max(...tableData.map((row: string[]) => row.length));
 
-    tableData.forEach((row, index) => {
+    // ✅ Populate Excel with table data
+    interface TableRow {
+      [index: number]: string;
+    }
+
+    tableData.forEach((row: string[], index: number) => {
       const newRow = worksheet.addRow([
         ...row,
-        ...Array(maxColumns - row.length).fill(""), // Fill missing columns
+        ...Array(maxColumns - row.length).fill(""), // Fill empty cells
       ]);
 
-      // ✅ Format "Total" rows
-      if (row[0]?.toLowerCase().includes("total")) {
-        newRow.eachCell(cell => {
+      // ✅ Apply bold formatting for "Total" rows
+      if (row.some((cell: string) => cell.toLowerCase().includes("total"))) {
+        newRow.eachCell((cell: ExcelJS.Cell) => {
           cell.font = { bold: true };
           cell.alignment = { horizontal: "right" };
         });
       }
     });
 
-    // ✅ Auto-adjust column widths
-    worksheet.columns.forEach(column => {
-      column.width = 15;
+    // ✅ Auto-adjust column widths based on content
+    worksheet.columns.forEach((column, index) => {
+      const maxLength: number = Math.max(
+        ...tableData.map((row: string[]) => row[index]?.length || 10)
+      );
+      column.width = maxLength < 15 ? 15 : maxLength + 5;
     });
 
+    // ✅ Write Excel file to buffer
     const buffer = await workbook.xlsx.writeBuffer();
 
     return new Response(buffer, {
@@ -93,6 +106,10 @@ export async function POST(req: Request) {
     });
   } catch (error) {
     console.error("Error generating Excel:", error);
-    return NextResponse.json({ error: "Failed to generate Excel" }, { status: 500 });
+    if (browser) await browser.close(); // Ensure browser closes on errors
+    return NextResponse.json(
+      { error: "Failed to generate Excel" },
+      { status: 500 }
+    );
   }
 }
