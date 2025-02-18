@@ -213,7 +213,7 @@ const DashboardUI = async ({ route }: { route: string }) => {
         route={route} 
         links={breadcrumbsLinks} 
         title="Dashboard" 
-        // onClick={() => {}}
+        onClick={() => {}}
       />
       <Notifications />
       <main className="w-full h-full flex flex-col p-5 gap-10">

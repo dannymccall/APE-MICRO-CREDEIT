@@ -2,7 +2,6 @@
 import InfoHeaderComponent from "@/app/component/Info-header/Info-Header";
 import React, { useActionState, useEffect, useState, useRef, startTransition } from "react";
 import { MyTextInput, Label } from "@/app/lib/MyFormInput/FormTemplates";
-import { addUser } from "@/app/actions/addUserAuth";
 import Toast from "@/app/component/toast/Toast";
 import { FaCircleCheck } from "react-icons/fa6";
 import { LoadingSpinner } from "@/app/component/Loading";
@@ -10,6 +9,7 @@ import { useRouter } from "next/navigation";
 import { FiEdit } from "react-icons/fi";
 import { IUser } from "@/app/lib/backend/models/user.model";
 import { formatDate, toCapitalized } from "@/app/lib/helperFunctions";
+import { addUser } from "@/app/actions/addUserAuth";
 
 export interface IViewUser {
   user: IUser;
