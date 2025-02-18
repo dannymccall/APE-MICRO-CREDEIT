@@ -1,35 +1,24 @@
 import { NextRequest, NextResponse } from "next/server";
-import {
-  ILoanApplication,
-  LoanApplication,
-  LoanApplicationSchema,
-} from "@/app/lib/backend/models/loans.model";
+import { LoanApplication } from "@/app/lib/backend/models/loans.model";
 import { Client } from "@/app/lib/backend/models/client.model";
-import {
-  IPaymentSchedule,
-  PaymentSchedule,
-  PaymentScheduleSchema,
-} from "@/app/lib/backend/models/paymentSchdule.model";
+import { PaymentSchedule } from "@/app/lib/backend/models/paymentSchdule.model";
 import { User } from "@/app/lib/backend/models/user.model";
-import mongoose from "mongoose";
 import { Activitymanagement } from "@/app/lib/backend/models/activitymanagement.model";
 import { connectDB } from "@/app/lib/mongodb";
-import { revalidatePath } from "next/cache";
+
+// Force Dynamic Rendering
+export const dynamic = "force-dynamic";
+
 export async function GET() {
   try {
     await connectDB();
 
+    // Date ranges for today
     const today = new Date();
-    const startOfDay = new Date(
-      today.getFullYear(),
-      today.getMonth(),
-      today.getDate()
-    );
-    const endOfDay = new Date(
-      today.getFullYear(),
-      today.getMonth(),
-      today.getDate() + 1
-    );
+    const startOfDay = new Date(today.setHours(0, 0, 0, 0));
+    const endOfDay = new Date(today.setHours(23, 59, 59, 999));
+
+    // Run multiple MongoDB queries in parallel
     const [
       monthlyOutstandingBalance,
       monthlyDisbursement,
@@ -42,47 +31,23 @@ export async function GET() {
       totalDisbursement,
       todayRepayment,
       todayDisbursement,
-      activities
+      activities,
     ] = await Promise.all([
       PaymentSchedule.aggregate([
         { $unwind: "$schedule" },
         {
-          $project: {
-            yearMonth: {
-              $dateToString: {
-                format: "%Y-%m",
-                date: "$createdAt",
-              },
-            },
-            outStandingBalance: "$schedule.outStandingBalance",
-          },
-        },
-        {
           $group: {
-            _id: "$yearMonth",
-            outStandingBalance: { $sum: "$outStandingBalance" },
-            count: { $sum: 1 },
+            _id: { $dateToString: { format: "%Y-%m", date: "$createdAt" } },
+            outStandingBalance: { $sum: "$schedule.outStandingBalance" },
           },
         },
         { $sort: { _id: 1 } },
       ]),
       LoanApplication.aggregate([
         {
-          $project: {
-            yearMonth: {
-              $dateToString: {
-                format: "%Y-%m",
-                date: "$createdAt",
-              },
-            },
-            totalDisbursement: "$principal",
-          },
-        },
-        {
           $group: {
-            _id: "$yearMonth",
-            totalDisbursement: { $sum: "$totalDisbursement" },
-            count: { $sum: 1 },
+            _id: { $dateToString: { format: "%Y-%m", date: "$createdAt" } },
+            totalDisbursement: { $sum: "$principal" },
           },
         },
         { $sort: { _id: 1 } },
@@ -100,11 +65,7 @@ export async function GET() {
       ]),
       PaymentSchedule.aggregate([
         { $unwind: "$schedule" },
-        {
-          $match: {
-            "schedule.status": "arrears",
-          },
-        },
+        { $match: { "schedule.status": "arrears" } },
         {
           $group: {
             _id: null,
@@ -112,7 +73,6 @@ export async function GET() {
           },
         },
       ]),
-
       PaymentSchedule.aggregate([
         { $unwind: "$schedule" },
         {
@@ -125,26 +85,13 @@ export async function GET() {
       PaymentSchedule.aggregate([
         { $unwind: "$schedule" },
         {
-          $project: {
-            yearMonth: {
-              $dateToString: {
-                format: "%Y-%m",
-                date: "$createdAt",
-              },
-            },
-            amountPaid: "$schedule.amountPaid",
-          },
-        },
-        {
           $group: {
-            _id: "$yearMonth",
-            monthlyRepayment: { $sum: "$amountPaid" },
-            count: { $sum: 1 },
+            _id: { $dateToString: { format: "%Y-%m", date: "$createdAt" } },
+            monthlyRepayment: { $sum: "$schedule.amountPaid" },
           },
         },
         { $sort: { _id: 1 } },
       ]),
-
       LoanApplication.aggregate([
         {
           $group: {
@@ -153,28 +100,18 @@ export async function GET() {
           },
         },
       ]),
-
       PaymentSchedule.aggregate([
         { $unwind: "$schedule" },
-        {
-          $match: {
-            createdAt: { $gte: startOfDay, $lt: endOfDay }, // Filter for today's date
-          },
-        },
+        { $match: { createdAt: { $gte: startOfDay, $lt: endOfDay } } },
         {
           $group: {
             _id: null,
-            dailyRepayment: { $sum: "$schedule.amountPaid" }, // Changed to daily
+            dailyRepayment: { $sum: "$schedule.amountPaid" },
           },
         },
-        { $sort: { _id: 1 } },
       ]),
       LoanApplication.aggregate([
-        {
-          $match: {
-            createdAt: { $gte: startOfDay, $lt: endOfDay },
-          },
-        },
+        { $match: { createdAt: { $gte: startOfDay, $lt: endOfDay } } },
         {
           $group: {
             _id: null,
@@ -183,60 +120,43 @@ export async function GET() {
         },
       ]),
       Activitymanagement.aggregate([
-
         {
           $lookup: {
             from: "users",
             localField: "user",
             foreignField: "_id",
-            as: "userDetails"
-          }
+            as: "userDetails",
+          },
         },
-
-        {
-          $unwind: {
-            path: "$userDetails",
-            preserveNullAndEmptyArrays: true // Keeps activities without users
-          }
-        },
-        {
-          $sort: { createdAt: -1 }
-        },
-        {
-          $limit: 5
-        }
-      ])
-
+        { $unwind: { path: "$userDetails", preserveNullAndEmptyArrays: true } },
+        { $sort: { createdAt: -1 } },
+        { $limit: 5 },
+      ]),
     ]);
 
-    revalidatePath("activities");
-    revalidatePath("loanapplications");
-    revalidatePath("paymentschedules");
-
-    return NextResponse.json({
-      monthlyOutstandingBalance,
-      monthlyDisbursement,
-      totalUsers,
-      totalClients,
-      totalOutstandingBalance:
-        totalOutstandingBalance[0]?.totalOutstanding || 0,
-      totalArrears: totalArrears[0]?.totalOutstanding || 0,
-      totalRepayment: totalRepayment[0]?.totalRepayment || 0,
-      monthlyRepayment,
-      totalDisbursement: totalDisbursement[0]?.totalDisbursement || 0,
-      todayRepayment: todayRepayment[0]?.dailyRepayment || 0,
-      todayDisbursement: todayDisbursement[0]?.todayDisbursement || 0,
-      activities
-    }, {
-      headers: {
-        "Cache-Control": "s-maxage=60, stale-while-revalidate=30", // Cache for 1 min
-      }
-    });
-  } catch (error: any) {
-    console.error("Error fetching data:", error);
     return NextResponse.json(
-      { error: error.message, stack: error.stack },
-      { status: 500 }
+      {
+        monthlyOutstandingBalance,
+        monthlyDisbursement,
+        totalUsers,
+        totalClients,
+        totalOutstandingBalance: totalOutstandingBalance[0]?.totalOutstanding || 0,
+        totalArrears: totalArrears[0]?.totalOutstanding || 0,
+        totalRepayment: totalRepayment[0]?.totalRepayment || 0,
+        monthlyRepayment,
+        totalDisbursement: totalDisbursement[0]?.totalDisbursement || 0,
+        todayRepayment: todayRepayment[0]?.dailyRepayment || 0,
+        todayDisbursement: todayDisbursement[0]?.todayDisbursement || 0,
+        activities,
+      },
+      {
+        headers: {
+          "Cache-Control": "s-maxage=60, stale-while-revalidate=30",
+        },
+      }
     );
+  } catch (error: any) {
+    console.error("Error fetching dashboard data:", error);
+    return NextResponse.json({ error: error.message }, { status: 500 });
   }
 }
