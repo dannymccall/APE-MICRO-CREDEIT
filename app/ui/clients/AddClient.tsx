@@ -11,11 +11,8 @@ import { useRouter } from "next/navigation";
 import { makeRequest } from "@/app/lib/helperFunctions";
 import Image from "next/image";
 
-export interface IAddUser {
 
-}
-
-const AddUser: React.FC<IAddUser> = () => {
+const AddUser = () => {
   const breadcrumbsLinks = [
     { name: "Dashboard", href: "/dashboard" },
     {

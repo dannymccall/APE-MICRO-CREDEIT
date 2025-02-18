@@ -32,13 +32,11 @@ import {
 } from "@/app/lib/customHooks";
 import { startTransition } from "react";
 import { io } from "socket.io-client";
-export interface IAddUser {
-  route: string;
-}
+
 import { formatZodErrors, extractFormFields } from "@/app/lib/helperFunctions";
 import { loanSchema } from "@/app/lib/definitions";
 
-const AddLoan: React.FC<IAddUser> = ({ route }) => {
+const AddLoan= () => {
   const breadcrumbsLinks = [
     { name: "Dashboard", href: "/dashboard" },
 
