@@ -23,12 +23,12 @@ export async function POST(req: NextRequest) {
     }
 
     // Fetch required data
-    const [pendingLoan, loanApplication, loanPaymentSchedule] =
+    const [pendingLoan, loanApplication,  loanPaymentSchedule] =
       await Promise.all([
         TemporalPayment.findById(pendingLoanId),
-        LoanApplication.findById(loanId).populate({ path: "loanOfficer", select: "username", model: "User" }),
+        LoanApplication.findById(loanId).populate({ path: "loanOfficer", select: "username", model: "User" }).exec(),
         PaymentSchedule.findOne({ loan: loanId }),
-      ]);
+      ]) as any[];
 
     if (!pendingLoan || !loanApplication || !loanPaymentSchedule) {
       return createResponse(false, "404", "Loan data not found");
@@ -43,7 +43,7 @@ export async function POST(req: NextRequest) {
       new Date(date1).getTime() === new Date(date2).getTime();
 
     // Process payment schedule
-    paymentSchedule.forEach((schedule) => {
+    paymentSchedule.forEach((schedule:any) => {
       if (schedule.status === "arrears" && balance > 0) {
         const outstanding = Number(schedule.outStandingBalance);
         if (balance >= outstanding) {
