@@ -7,7 +7,7 @@ import { Activitymanagement } from "@/app/lib/backend/models/activitymanagement.
 import { connectDB } from "@/app/lib/mongodb";
 
 // Force Dynamic Rendering
-export const dynamic = "force-dynamic";
+// export const dynamic = "force-dynamic";
 
 export async function GET() {
   try {
