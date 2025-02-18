@@ -335,8 +335,8 @@ export async function PUT(req: NextRequest) {
   try {
     const body = await req.formData();
     const searchParams = req.nextUrl.searchParams;
-    const id: string | any = searchParams.get("id");
-    if (!id) return createResponse(false, "001", "Client ID is required", {});
+    // const id: string | any = searchParams.get("id");
+    // if (!id) return createResponse(false, "001", "Client ID is required", {});
 
     const client = await clientService.findById(body.get('id') as string);
     if (!client) return createResponse(false, "001", "Client not found", {});
@@ -394,7 +394,7 @@ export async function PUT(req: NextRequest) {
     updatedFields["branch"] = branch._id;
     updatedFields["client_status"] = body.get("clientStatus") as string;
 
-    const updatedClient = await clientService.update(id, updatedFields);
+    const updatedClient = await clientService.update(body.get('id') as string, updatedFields);
     const userId = await getUserId();
 
     await activitymanagementService.createActivity(

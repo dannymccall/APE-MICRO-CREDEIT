@@ -117,7 +117,7 @@ const AllClients = () => {
                   currentPage={currentPage}
                   totalPages={totalPages}
                   setCurrentPage={setCurrentPage}
-                  editClient={editClient}
+                  editClient={refresh}
                 />
               </React.Fragment>
             ) : (
