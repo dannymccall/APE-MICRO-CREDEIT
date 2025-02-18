@@ -151,7 +151,7 @@ export async function GET() {
       },
       {
         headers: {
-          "Cache-Control": "s-maxage=60, stale-while-revalidate=30",
+          "Cache-Control": "no-store",
         },
       }
     );
