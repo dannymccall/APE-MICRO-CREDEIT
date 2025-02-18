@@ -30,7 +30,7 @@ export async function getUserId(){
   return payload?.user._id;
 }
 
-export async function GET(req: NextRequest, res: NextResponse) {
+export async function GET(req: NextRequest) {
   try {
     const searchParams = req.nextUrl.searchParams;
 

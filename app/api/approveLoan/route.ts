@@ -15,7 +15,7 @@ import {
 } from "@/app/lib/backend/models/temporal.payment.model";
 
 await connectDB();
-export async function GET(req: NextRequest, res: NextResponse) {
+export async function GET(req: NextRequest) {
   try {
     if (!mongoose.models.LoanApplication) {
       mongoose.model<ILoanApplication>(

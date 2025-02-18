@@ -20,7 +20,7 @@ await connectDB();
 const activitymanagementService = new ActivitymanagementService()
 
 
-export async function GET(req: NextRequest, res: NextResponse) {
+export async function GET(req: NextRequest) {
   mongoose.set("bufferTimeoutMS", 15000);
   if (!mongoose.models.LoanApplication) {
     mongoose.model<ILoanApplication>("LoanApplication", LoanApplicationSchema);

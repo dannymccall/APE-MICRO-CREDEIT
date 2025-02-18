@@ -159,7 +159,7 @@ const getPaymentScheduleData = async (
 
 const activitymanagementService = new ActivitymanagementService()
 
-export async function POST(req: NextRequest, res: NextResponse) {
+export async function POST(req: NextRequest) {
   await connectDB();
 
   try {

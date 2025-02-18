@@ -12,7 +12,7 @@ import mongoose from "mongoose";
 
 const activitymanagementService = new ActivitymanagementService()
 
-export async function POST(req: NextRequest, res: NextResponse) {
+export async function POST(req: NextRequest) {
   try {
     const searchParameter = req.nextUrl.searchParams;
     const pendingLoanId = searchParameter.get("pendingLoanId");

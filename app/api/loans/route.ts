@@ -54,7 +54,7 @@ export async function generateFileName(passport: File | null) {
   const newFileName = `${Date.now()}${fileExtension}`;
   return { newFileName, buffer };
 }
-export async function GET(req: NextRequest, res: NextResponse) {
+export async function GET(req: NextRequest) {
   try {
     const searchParams = req.nextUrl.searchParams;
     const pageParam = searchParams.get("page");

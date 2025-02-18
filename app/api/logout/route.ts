@@ -8,7 +8,7 @@ import { ActivitymanagementService } from "@/app/lib/backend/services/Activityma
 import mongoose from "mongoose";
 
 const activitymanagementService = new ActivitymanagementService();
-export async function POST(req: NextRequest, res: NextResponse) {
+export async function POST() {
   await connectDB();
   const userId = await getUserId();
 

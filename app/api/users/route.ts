@@ -50,7 +50,7 @@ export async function sendEmail(mailOptions: EmailPayload) {
   }
 }
 
-export async function GET(req: NextRequest, res: NextResponse) {
+export async function GET(req: NextRequest) {
   try {
     const searchParams = req.nextUrl.searchParams;
 

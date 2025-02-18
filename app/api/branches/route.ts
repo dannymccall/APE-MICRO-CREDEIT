@@ -16,7 +16,7 @@ import { Branch } from "@/app/lib/backend/models/branch.model";
 await connectDB();
 const branchService = new BranchService();
 
-export async function GET(req: NextRequest, res: NextResponse) {
+export async function GET(req: NextRequest) {
   try {
     const searchParams = req.nextUrl.searchParams;
     const pageParam = searchParams.get("page");
