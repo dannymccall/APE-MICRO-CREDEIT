@@ -28,7 +28,7 @@ export async function POST(req: Request) {
         : "/usr/bin/chromium", // Vercel’s Chromium path
     });
 
-    const page = await browser.newPage();
+    const page: any = await browser.newPage();
 
     // ✅ Read Tailwind CSS
     const tailwindCSSPath = path.join(process.cwd(), "public", "styles.css");
@@ -50,13 +50,14 @@ export async function POST(req: Request) {
 
     await page.setContent(fullHtml, { waitUntil: "networkidle0" });
 
-    // ✅ Extract table data from the HTML
-    const tableData = await page.evaluate(() => {
-      const rows = Array.from(document.querySelectorAll("table tr"));
-      return rows.map(row =>
-        Array.from(row.querySelectorAll("td, th")).map(cell => (cell as HTMLElement).innerText)
-      );
-    });
+// ✅ Extract table data from the HTML
+const tableData = await page.evaluate(() => {
+  const rows = Array.from(document.querySelectorAll("table tr"));
+  return rows.map((row) =>
+    Array.from(row.querySelectorAll("td, th")).map((cell) => cell.textContent || "")
+  );
+});
+
 
     await browser.close();
 

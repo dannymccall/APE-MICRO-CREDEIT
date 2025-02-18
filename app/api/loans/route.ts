@@ -393,7 +393,7 @@ export async function PUT(req: NextRequest) {
     const approveLoan = searchParams.get("approveLoan");
     const loanId = searchParams.get("_id") as string;
     if (approveLoan) {
-      const loan = await LoanApplication.findById(loanId).populate({
+      const loan:any = await LoanApplication.findById(loanId).populate({
         path: "loanOfficer",
         select: ["username"],
       });
