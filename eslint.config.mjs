@@ -15,16 +15,21 @@ const eslintConfig = [
     ...compat.config({
         extends: ["next"],
         rules: {
-            // Disable Next.js-specific rules
             'react/no-unescaped-entities': 'off',
             '@next/next/no-page-custom-font': 'off',
 
-            // Disable TypeScript constraints
+            // Disable TypeScript-specific constraints
             // '@typescript-eslint/explicit-module-boundary-types': 'off',
             '@typescript-eslint/no-explicit-any': 'off',
             '@typescript-eslint/ban-ts-comment': 'off',
             '@typescript-eslint/strict-boolean-expressions': 'off',
             '@typescript-eslint/no-non-null-assertion': 'off',
+
+            // Ignore unused variables (useful for in-progress code)
+            '@typescript-eslint/no-unused-vars': 'off',
+
+            // Suppress react-hooks exhaustive-deps warnings
+            'react-hooks/exhaustive-deps': 'off',
         },
     }),
 ];

@@ -16,7 +16,6 @@ import { useRouter } from "next/navigation";
 import { getOutstandingBalances, makeRequest } from "@/app/lib/helperFunctions";
 import Toast from "@/app/component/toast/Toast";
 import { FaCircleCheck } from "react-icons/fa6";
-import { Outstanding, TransactionReportTableHeader } from "@/app/component/report/Report";
 export type LoanDetailsProps = {
   loan: ILoanApplication | any;
   loanId: string;
@@ -63,17 +62,15 @@ const LoanDetails: React.FC<LoanDetailsProps> = ({ loan, loanId }) => {
       setModalOpen(false);
       setShowToast(true);
 
-      let timeOut: NodeJS.Timeout;
-      timeOut = setTimeout(() => {
+      
+      const timeOut: NodeJS.Timeout = setTimeout(() => {
         setShowToast(false);
       }, 100);
 
       return () => clearTimeout(timeOut);
     }
   }
-  console.log(loan)
   const data = getOutstandingBalances(loan);
-  console.log({data})
   const tabs = [
     {
       label: "Loan Application Details",
