@@ -2,7 +2,7 @@
 import InfoHeaderComponent from "@/app/component/Info-header/Info-Header";
 import React, { useActionState, useEffect, useState, useRef } from "react";
 import { MyTextInput, Label } from "@/app/lib/MyFormInput/FormTemplates";
-import { addUser, updateUser } from "@/app/actions/addUserAuth";
+import { addClient } from "@/app/actions/addClientAuth";
 import Toast from "@/app/component/toast/Toast";
 import { FaCircleCheck } from "react-icons/fa6";
 import { LoadingSpinner } from "@/app/component/Loading";
@@ -29,7 +29,7 @@ const ViewUser: React.FC<IViewUser> = ({
   const availableRoles = ["Loan officer", "Admin"];
   const [selectedRoles, setSelectedRoles] = useState<string[]>(user.roles); // State to hold selected roles
   const roles: string[] = selectedRoles;
-  const [state, action, pending] = useActionState(updateUser, undefined);
+  const [state, action, pending] = useActionState(addClient, undefined);
   const [showMessage, setShowMessage] = useState<boolean>(false);
   const router = useRouter();
   const formRef = useRef<HTMLFormElement | null>(null);
@@ -144,7 +144,7 @@ const ViewUser: React.FC<IViewUser> = ({
           className="bg-white w-full py-3 px-7"
         >
           <p className=" text-red-600 p-3 font-bold">
-            {!state?.error && state?.message}
+            {!state?.message && state?.message}
           </p>
 
           <div className="flex flex-row items-center my-5 relative">
@@ -170,6 +170,7 @@ const ViewUser: React.FC<IViewUser> = ({
             </p>
           )}
           <input type="hidden" name="id" value={String(user._id)} />
+          <input type="hidden" name="service" value="updateClient" />
           <div className="flex flex-row items-center my-5 relative">
             <div className="flex flex-row w-32 gap-0 items-center">
               <Label
