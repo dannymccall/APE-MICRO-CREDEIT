@@ -7,6 +7,7 @@ import {
   makeRequest,
   processFormSubmissions,
 } from "@/app/lib/helperFunctions";
+import { useLogginIdentity } from "@/app/lib/customHooks";
 
 export interface PaymentClientDetails {
   loans: Array<{
@@ -32,6 +33,7 @@ const BulkPayment: React.FC<PaymentClientDetails> = ({ loans }) => {
     messageType: string;
   }>({ showMessage: false, message: "", messageType: "" });
   const [pending, setPending] = useState<boolean>(false);
+  const logginIdentity = useLogginIdentity()
   // const handleSubmit = (event: React.FormEvent, index: number) => {
   //   event.preventDefault();
   //   const formData = new FormData(event.target as HTMLFormElement);
@@ -65,7 +67,8 @@ const BulkPayment: React.FC<PaymentClientDetails> = ({ loans }) => {
       "/api/payments",
       setPending,
       setSuccessMessage,
-      makeRequest
+      makeRequest,
+      logginIdentity
     );
     // try {
     //   // await processLoan({ payments: formData });
