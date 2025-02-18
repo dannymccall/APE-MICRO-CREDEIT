@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
  import { Activitymanagement } from "@/app/lib/backend/models/activitymanagement.model";
  import { revalidatePath } from "next/cache";
 
-export async function GET(req: NextRequest, res: NextResponse) {
+export async function GET(req: NextRequest) {
   try {
     const searchParams = req.nextUrl.searchParams;
 
