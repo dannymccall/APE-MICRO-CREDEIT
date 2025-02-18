@@ -12,10 +12,10 @@ import { makeRequest } from "@/app/lib/helperFunctions";
 import Image from "next/image";
 
 export interface IAddUser {
-  route: string;
+
 }
 
-const AddUser: React.FC<IAddUser> = ({ route }) => {
+const AddUser: React.FC<IAddUser> = () => {
   const breadcrumbsLinks = [
     { name: "Dashboard", href: "/dashboard" },
     {
