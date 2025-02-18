@@ -13,7 +13,7 @@ export default async function Page({
 }) {
   const clientId = (await params).clientId;
   const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
-  const fullUrl = `${baseUrl}/api/clients?clientId=${encodeURIComponent(
+  const fullUrl = `/api/clients?clientId=${encodeURIComponent(
     clientId
   )}`;
 
