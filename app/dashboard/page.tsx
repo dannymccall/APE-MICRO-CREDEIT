@@ -3,7 +3,7 @@ import DashboardUI from '../ui/dashboard/Dashboard'
 
 const page = () => {
   return (
-    <DashboardUI route='Dashboard'  />
+    <DashboardUI  />
   )
 }
 

@@ -312,6 +312,8 @@ export const useSocket = (logginIdentity: ILogginIdentity) => {
   return { message, showNotification };
 };
 
+
+
 export const useGenerateDocument = async (
   reportGenerationRef: React.RefObject<HTMLDivElement>,
   type: "pdf" | "excel",
@@ -446,4 +448,5 @@ export function useSearch<T>({ endpoint, initialPage = 1, limit = 10 }: UseSearc
     refresh: () => fetchData(query)
   };
 }
+
 

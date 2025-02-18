@@ -16,10 +16,11 @@ import { AiOutlineUserAdd, AiOutlineFileSearch } from "react-icons/ai"; // Ant D
 import { MdOutlineApproval } from "react-icons/md"; // Material Icons
 import Link from "next/link";
 import { GiCash } from "react-icons/gi";
-import { formatCurrency, formatDate, useDashboardValues } from "@/app/lib/helperFunctions";
+import { formatCurrency, formatDate } from "@/app/lib/helperFunctions";
 import { LoadingDivs } from "@/app/component/Loading";
 import { IoIosArrowRoundForward } from "react-icons/io";
 import Notifications from "@/app/component/Notification";
+// import { useDashboardValues } from "@/app/lib/serverhooks";
 
 const DynamicChart = lazy(() => import("@/app/component/DynamicChart"));
 
@@ -44,7 +45,84 @@ interface IActivity {
   };
 }
 
-const DashboardUI = async ({ route }: { route: string }) => {
+
+
+interface Disbursement {
+  _id: string;
+  totalDisbursement: number;
+}
+
+interface Outstanding {
+  _id: string;
+  outStandingBalance: number;
+}
+
+interface Repayment {
+  _id: string;
+  monthlyRepayment: number;
+}
+export async function useDashboardValues() {
+  // const BASE_URL =
+  //   process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:3000";
+  const response:any = await fetch("/api/dashboard", {
+    method: "GET",
+    cache: "no-store",
+  });
+  const {
+    monthlyDisbursement,
+    monthlyOutstandingBalance,
+    totalUsers,
+    totalClients,
+    totalOutstandingBalance,
+    totalArrears,
+    totalRepayment,
+    monthlyRepayment,
+    totalDisbursement,
+    todayRepayment,
+    todayDisbursement,
+    activities
+  } = response;
+  const disbursementMonths: string[] = monthlyDisbursement.map(
+    (disbursement: Disbursement) => disbursement._id
+  );
+  const disbursementMonthValues: number[] = monthlyDisbursement.map(
+    (disbursement: Disbursement) => disbursement.totalDisbursement
+  );
+
+  const oustandingMonths: string[] = monthlyOutstandingBalance.map(
+    (outstanding: Outstanding) => outstanding._id
+  );
+  const oustandingMonthValues: string[] = monthlyOutstandingBalance.map(
+    (outstanding: Outstanding) => outstanding.outStandingBalance
+  );
+
+  const repaymentMonths: string[] = monthlyRepayment.map(
+    (repayment: Repayment) => repayment._id
+  );
+  const repaymentMonthValues: string[] = monthlyRepayment.map(
+    (repayment: Repayment) => repayment.monthlyRepayment
+  );
+
+  return [
+    disbursementMonths,
+    disbursementMonthValues,
+    oustandingMonths,
+    oustandingMonthValues,
+    repaymentMonths,
+    repaymentMonthValues,
+    totalUsers,
+    totalClients,
+    totalOutstandingBalance,
+    totalArrears,
+    totalRepayment,
+    totalDisbursement,
+    todayRepayment,
+    todayDisbursement,
+    activities
+  ];
+}
+
+const DashboardUI = async () => {
   const breadcrumbsLinks = [{ name: "Dashboard", href: "/dashboard" }];
 
  
