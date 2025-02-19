@@ -232,7 +232,7 @@ export default function Sidebar({
           <div className="flex flex-col items-center gap-2 relative">
             {profilePicture ? (
               <div className="relative border-2 border-white rounded-full desktop:h-30 laptop:h-30 tablet:h-30 phone:h-32 desktop:w-30 laptop:w-30 tablet:w-30 phone:w-32">
-                process.env.NEXT_PUBLIC_NODE_ENV !== "development" ? (
+                {process.env.NEXT_PUBLIC_NODE_ENV !== "development" ? (
                 <ImageComponent src={profilePicture} />
                 ) : (
                 <Image
@@ -240,9 +240,9 @@ export default function Sidebar({
                   width={100}
                   height={100}
                   alt="Profile image"
-                  className=" rounded-md"
+                  className="rounded-full border-white border-solid w-full h-full"
                 />
-                )
+                )}
               </div>
             ) : (
               <div

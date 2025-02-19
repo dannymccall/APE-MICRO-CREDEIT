@@ -157,14 +157,14 @@ const UserProfile = () => {
               >
                 {avarta ? (
                   process.env.NEXT_PUBLIC_NODE_ENV !== "development" ? (
-                    <ImageComponent src={avarta} />
+                    <ImageComponent src={avarta} className="rounded-full border-white border-solid w-full h-full"/>
                   ) : (
                     <Image
                       src={avarta}
                       width={100}
                       height={100}
                       alt="Profile image"
-                      className=" rounded-md"
+                      className=" rounded-full border-white border-solid w-full h-full"
                     />
                   )
                 ) : (

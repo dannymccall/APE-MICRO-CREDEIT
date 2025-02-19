@@ -54,7 +54,7 @@ export default function ClientDetails({
             <div className="w-full h-full flex flex-row items-center gap-10">
               <div className="h-full flex flex-row items-center gap-10">
                 {process.env.NEXT_PUBLIC_NODE_ENV !== "development" ? (
-                  <ImageComponent src={client.avarta} />
+                  <ImageComponent src={client.avarta} className="rounded-md"/>
                 ) : (
                   <Image
                     src={avatarUrl}

@@ -2,7 +2,13 @@
 import { CldImage } from 'next-cloudinary';
 
 // By default, the CldImage component applies auto-format and auto-quality to all delivery URLs for optimized delivery.
-export default function ImageComponent({src}: {src: string}) {
+interface ImageProps {
+    src: string;
+    className?: string;
+    }
+
+
+export default function ImageComponent({src, className="rounded-md"}: ImageProps) {
   return (
     <CldImage
       src={src}// Use this sample image or upload your own via the Media Explorer
@@ -13,7 +19,7 @@ export default function ImageComponent({src}: {src: string}) {
         source: true
       }}
       alt='Sample Image'
-      className='rounded-md'
+      className={className}
     />
   );
 }
