@@ -53,7 +53,8 @@ export async function GET(req: NextRequest) {
       );
     }
 
-    const searchParams = req.nextUrl.searchParams;
+    const url = new URL(req.url);
+    const searchParams = url.searchParams;
 
     const pageParam = searchParams.get("page");
     const limitParam = searchParams.get("limit");

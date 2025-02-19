@@ -11,19 +11,25 @@ export default async function Page({
 }: {
   params: Promise<{ loanId: string }>;
 }) {
-  const loanId = (await params).loanId;
-  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
-  const fullUrl = `${baseUrl}/api/loans?loanId=${encodeURIComponent(
-    loanId
-  )}`;
+  // const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
+  // const fullUrl = `${baseUrl}/api/loans?loanId=${encodeURIComponent(
+    //   loanId
+    // )}`;
+    try {
+      const loanId = (await params).loanId;
+      const { GET } = await import("@/app/api/loans/route");
+      const request: any = new Request(
+        `http://localhost/api/loans?loanId=${encodeURIComponent(loanId)}`
+      );
+      const response = await GET(request);
+      const loan = await response.json();
+      console.log(loan);
+      // const loan = await makeRequest(fullUrl, {
+        //   method: "GET",
+        //   cache: "no-store",
+    // });
 
-  try {
-    const loan = await makeRequest(fullUrl, {
-      method: "GET",
-      cache: "no-store",
-    });
-
-    console.log(loan)
+    console.log(loan);
     if (!loan?.data) {
       return (
         <main>
@@ -31,13 +37,12 @@ export default async function Page({
         </main>
       );
     }
- 
 
     return (
       <Suspense fallback={<LoadingDivs />}>
-        <LoanDetails loan={loan.data} loanId={loanId}/>;
+        <LoanDetails loan={loan.data} loanId={loanId} />;
       </Suspense>
-    ) 
+    );
   } catch (error) {
     console.error("Error fetching client data:", error);
     return (

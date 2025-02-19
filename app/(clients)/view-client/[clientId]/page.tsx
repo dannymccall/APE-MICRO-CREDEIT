@@ -11,18 +11,24 @@ export default async function Page({
 }: {
   params: Promise<{ clientId: string }>;
 }) {
-  const clientId = (await params).clientId;
-  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
-  const fullUrl = `${baseUrl}/api/clients?clientId=${encodeURIComponent(
-    clientId
-  )}`;
+  // const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
+  // const fullUrl = `${baseUrl}/api/clients?clientId=${encodeURIComponent(
+  //   clientId
+  // )}`;
 
   try {
-    const client = await makeRequest(fullUrl, {
-      method: "GET",
-      cache: "no-store",
-    });
-
+    // const client = await makeRequest(fullUrl, {
+    //   method: "GET",
+    //   cache: "no-store",
+    const clientId = (await params).clientId;
+    const { GET } = await import("@/app/api/clients/route");
+    const request: any = new Request(
+      `http://localhost/api/clients?clientId=${encodeURIComponent(clientId)}`
+    );
+    // });
+    const response = await GET(request);
+    const client = await response.json();
+    console.log(client);
     if (!client?.data) {
       return (
         <main>
@@ -33,9 +39,9 @@ export default async function Page({
 
     return (
       <Suspense fallback={<LoadingDivs />}>
-        <ClientDetails client={client.data} clientId={clientId}/>;
+        <ClientDetails client={client.data} clientId={clientId} />;
       </Suspense>
-    ) 
+    );
   } catch (error) {
     console.error("Error fetching client data:", error);
     return (

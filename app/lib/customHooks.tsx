@@ -327,7 +327,7 @@ export const useGenerateDocument = async (
   const html = reportGenerationRef.current.outerHTML;
 
   try {
-    const res = await fetch(`http://localhost:3000/api/generate-document/${type}`, {
+    const res = await fetch(`/api/generate-document/${type}`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ html }),

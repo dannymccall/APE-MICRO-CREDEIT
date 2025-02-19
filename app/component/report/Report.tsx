@@ -12,12 +12,12 @@ export function TransactionReportTableHeader({
   reportType,
   children,
   reportHeading,
-  showTemporalDetails
+  showTemporalDetails,
 }: {
   reportType: string;
   children: ReactNode;
   reportHeading: string;
-  showTemporalDetails?: boolean
+  showTemporalDetails?: boolean;
 }) {
   return (
     <main className="overflow-x-auto">
@@ -237,7 +237,7 @@ export function Disbursement({ disbursements }: { disbursements: any[] }) {
           <td className="text-sm font-sans font-normal text-gray-700 p-1 border">
             {formatCurrency(
               (disbursement.principalPayment + disbursement.interestPayment) *
-              12
+                12
             )}
           </td>
           <td className="text-sm font-sans font-normal text-gray-700 p-1 border">
@@ -470,7 +470,12 @@ export function GeneralReport({ reports }: { reports: any[] }) {
           reportType="default"
           reportHeading="Defaults"
         >
-          <Default reports={defaults} totalAmountLeft={defaultSumValues.totalOutstandingBalance} totalAmountPaid={defaultSumValues.totalAmountPaid} totalWeeklyAmount={defaultSumValues.totalAmountToPay}/>
+          <Default
+            reports={defaults}
+            totalAmountLeft={defaultSumValues.totalOutstandingBalance}
+            totalAmountPaid={defaultSumValues.totalAmountPaid}
+            totalWeeklyAmount={defaultSumValues.totalAmountToPay}
+          />
         </TransactionReportTableHeader>
       )}
     </React.Fragment>
@@ -596,7 +601,6 @@ export function Arrears({
             <td className="text-sm font-sans font-normal text-gray-700 p-1 border">
               {formatCurrency(report.schedules.amountPaid)}
             </td>
-            
           </tr>
         ))}
       <tr className="border">
@@ -615,14 +619,23 @@ export function Arrears({
         <td className="font-semibold font-sans text-sm text-gray-900 p-1">
           {formatCurrency(totalAmountPaid)}
         </td>
-       
         <td className="p-1">....</td> {/* Empty cell for consistent layout */}
       </tr>
     </tbody>
   );
 }
 
-export function Default({ reports, totalAmountPaid, totalAmountLeft, totalWeeklyAmount }: { reports: any[], totalAmountPaid: number, totalAmountLeft: number, totalWeeklyAmount: number }) {
+export function Default({
+  reports,
+  totalAmountPaid,
+  totalAmountLeft,
+  totalWeeklyAmount,
+}: {
+  reports: any[];
+  totalAmountPaid: number;
+  totalAmountLeft: number;
+  totalWeeklyAmount: number;
+}) {
   return (
     <tbody>
       {reports.length > 0 ? (
@@ -669,7 +682,6 @@ export function Default({ reports, totalAmountPaid, totalAmountLeft, totalWeekly
             </td>
           </tr>
         ))
-
       ) : (
         <tr>
           <td colSpan={2}>
@@ -699,13 +711,13 @@ export function Default({ reports, totalAmountPaid, totalAmountLeft, totalWeekly
   );
 }
 
-export function Outstanding({ data, page }: { data: any[], page: string }) {
+export function Outstanding({ data, page }: { data: any[]; page: string }) {
   return (
     <tbody>
       {data.map((loan) => (
         <tr key={loan.loanId.toString()}>
-          {
-            page === "report" && (<React.Fragment>
+          {page === "report" && (
+            <React.Fragment>
               <td className="text-sm font-sans font-medium text-gray-700 p-1 border text-left">
                 {loan.clientName}
               </td>
@@ -721,10 +733,9 @@ export function Outstanding({ data, page }: { data: any[], page: string }) {
               <td className="text-sm font-sans font-medium text-gray-700 p-1 border text-left">
                 {new Date(loan.loanMaturityDate).toLocaleDateString()}
               </td>
-            </React.Fragment>)
-          }
-         
-         
+            </React.Fragment>
+          )}
+
           <td className="text-sm font-sans font-medium text-gray-700 p-1 border text-left">
             {formatCurrency(loan.totalPrincipal)}
           </td>
@@ -743,8 +754,8 @@ export function Outstanding({ data, page }: { data: any[], page: string }) {
           <td className="text-sm font-sans font-medium text-gray-700 p-1 border text-left">
             {formatCurrency(loan.totalAmountLeft)}
           </td>
-          {
-            page === "report" && <React.Fragment>
+          {page === "report" && (
+            <React.Fragment>
               <td className="text-sm font-sans font-medium text-gray-700 p-1 border text-left">
                 {loan.guarantorName}
               </td>
@@ -757,15 +768,13 @@ export function Outstanding({ data, page }: { data: any[], page: string }) {
               <td className="text-sm font-sans font-medium text-gray-700 p-1 border text-left">
                 {loan.clientUnionLocation}
               </td>
-
             </React.Fragment>
-          }
-         
+          )}
         </tr>
       ))}
       <tr className="border">
         <td
-          colSpan={5}
+          colSpan={page === "report" ? 5 : 0}
           className="font-semibold font-sans text-sm text-gray-900 p-1"
         >
           Total
@@ -780,7 +789,9 @@ export function Outstanding({ data, page }: { data: any[], page: string }) {
           {formatCurrency(data.reduce((sum, acc) => acc.totalInterest, 0))}
         </td>
         <td className="font-semibold font-sans text-sm text-gray-900 p-1">
-          {formatCurrency(data.reduce((sum, acc) => acc.totalOutstandingBalance, 0))}
+          {formatCurrency(
+            data.reduce((sum, acc) => acc.totalOutstandingBalance, 0)
+          )}
         </td>
         <td className="font-semibold font-sans text-sm text-gray-900 p-1">
           {formatCurrency(data.reduce((sum, acc) => acc.totalAmountPaid, 0))}

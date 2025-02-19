@@ -62,13 +62,11 @@ interface Repayment {
   monthlyRepayment: number;
 }
 export async function useDashboardValues() {
-  const BASE_URL =
-    process.env.NEXT_PUBLIC_BASE_URL;
-  const response:any = await makeRequest(`${BASE_URL}/api/dashboard`, {
-    method: "GET",
-    cache: "no-store",
-  });
-
+  // const BASE_URL =
+  //   process.env.NEXT_PUBLIC_BASE_URL;
+  const response = await import("@/app/api/dashboard/route")
+  const data:any = await (await response.GET()).json();
+  console.log(data)
   
   const {
     monthlyDisbursement,
@@ -83,7 +81,7 @@ export async function useDashboardValues() {
     todayRepayment,
     todayDisbursement,
     activities
-  } = response;
+  } = data;
 
   const disbursementMonths: string[] = monthlyDisbursement.map(
     (disbursement: Disbursement) => disbursement._id

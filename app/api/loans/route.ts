@@ -56,13 +56,15 @@ export async function generateFileName(passport: File | null) {
 }
 export async function GET(req: NextRequest) {
   try {
-    const searchParams = req.nextUrl.searchParams;
+    const url = new URL(req.url);
+    const searchParams = url.searchParams;
+
+    // Extract your parameters
     const pageParam = searchParams.get("page");
     const limitParam = searchParams.get("limit");
-    const loanId = searchParams.get("loanId");
     const search = searchParams.get("search");
     const query = searchParams.get("query");
-
+    const loanId = searchParams.get("loanId");
     // Handle loan search by query
     if (query) {
       try {
