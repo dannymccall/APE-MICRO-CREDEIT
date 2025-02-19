@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { join } from "path";
 import { readFile } from "fs/promises";
 
-export async function GET(req: NextRequest, { params }: { params: { filename: string } }) {
+export async function GET( { params }: { params: { filename: string } }) {
   try {
     // Path to the image in /tmp
     const filePath = join("/tmp/uploads", params.filename);
