@@ -176,7 +176,7 @@ const DashboardUI = async () => {
     { name: "Loan Repayment", href: "/loan-recovery", icon: FaHandHoldingUsd },
     {
       name: "Approve Loan Repayments",
-      href: "/loan-recovery",
+      href: "/approve-loan-payment",
       icon: MdOutlineApproval,
     },
     { name: "Add Client", href: "/add-client", icon: AiOutlineUserAdd },

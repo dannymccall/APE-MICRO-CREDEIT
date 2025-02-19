@@ -5,7 +5,9 @@ import { ILoanApplication } from "@/app/lib/backend/models/loans.model";
 import Image from "next/image";
 import LoanClientDetails from "@/app/component/loans/LoanClientDetails";
 import LoanGuarantorDetails from "@/app/component/loans/LoanGuarantorDetails";
-import PaymentSchedule, {OutstandingDetails} from "@/app/component/loans/PaymentSchedule";
+import PaymentSchedule, {
+  OutstandingDetails,
+} from "@/app/component/loans/PaymentSchedule";
 import { MdModeEdit } from "react-icons/md";
 import LoanAccountDetails from "@/app/component/loans/LoanDetails";
 import TabComponent from "@/app/component/loans/TabsComponent";
@@ -22,10 +24,21 @@ export type LoanDetailsProps = {
 };
 const LoanDetails: React.FC<LoanDetailsProps> = ({ loan, loanId }) => {
   const router = useRouter();
-  const clientAvarta = `/uploads/${loan.client.avarta}` || `/tmp/${loan.client.avarta}`;
-  const guarantorAvarta = `/uploads/${loan.guarantor.avarta}` || `/tmp/${loan.guarantor.avarta}`;
+
   const [showToast, setShowToast] = useState<boolean>(false);
   const [modalOpen, setModalOpen] = React.useState<boolean>(false);
+  const [clientAvarta, setClientAvarta] = useState<any>(null);
+  const [guarantorAvarta, setGuarantor] = useState<any>(null);
+
+  const env = process.env.NEXT_PUBLIC_NODE_ENV;
+  setClientAvarta(`/uploads/${loan.client.avarta}`);
+  guarantorAvarta(`/uploads/${loan.guarantor.avarta}`);
+
+
+  if (env !== "development") {
+    setClientAvarta(`/api/image/${loan.client.avarta}`);
+    guarantorAvarta(`/api/image/${loan.guarantor.avarta}`);
+  }
 
   // const today: Date = new Date("2025-01-25");
   const arreas = loan.paymentSchedule.schedule.filter(
@@ -62,7 +75,6 @@ const LoanDetails: React.FC<LoanDetailsProps> = ({ loan, loanId }) => {
       setModalOpen(false);
       setShowToast(true);
 
-      
       const timeOut: NodeJS.Timeout = setTimeout(() => {
         setShowToast(false);
       }, 100);
@@ -109,7 +121,7 @@ const LoanDetails: React.FC<LoanDetailsProps> = ({ loan, loanId }) => {
       label: "Outstanding",
       content:
         outStandingLoans.length > 0 ? (
-        <OutstandingDetails data={data}/>
+          <OutstandingDetails data={data} />
         ) : (
           <h1>No Outstanding loans</h1>
         ),
