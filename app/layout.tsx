@@ -36,10 +36,10 @@ export default function RootLayout({
 
   const showLayout = pathName !== "/"; // Hide layout on the error page
 
-  // useEffect(() => {
-  //   // Set the sidebar state when the component mounts
-  //   setIsSidebarOpen(false);
-  // }, []);
+  useEffect(() => {
+    // Set the sidebar state when the component mounts
+    setIsSidebarOpen(false);
+  }, []);
   useEffect(() => {
     console.log(window.innerWidth);
     if (window.innerWidth >= 1024) {

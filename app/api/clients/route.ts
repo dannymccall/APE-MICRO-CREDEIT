@@ -28,7 +28,8 @@ const activitymanagementService = new ActivitymanagementService();
 export const saveFile = async (fileName: string, buffer: Buffer) => {
   try {
     // Define the directory and file path
-    const uploadDir = join(process.cwd(), "public", "uploads");
+    // const uploadDir = join(process.cwd(), "public", "uploads");
+    const uploadDir = "/tmp/uploads";
     const filePath = join(uploadDir, fileName);
 
     // Ensure the directory exists
