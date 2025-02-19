@@ -11,10 +11,7 @@ export default async function Page({
 }: {
   params: Promise<{ loanId: string }>;
 }) {
-  // const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
-  // const fullUrl = `${baseUrl}/api/loans?loanId=${encodeURIComponent(
-    //   loanId
-    // )}`;
+ 
     try {
       const loanId = (await params).loanId;
       const { GET } = await import("@/app/api/loans/route");
@@ -24,10 +21,7 @@ export default async function Page({
       const response = await GET(request);
       const loan = await response.json();
       console.log(loan);
-      // const loan = await makeRequest(fullUrl, {
-        //   method: "GET",
-        //   cache: "no-store",
-    // });
+     
 
     console.log(loan);
     if (!loan?.data) {

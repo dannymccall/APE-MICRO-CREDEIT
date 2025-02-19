@@ -13,7 +13,9 @@ export async function GET(req: NextRequest) {
     }
 
     // Path to the image in the /tmp/uploads directory
-    const filePath = join("/tmp/uploads", fileName);
+    const uploadDir = join("/tmp", "uploads");
+
+    const filePath = join(uploadDir, fileName);
 
     // Read the image file
     const imageBuffer = await readFile(filePath);
