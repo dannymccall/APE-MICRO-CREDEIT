@@ -233,7 +233,7 @@ export default function Sidebar({
             {profilePicture ? (
               <div className="relative border-2 border-white rounded-full desktop:h-30 laptop:h-30 tablet:h-30 phone:h-32 desktop:w-30 laptop:w-30 tablet:w-30 phone:w-32">
                 {process.env.NEXT_PUBLIC_NODE_ENV !== "development" ? (
-                <ImageComponent src={profilePicture} />
+                <ImageComponent src={profilePicture} className="rounded-full border-white border-solid w-full h-full"/>
                 ) : (
                 <Image
                   src={`/uploads/${profilePicture}`}
