@@ -232,7 +232,7 @@ export default function Sidebar({
             {profilePicture ? (
               <div className="relative border-2 border-white rounded-full desktop:h-30 laptop:h-30 tablet:h-30 phone:h-32 desktop:w-30 laptop:w-30 tablet:w-30 phone:w-32">
                 <Image
-                  src={`/uploads/${profilePicture}` || `/tmp/${profilePicture}`}
+                  src={`/uploads/${profilePicture}`}
                   width={100}
                   height={100}
                   alt=""
