@@ -3,20 +3,24 @@ import { join } from "path";
 import { readFile } from "fs/promises";
 
 // Correct function signature
-export async function GET(req: NextRequest, context: { params: { fileName: string } }) {
+export async function GET(req: NextRequest) {
   try {
-    const { fileName } = context.params;
+    // Extract params using `req.nextUrl`
+    const fileName = req.nextUrl.pathname.split("/").pop();
 
-    // Path to the image in the /tmp directory
+    if (!fileName) {
+      return new NextResponse("File name is required", { status: 400 });
+    }
+
+    // Path to the image in the /tmp/uploads directory
     const filePath = join("/tmp/uploads", fileName);
 
     // Read the image file
     const imageBuffer = await readFile(filePath);
 
-    // Serve the image
     return new NextResponse(imageBuffer, {
       headers: {
-        "Content-Type": "image/png", // Adjust MIME type as needed
+        "Content-Type": "image/png", // Ensure the correct MIME type
       },
     });
   } catch (error) {
