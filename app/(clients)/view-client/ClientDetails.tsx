@@ -18,6 +18,7 @@ import { FaTransgenderAlt } from "react-icons/fa";
 import Loan from "@/app/component/loans/Loan";
 import { useRouter } from "next/navigation";
 import InfoHeaderComponent from "@/app/component/Info-header/Info-Header";
+import ImageComponent from "@/app/component/Image";
 export default function ClientDetails({
   client,
   clientId,
@@ -51,13 +52,19 @@ export default function ClientDetails({
         <section className="flex h-full flex-col flex-wrap gap-5 bg-white p-2 overflow-x-auto">
           <div className="w-full flex flex-row ml-10">
             <div className="w-full h-full flex flex-row items-center gap-10">
-              <Image
-                src={avatarUrl}
-                width={100}
-                height={100}
-                alt="Profile image"
-                className=" rounded-md"
-              />
+              <div className="h-full flex flex-row items-center gap-10">
+                {process.env.NEXT_PUBLIC_NODE_ENV !== "development" ? (
+                  <ImageComponent src={avatarUrl} />
+                ) : (
+                  <Image
+                    src={avatarUrl}
+                    width={100}
+                    height={100}
+                    alt="Profile image"
+                    className=" rounded-md"
+                  />
+                )}
+              </div>
               <span className="text-lg font-sans font-bold">
                 {client.first_name} {client.last_name}
               </span>

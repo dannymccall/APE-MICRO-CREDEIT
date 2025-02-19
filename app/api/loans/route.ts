@@ -20,6 +20,7 @@ import { LoanApplication } from "@/app/lib/backend/models/loans.model";
 import { getUserId } from "../auth/route";
 import mongoose from "mongoose";
 import { ActivitymanagementService } from "@/app/lib/backend/services/ActivitymanagementService";
+import { getArrayBuffer, uploadToCloudinary } from "@/app/lib/serverFunctions";
 
 await connectDB();
 const clientService = new ClientService();
@@ -77,22 +78,22 @@ export async function GET(req: NextRequest) {
                 { last_name: { $regex: query, $options: "i" } },
               ],
             },
-            select: "first_name last_name"
+            select: "first_name last_name",
           })
           .populate({
             path: "loanOfficer",
-            select: "first_name other_names last_name"
+            select: "first_name other_names last_name",
           })
           .lean();
 
-        const matchedLoans = loans.filter(loan => loan.client !== null);
+        const matchedLoans = loans.filter((loan) => loan.client !== null);
 
         if (matchedLoans.length === 0) {
           return NextResponse.json(
             {
               success: false,
               message: "No loans found matching the search criteria",
-              data: []
+              data: [],
             },
             { status: 404, headers: { "Cache-Control": "no-store" } }
           );
@@ -165,7 +166,7 @@ export async function GET(req: NextRequest) {
           select: ["first_name", "other_names", "last_name"],
         })
         .populate({ path: "client", select: ["first_name", "last_name"] }),
-      LoanApplication.countDocuments()
+      LoanApplication.countDocuments(),
     ]);
 
     return NextResponse.json(
@@ -176,18 +177,18 @@ export async function GET(req: NextRequest) {
           totalLoans,
           currentPage: page,
           totalPages: Math.ceil(totalLoans / limit),
-        }
+        },
       },
       {
         status: 200,
         headers: {
-          "Cache-Control": "no-store, no-cache, must-revalidate, proxy-revalidate",
-          "Pragma": "no-cache",
-          "Expires": "0"
-        }
+          "Cache-Control":
+            "no-store, no-cache, must-revalidate, proxy-revalidate",
+          Pragma: "no-cache",
+          Expires: "0",
+        },
       }
     );
-
   } catch (error: any) {
     console.error("Error in GET /api/loans:", error);
     return NextResponse.json(
@@ -225,11 +226,17 @@ export async function POST(req: NextRequest) {
     let newFileName: string = "";
 
     if (passport.name) {
-      const result: { newFileName: string; buffer: any } = await generateFileName(
-        passport
-      );
-      newFileName = result.newFileName;
-      await saveFile(newFileName, result.buffer);
+      if (process.env.NODE_ENV === "development") {
+        const result = await generateFileName(passport);
+        newFileName = result.newFileName;
+        await saveFile(newFileName, result.buffer);
+        console.log(newFileName);
+      } else {
+        const buffer = await getArrayBuffer(passport);
+        const result = await uploadToCloudinary(buffer, "uploads");
+        newFileName = (result as { secure_url: string }).secure_url;
+        console.log(newFileName);
+      }
     }
 
     const guarantorSystemId: string = generateSystemID("GUA");
@@ -395,7 +402,7 @@ export async function PUT(req: NextRequest) {
     const approveLoan = searchParams.get("approveLoan");
     const loanId = searchParams.get("_id") as string;
     if (approveLoan) {
-      const loan:any = await LoanApplication.findById(loanId).populate({
+      const loan: any = await LoanApplication.findById(loanId).populate({
         path: "loanOfficer",
         select: ["username"],
       });

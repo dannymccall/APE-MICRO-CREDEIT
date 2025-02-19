@@ -21,10 +21,11 @@ import mongoose from "mongoose";
 import { generateFileName } from "../loans/route";
 import { getUserId } from "../auth/route";
 import { ActivitymanagementService } from "@/app/lib/backend/services/ActivitymanagementService";
-
+import { uploadToCloudinary, getArrayBuffer } from "@/app/lib/serverFunctions";
 await connectDB();
 const clientService = new ClientService();
 const activitymanagementService = new ActivitymanagementService();
+
 export const saveFile = async (fileName: string, buffer: Buffer) => {
   try {
     // Define the directory and file path
@@ -251,9 +252,17 @@ export async function POST(req: NextRequest) {
 
     let newFileName: string = "";
     if (passport.name) {
-      const result = await generateFileName(passport);
-      newFileName = result.newFileName;
-      await saveFile(newFileName, result.buffer);
+      if (process.env.NODE_ENV === "development") {
+        const result = await generateFileName(passport);
+        newFileName = result.newFileName;
+        await saveFile(newFileName, result.buffer);
+        console.log(newFileName)
+      } else {
+        const buffer = await getArrayBuffer(passport);
+        const result = await uploadToCloudinary(buffer, "uploads");
+        newFileName = (result as { secure_url: string }).secure_url;
+        console.log(newFileName);
+      }
     }
 
     const systemId: string = clientService.generateClientSystemID();

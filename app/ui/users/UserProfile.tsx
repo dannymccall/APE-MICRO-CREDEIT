@@ -19,7 +19,8 @@ import { blobToFile } from "@/app/lib/helperFunctions";
 import Toast from "@/app/component/toast/Toast";
 import { FaCircleCheck } from "react-icons/fa6";
 import ProfileImage from "@/public/profile.jpg";
- import { useProfile } from "@/app/context/ProfileContext";
+import { useProfile } from "@/app/context/ProfileContext";
+import ImageComponent from "@/app/component/Image";
 const ContactInformation = lazy(
   () => import("@/app/component/users/ProfileInfomation")
 );
@@ -38,7 +39,7 @@ const UserProfile = () => {
     messageType: string;
   }>({ showMessage: false, message: "", messageType: "" });
 
-  const {profilePicture, updateProfilePicture} = useProfile();
+  const { profilePicture, updateProfilePicture } = useProfile();
   const fetchUser = useCallback(async () => {
     const user = await makeRequest(`/api/auth?service=fetchUser`, {
       method: "GET",
@@ -57,9 +58,9 @@ const UserProfile = () => {
     console.log({ user });
   }, [user]);
 
-
-
-  const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>): void => {
+  const handleImageUpload = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ): void => {
     const file = event.target.files?.[0];
     if (file) {
       // const reader = new FileReader();
@@ -155,16 +156,22 @@ const UserProfile = () => {
                 onClick={handleClick}
               >
                 {avarta ? (
-                  <Image
-                    src={`/uploads/${avarta}` || `/tmp/${avarta}`}
-                    alt="profile-img"
-                    className="rounded-full border-white border-solid w-full h-full"
-                    width={100}
-                    height={100}
-                  />
+                  process.env.NEXT_PUBLIC_NODE_ENV !== "development" ? (
+                    <ImageComponent src={avarta} />
+                  ) : (
+                    <Image
+                      src={avarta}
+                      width={100}
+                      height={100}
+                      alt="Profile image"
+                      className=" rounded-md"
+                    />
+                  )
                 ) : (
                   <div className="w-full h-full bg-gray-800 rounded-full flex justify-center items-center">
-                    <h1 className="text-slate-100 font-mono text-sm">Profile Picture</h1>
+                    <h1 className="text-slate-100 font-mono text-sm">
+                      Profile Picture
+                    </h1>
                   </div>
                 )}
                 <IoIosCamera

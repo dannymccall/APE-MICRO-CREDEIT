@@ -11,6 +11,10 @@ import { generateFileName } from "../loans/route";
 import { getUserId } from "../auth/route";
 import mongoose from "mongoose";
 import { ActivitymanagementService } from "@/app/lib/backend/services/ActivitymanagementService";
+import {
+  getArrayBuffer,
+  uploadToCloudinary,
+} from "@/app/lib/serverFunctions";
 // async function getUserService(collectionName: any) {
 //   const client = await clientPromise; // Reuse the MongoDB client
 //   const db: Db = client.db("microservice"); // Replace "test" with your database name
@@ -275,10 +279,20 @@ export async function PUT(req: NextRequest) {
       const user = await userService.findOne({ _id: id });
       if (!user) return createResponse(false, "400", "User does not exist");
 
-      const result = await generateFileName(passport);
-      await saveFile(result.newFileName, result.buffer);
+      let newFileName: string = "";
+      if (process.env.NODE_ENV === "development") {
+        const result = await generateFileName(passport);
+        newFileName = result.newFileName;
+        await saveFile(newFileName, result.buffer);
+        console.log(newFileName);
+      } else {
+        const buffer = await getArrayBuffer(passport);
+        const result = await uploadToCloudinary(buffer, "uploads");
+        newFileName = (result as { secure_url: string }).secure_url;
+        console.log(newFileName);
+      }
       const updatedProfilePicture = await userService.update(id, {
-        avarta: result.newFileName,
+        avarta: newFileName,
       });
       if (!updatedProfilePicture)
         return createResponse(false, "400", "Something happend");

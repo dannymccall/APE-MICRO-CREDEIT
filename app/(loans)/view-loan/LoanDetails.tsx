@@ -18,6 +18,7 @@ import { useRouter } from "next/navigation";
 import { getOutstandingBalances, makeRequest } from "@/app/lib/helperFunctions";
 import Toast from "@/app/component/toast/Toast";
 import { FaCircleCheck } from "react-icons/fa6";
+import ImageComponent from "@/app/component/Image";
 export type LoanDetailsProps = {
   loan: ILoanApplication | any;
   loanId: string;
@@ -31,13 +32,12 @@ const LoanDetails: React.FC<LoanDetailsProps> = ({ loan, loanId }) => {
   const [guarantorAvarta, setGuarantor] = useState<any>(null);
 
   const env = process.env.NEXT_PUBLIC_NODE_ENV;
-  setClientAvarta(`/uploads/${loan.client.avarta}`);
+
+
+
+  if (env === "development") {
+    setClientAvarta(`/uploads/${loan.client.avarta}`);
   guarantorAvarta(`/uploads/${loan.guarantor.avarta}`);
-
-
-  if (env !== "development") {
-    setClientAvarta(`/api/image/${loan.client.avarta}`);
-    guarantorAvarta(`/api/image/${loan.guarantor.avarta}`);
   }
 
   // const today: Date = new Date("2025-01-25");
@@ -168,13 +168,17 @@ const LoanDetails: React.FC<LoanDetailsProps> = ({ loan, loanId }) => {
             </div>
             <div className="flex w-full gap-3 items-center">
               <div className="h-full flex flex-row items-center gap-10">
-                <Image
-                  src={clientAvarta}
-                  width={100}
-                  height={100}
-                  alt="Profile image"
-                  className=" rounded-md"
-                />
+                {env !== "development" ? (
+                  <ImageComponent src={loan.client.avarta} />
+                ) : (
+                  <Image
+                    src={clientAvarta}
+                    width={100}
+                    height={100}
+                    alt="Profile image"
+                    className=" rounded-md"
+                  />
+                )}
               </div>
               <LoanClientDetails client={loan.client} />
             </div>
