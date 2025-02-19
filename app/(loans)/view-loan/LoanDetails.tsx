@@ -22,8 +22,8 @@ export type LoanDetailsProps = {
 };
 const LoanDetails: React.FC<LoanDetailsProps> = ({ loan, loanId }) => {
   const router = useRouter();
-  const clientAvarta = `/uploads/${loan.client.avarta}`;
-  const guarantorAvarta = `/uploads/${loan.guarantor.avarta}`;
+  const clientAvarta = `/uploads/${loan.client.avarta}` || `/tmp/${loan.client.avarta}`;
+  const guarantorAvarta = `/uploads/${loan.guarantor.avarta}` || `/tmp/${loan.guarantor.avarta}`;
   const [showToast, setShowToast] = useState<boolean>(false);
   const [modalOpen, setModalOpen] = React.useState<boolean>(false);
 

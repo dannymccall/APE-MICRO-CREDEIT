@@ -36,12 +36,12 @@ const LoanList: React.FC<LoanListProps> = ({
 
 
   return (
-    <div className="w-full grow">
+    <div className="w-full grow bg-slate-100 overflow-x-auto">
      
-      <div className="w-full h-full bg-white relative">
+      <div className="w-full h-full  relative overflow-x-auto">
         <table className="table grow">
           {/* head */}
-          <thead className="relative">
+          <thead className="relative overflow-hidden">
             <tr className="relative bg-violet-200">
               <th className="text-sm font-sans font-medium text-gray-700 text-left p-2">
                 System ID

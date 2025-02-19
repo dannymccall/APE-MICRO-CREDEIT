@@ -132,7 +132,7 @@ const ViewUser: React.FC<IViewUser> = ({
             {!state?.error && state?.response?.message}
           </p>
 
-          <div className="flex flex-row items-center my-5 relative">
+          <div className="flex my-5 relative flex-row desktop:items-center laptop:items-center tablet:items-center phone:items-start  desktop:flex-row laptop:flex-row tablet:flex-row phone:flex-col">
             <div className="flex flex-row w-32 gap-0 items-center">
               <Label
                 className="font-sans font-semibold text-gray-800"
@@ -142,7 +142,7 @@ const ViewUser: React.FC<IViewUser> = ({
             </div>
             <input
               type="text"
-              className="block w-96 px-5 py-2 border-2 border-gray-200 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+              className="block desktop:w-96 laptop:w-96 tablet:w-96 phone:w-full px-5 py-2 border-2 border-gray-200 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
               name="firstName"
               placeholder="Enter First name"
               defaultValue={user.first_name}
@@ -156,7 +156,7 @@ const ViewUser: React.FC<IViewUser> = ({
           )}
           <input type="hidden" name="id" value={String(user._id)} />
           <input type="hidden" name="service" value="update"/>
-          <div className="flex flex-row items-center my-5 relative">
+          <div className="flex flex-row desktop:items-center laptop:items-center tablet:items-center phone:items-start  desktop:flex-row laptop:flex-row tablet:flex-row phone:flex-col my-5 relative ">
             <div className="flex flex-row w-32 gap-0 items-center">
               <Label
                 className="font-sans font-semibold text-gray-800"
@@ -166,7 +166,7 @@ const ViewUser: React.FC<IViewUser> = ({
             </div>
             <input
               type="text"
-              className="block w-96 px-5 py-2 border-2 border-gray-200 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+              className="block desktop:w-96 laptop:w-96 tablet:w-96 phone:w-full px-5 py-2 border-2 border-gray-200 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
               name="lastName"
               placeholder="Enter Last name"
               defaultValue={user.last_name}
@@ -178,14 +178,14 @@ const ViewUser: React.FC<IViewUser> = ({
               {state.errors.lastName}
             </p>
           )}
-          <div className="flex flex-row items-center my-5">
+          <div className="flex flex-row desktop:items-center laptop:items-center tablet:items-center phone:items-start  desktop:flex-row laptop:flex-row tablet:flex-row phone:flex-col my-5">
             <Label
               className="w-32 font-sans font-semibold text-gray-800"
               labelName="Other names:"
             />
             <input
               type="text"
-              className="block w-96 px-5 py-2 border-2 border-gray-200 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+              className="block desktop:w-96 laptop:w-96 tablet:w-96 phone:w-full px-5 py-2 border-2 border-gray-200 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
               placeholder={"Other names"}
               name="otherNames"
               defaultValue={user.other_names}
@@ -197,14 +197,14 @@ const ViewUser: React.FC<IViewUser> = ({
               {state.errors.otherNames}
             </p>
           )}
-          <div className="flex flex-row items-center my-5">
+          <div className="flex flex-row desktop:items-center laptop:items-center tablet:items-center phone:items-start  desktop:flex-row laptop:flex-row tablet:flex-row phone:flex-col my-5">
             <Label
               className="w-32 font-sans font-semibold text-gray-800"
               labelName="Email:"
             />
             <input
               type="email"
-              className="block w-96 px-5 py-2 border-2 border-gray-200 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+              className="block desktop:w-96 laptop:w-96 tablet:w-96 phone:w-full px-5 py-2 border-2 border-gray-200 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
               placeholder={"Email"}
               name="email"
               defaultValue={user.email}
@@ -216,7 +216,7 @@ const ViewUser: React.FC<IViewUser> = ({
               {state.errors.email}
             </p>
           )}
-          <div className="flex flex-row items-center my-5 relative">
+          <div className="flex flex-row desktop:items-center laptop:items-center tablet:items-center phone:items-start  desktop:flex-row laptop:flex-row tablet:flex-row phone:flex-col my-5 relative">
             <div className="flex flex-row w-32 gap-0 items-center">
               <Label
                 className="font-sans font-semibold text-gray-800"
@@ -226,7 +226,7 @@ const ViewUser: React.FC<IViewUser> = ({
             </div>
             <input
               type={!editForm ? "text" : "date"}
-              className="block w-96 px-5 py-2 border-2 border-gray-200 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+              className="block desktop:w-96 laptop:w-96 tablet:w-96 phone:w-full px-5 py-2 border-2 border-gray-200 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
               name="dob"
               defaultValue={!editForm ? formatDate(user.dob) : ""}
               disabled={!editForm}
@@ -249,7 +249,7 @@ const ViewUser: React.FC<IViewUser> = ({
               </ul>
             </div>
           )} */}
-          <div className="flex flex-row  items-center my-2 relative">
+          <div className="flex flex-row  flex-wrap my-2 relative">
             <div className="flex flex-row w-32 items-center my-5">
               <Label
                 className="font-sans font-semibold text-gray-800"
@@ -260,7 +260,7 @@ const ViewUser: React.FC<IViewUser> = ({
             {!editForm && (
               <input
                 type="text"
-                className="block w-96 px-5 py-2 border-2 border-gray-200 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                className="block desktop:w-96 laptop:w-96 tablet:w-96 phone:w-full px-5 py-2 border-2 border-gray-200 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                 defaultValue={
                  toCapitalized(user.sex)
                 }
@@ -270,7 +270,7 @@ const ViewUser: React.FC<IViewUser> = ({
             {editForm && (
               <>
                 {["Male", "Female", "Others"].map((role, index) => (
-                  <div className="flex flex-row items-center mr-10" key={role}>
+                  <div className="flex flex-row flex-wrap items-center mr-10" key={role}>
                     <Label
                       className="w-12 font-sans font-semibold text-gray-800"
                       labelName={role}
@@ -311,8 +311,8 @@ const ViewUser: React.FC<IViewUser> = ({
               </ol>
             )}
             {editForm && (
-              <div className="flex flex-col  mr-10">
-                <div className="flex flex-row gap-5">
+              <div className="flex flex-col flex-wrap mr-10 ">
+                <div className="flex flex-row gap-5 w-full">
                   {availableRoles.map((role) => (
                     <button
                       key={role}
@@ -362,7 +362,7 @@ const ViewUser: React.FC<IViewUser> = ({
           )}
           {editForm && (
             <button
-              className={`btn w-24 flex items-center font-sans rounded-md justify-center gap-3 ${"bg-gradient-to-r from-violet-500 to-violet-700 hover:from-violet-700 hover:to-violet-900"} text-white py-2 rounded-md focus:outline-none font-bold font-mono transition`}
+              className={`btn desktop:w-24 mt-5 laptop:w-24 tablet:w-24 phone:w-full flex items-center font-sans rounded-md justify-center gap-3 ${"bg-gradient-to-r from-violet-500 to-violet-700 hover:from-violet-700 hover:to-violet-900"} text-white py-2 rounded-md focus:outline-none font-bold font-mono transition`}
               onClick={handleClick}
               type="submit"
             >

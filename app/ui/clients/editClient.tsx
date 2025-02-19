@@ -106,8 +106,8 @@ const EditClient: React.FC<IEditClient> = ({ client, setOpenModalEdit }) => {
   //   }
   // };
   return (
-    <div className="w-full h-full">
-      <div className="w-full h-full tablet:p-5 desktop:14 laptop:p-10 phone:p-3">
+    <div className="w-full h-full overflow-x-auto">
+      <div className="w-full h-full tablet:p-5 desktop:14 laptop:p-10 phone:p-3 overflow-x-auto">
         <form
           action={action}
           className="bg-white shadow-sm w-full  border-t-4 border-t-violet-900 "

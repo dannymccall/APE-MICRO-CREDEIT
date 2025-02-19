@@ -95,7 +95,7 @@ const ViewBranch: React.FC<IViewUser> = ({
           </p>
 
           <div className="flex desktop:flex-row laptop:flex-row tablet:flex-row phone:flex-col  my-5 relative">
-            <div className="flex flex-row w-32 gap-0 items-center">
+            <div className="flex flex-row w-40 gap-0 items-center">
               <Label
                 className="font-sans font-semibold text-gray-800"
                 labelName="Branch name:"

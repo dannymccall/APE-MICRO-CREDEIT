@@ -59,7 +59,7 @@ const Client: React.FC<ClientProps> = ({ client, onDelete, editClient }) => {
           Icon={FaCircleCheck}
           title="User Deletion Response"
         />
-      )}  
+      )}
 
       <tr key={client.id} className="hover:bg-gray-100 relative">
         <td className="p-2 text-sm">{client.systemId}</td>
@@ -71,79 +71,57 @@ const Client: React.FC<ClientProps> = ({ client, onDelete, editClient }) => {
         <td className="p-2 text-sm">
           {client.client_status === "in-active" ? "In Active" : "Active"}
         </td>
-        <td className="p-2 text-sm"> {client.branch.branchName || "No Branch"}</td>
-        <td className="p-2 text-sm"> {client.staff.first_name || "No Staff"} </td>
+        <td className="p-2 text-sm">
+          {" "}
+          {client.branch.branchName || "No Branch"}
+        </td>
+        <td className="p-2 text-sm">
+          {" "}
+          {client.staff.first_name || "No Staff"}{" "}
+        </td>
 
-        <td className="p-2 text-sm relative">
-          <section
-            className="dropdown flex items-center h-full relative"
-            style={{ height: "100%" }}
-          >
-            <button
-              tabIndex={0}
-              role="button"
-              aria-haspopup="true"
-              aria-expanded={openDropdown}
-              className="border-2 border-violet-500 px-2 py-1 flex items-center gap-1 cursor-pointer h-full rounded"
-              onClick={() => setOpenDropdown(!openDropdown)}
+        <td className="p-2 w-full text-sm relative flex flex-row gap-3 items-center h-full">
+          <div className="tooltip" data-tip="View">
+            <Link
+              role="menuitem"
+              className="text-left flex flex-row gap-3"
+              href={`/view-client/${client.systemId}`}
             >
-              <HiOutlineDotsHorizontal size={25} className="text-violet-700" />
-              <RiArrowDropDownFill size={25} className="text-violet-700" />
+              <MdViewCompact
+                size={20}
+                className="text-violet-800 font-semibold"
+              />
+            </Link>
+          </div>
+
+          <div className="tooltip" data-tip="Edit">
+            <button
+              role="menuitem"
+              className="text-left flex flex-row gap-3"
+              onClick={() => {
+                setEditForm(true);
+                setOpenModalEdit(true);
+              }}
+            >
+              <RiEditBoxLine
+                size={20}
+                className="text-blue-800 font-semibold"
+              />
             </button>
+          </div>
 
-            {openDropdown && (
-              <ul
-                tabIndex={0}
-                role="menu"
-                className="dropdown-content menu absolute right-0 bg-white rounded z-10 w-28 p-2 shadow-lg"
-                style={{ top: "100%" }}
-              >
-                <li>
-                  <Link
-                    role="menuitem"
-                    className="w-full text-left flex flex-row gap-3"
-                    href={`/view-client/${client.systemId}`}
-                  >
-                    <MdViewCompact
-                      size={20}
-                      className="text-violet-800 font-semibold"
-                    />
-                    View
-                  </Link>
-                </li>
-                <li>
-                  <button
-                    role="menuitem"
-                    className="w-full text-left flex flex-row gap-3"
-                    onClick={() => {
-                      setEditForm(true);
-                      setOpenModalEdit(true);
-                    }}
-                  >
-                    <RiEditBoxLine
-                      size={20}
-                      className="text-blue-800 font-semibold"
-                    />
-                    Edit
-                  </button>
-                </li>
-                <li>
-                  <button
-                    role="menuitem"
-                    className="w-full text-left flex flex-row gap-3"
-                    onClick={() => setOpenModalDeleted(true)}
-                  >
-                    <RiDeleteBin6Line
-                      size={20}
-                      className="font-semibold text-red-800"
-                    />
-                    Delete
-                  </button>
-                </li>
-              </ul>
-            )}
-          </section>
-
+          <div className="tooltip" data-tip="Delete">
+            <button
+              role="menuitem"
+              className="text-left flex flex-row gap-3"
+              onClick={() => setOpenModalDeleted(true)}
+            >
+              <RiDeleteBin6Line
+                size={20}
+                className="font-semibold text-red-800"
+              />
+            </button>
+          </div>
           <Modal
             modalOpen={openModalDeleted}
             setModalOpen={setOpenModalDeleted}
@@ -156,7 +134,9 @@ const Client: React.FC<ClientProps> = ({ client, onDelete, editClient }) => {
 
               <h1 className="font-sans">
                 Are you sure you want to delete this client:{" "}
-                <strong>{client.first_name} {client.last_name}</strong>
+                <strong>
+                  {client.first_name} {client.last_name}
+                </strong>
               </h1>
 
               <div className="flex gap-2 mt-3">
@@ -175,8 +155,12 @@ const Client: React.FC<ClientProps> = ({ client, onDelete, editClient }) => {
               </div>
             </section>
           </Modal>
-          <Modal modalOpen={openModalEdit} setModalOpen={setOpenModalEdit} width="max-w-3xl">
-           <EditClient setOpenModalEdit={setOpenModalEdit} client={client} />
+          <Modal
+            modalOpen={openModalEdit}
+            setModalOpen={setOpenModalEdit}
+            width="max-w-3xl"
+          >
+            <EditClient setOpenModalEdit={setOpenModalEdit} client={client} />
           </Modal>
         </td>
       </tr>

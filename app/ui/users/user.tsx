@@ -17,8 +17,7 @@ import ViewUser from "./View";
 interface UserProps {
   user: IUser;
   onDelete: () => void;
-  editUser: () => void,
-
+  editUser: () => void;
 }
 
 const User: React.FC<UserProps> = ({ user, onDelete, editUser }) => {
@@ -79,78 +78,49 @@ const User: React.FC<UserProps> = ({ user, onDelete, editUser }) => {
             {user.online_status}
           </section>
         </td>
-        <td className="p-2 relative">
-          <section
-            className="dropdown flex items-center h-full relative"
-            style={{ height: "100%" }}
-          >
+        <td className="p-2 relative flex flex-row gap-3 items-center">
+          <div className="tooltip" data-tip="View">
             <button
-              tabIndex={0}
-              role="button"
-              aria-haspopup="true"
-              aria-expanded={openDropdown}
-              className="border-2 border-violet-500 px-2 py-1 flex items-center gap-1 cursor-pointer h-full rounded"
-              onClick={() => setOpenDropdown(!openDropdown)}
+              role="menuitem"
+              className=" text-left flex flex-row gap-3"
+              onClick={() => {
+                setEditForm(false);
+                setOpenModalEdit(true);
+              }}
             >
-              <HiOutlineDotsHorizontal size={25} className="text-violet-700" />
-              <RiArrowDropDownFill size={25} className="text-violet-700" />
+              <MdViewCompact
+                size={20}
+                className="text-violet-800 font-semibold"
+              />
             </button>
-
-            {openDropdown && (
-              <ul
-                tabIndex={0}
-                role="menu"
-                className="dropdown-content menu absolute right-0 bg-white rounded z-10 w-28 p-2 shadow-lg"
-                style={{ top: "100%" }}
-              >
-                <li>
-                  <button
-                    role="menuitem"
-                    className="w-full text-left flex flex-row gap-3"
-                    onClick={() => {
-                      setEditForm(false);
-                      setOpenModalEdit(true);
-                    }}
-                  >
-                    <MdViewCompact
-                      size={20}
-                      className="text-violet-800 font-semibold"
-                    />
-                    View
-                  </button>
-                </li>
-                <li>
-                  <button
-                    role="menuitem"
-                    className="w-full text-left flex flex-row gap-3"
-                    onClick={() => {
-                      setEditForm(true);
-                      setOpenModalEdit(true);
-                    }}
-                  >
-                    <RiEditBoxLine
-                      size={20}
-                      className="text-blue-800 font-semibold"
-                    />
-                    Edit
-                  </button>
-                </li>
-                <li>
-                  <button
-                    role="menuitem"
-                    className="w-full text-left flex flex-row gap-3"
-                    onClick={() => setOpenModalDeleted(true)}
-                  >
-                    <RiDeleteBin6Line
-                      size={20}
-                      className="font-semibold text-red-800"
-                    />
-                    Delete
-                  </button>
-                </li>
-              </ul>
-            )}
-          </section>
+          </div>
+          <div className="tooltip" data-tip="Edit">
+            <button
+              role="menuitem"
+              className=" text-left flex flex-row gap-3"
+              onClick={() => {
+                setEditForm(true);
+                setOpenModalEdit(true);
+              }}
+            >
+              <RiEditBoxLine
+                size={20}
+                className="text-blue-800 font-semibold"
+              />
+            </button>
+          </div>
+          <div className="tooltip" data-tip="Delete">
+            <button
+              role="menuitem"
+              className="text-left flex flex-row gap-3"
+              onClick={() => setOpenModalDeleted(true)}
+            >
+              <RiDeleteBin6Line
+                size={20}
+                className="font-semibold text-red-800"
+              />
+            </button>
+          </div>
 
           <Modal
             modalOpen={openModalDeleted}

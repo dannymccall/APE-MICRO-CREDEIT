@@ -32,7 +32,7 @@ const ClientList: React.FC<ClientListProps> = ({
   ];
 
   return (
-    <div>
+    <div className="w-full overflow-x-auto bg-white">
       <div className="w-full h-full bg-white relative">
         <table className="table">
           {/* head */}

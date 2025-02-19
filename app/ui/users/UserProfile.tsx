@@ -156,7 +156,7 @@ const UserProfile = () => {
               >
                 {avarta ? (
                   <Image
-                    src={`/uploads/${avarta}`}
+                    src={`/uploads/${avarta}` || `/tmp/${avarta}`}
                     alt="profile-img"
                     className="rounded-full border-white border-solid w-full h-full"
                     width={100}

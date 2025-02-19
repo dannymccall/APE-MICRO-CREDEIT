@@ -44,7 +44,7 @@ const Loan: React.FC<LoanProps> = ({ loan }) => {
       setShowToast(true);
       setMessage(message);
       let timeOut: NodeJS.Timeout;
-      
+
       timeOut = setTimeout(() => {
         window.location.reload();
         setShowToast(false);
@@ -54,9 +54,10 @@ const Loan: React.FC<LoanProps> = ({ loan }) => {
     }
   };
 
-
-  const deleteLoan = async(loanId:string) => {
-    const response = await makeRequest(`/api/loans?_id=${loanId}`,{method: "DELETE"});
+  const deleteLoan = async (loanId: string) => {
+    const response = await makeRequest(`/api/loans?_id=${loanId}`, {
+      method: "DELETE",
+    });
     const { success, message } = response;
     if (success) {
       setOpenModalDeleted(false);
@@ -67,12 +68,11 @@ const Loan: React.FC<LoanProps> = ({ loan }) => {
       timeOut = setTimeout(() => {
         setShowToast(false);
         window.location.reload();
-
       }, 1000);
 
       return () => clearTimeout(timeOut);
     }
-  }
+  };
   return (
     <>
       {showToast && <Toast message={message} Icon={FaCircleCheck} title="" />}
@@ -112,90 +112,63 @@ const Loan: React.FC<LoanProps> = ({ loan }) => {
           </span>{" "}
         </td>
 
-        <td className="p-2 text-sm relative">
-            <button
-              tabIndex={0}
-              role="button"
-              aria-haspopup="true"
-              aria-expanded={openDropdown}
-              className="border-2 border-violet-500 px-2 py-1 flex items-center gap-1 cursor-pointer h-full rounded"
-              onClick={() => setOpenDropdown(!openDropdown)}
+        <td className="p-2 text-sm relative flex flex-row gap-3 items-center">
+          <div className="tooltip" data-tip="View">
+            <Link
+              role="menuitem"
+              className="text-left flex flex-row gap-3"
+              href={`/view-loan/${loan.systemId}`}
+              onClick={() => {
+                // setEditForm(false);
+                // setOpenModalEdit(true);
+              }}
             >
-              <HiOutlineDotsHorizontal size={25} className="text-violet-700" />
-              <RiArrowDropDownFill size={25} className="text-violet-700" />
-            </button>
+              <MdViewCompact
+                size={20}
+                className="text-violet-800 font-semibold"
+              />
+            </Link>
+          </div>
 
-            {openDropdown && (
-              <ul
-                tabIndex={0}
-                role="menu"
-                className="dropdown-content menu absolute right-0 bg-white rounded z-10 w-32 p-2 shadow-lg"
-                style={{ top: "100%" }}
+          <div className="tooltip" data-tip="Edit">
+            <button
+              role="menuitem"
+              className="text-left flex flex-row gap-3"
+              onClick={() => {
+                // setEditForm(true);
+                setOpenModalEdit(true);
+              }}
+            >
+              <RiEditBoxLine
+                size={20}
+                className="text-blue-800 font-semibold"
+              />
+            </button>
+          </div>
+          <div className="tooltip" data-tip="Delete">
+            <button
+              role="menuitem"
+              className="text-left flex flex-row gap-3"
+              onClick={() => setOpenModalDeleted(true)}
+            >
+              <RiDeleteBin6Line
+                size={20}
+                className="font-semibold text-red-800"
+              />
+            </button>
+          </div>
+
+          {loan.loanApprovalStatus === "Pending" && (
+            <div className="tooltip" data-tip="Approve">
+              <button
+                role="menuitem"
+                className="text-left flex flex-row gap-3"
+                onClick={() => setOpenApprodalModal(true)}
               >
-                <li>
-                  <Link
-                    role="menuitem"
-                    className="w-full text-left flex flex-row gap-3"
-                    href={`/view-loan/${loan.systemId}`}
-                    onClick={() => {
-                      // setEditForm(false);
-                      // setOpenModalEdit(true);
-                    }}
-                  >
-                    <MdViewCompact
-                      size={20}
-                      className="text-violet-800 font-semibold"
-                    />
-                    View
-                  </Link>
-                </li>
-                <li>
-                  <button
-                    role="menuitem"
-                    className="w-full text-left flex flex-row gap-3"
-                    onClick={() => {
-                      // setEditForm(true);
-                      setOpenModalEdit(true);
-                    }}
-                  >
-                    <RiEditBoxLine
-                      size={20}
-                      className="text-blue-800 font-semibold"
-                    />
-                    Edit
-                  </button>
-                </li>
-                <li>
-                  <button
-                    role="menuitem"
-                    className="w-full text-left flex flex-row gap-3"
-                    onClick={() => setOpenModalDeleted(true)}
-                  >
-                    <RiDeleteBin6Line
-                      size={20}
-                      className="font-semibold text-red-800"
-                    />
-                    Delete
-                  </button>
-                </li>
-                {loan.loanApprovalStatus === "Pending" && (
-                  <li>
-                    <button
-                      role="menuitem"
-                      className="w-full text-left flex flex-row gap-3"
-                      onClick={() => setOpenApprodalModal(true)}
-                    >
-                      <FcApprove
-                        size={20}
-                        className="font-semibold text-red-800"
-                      />
-                      Approve
-                    </button>
-                  </li>
-                )}
-              </ul>
-            )}
-          {/*</section>*/}
+                <FcApprove size={20} className="font-semibold text-red-800" />
+              </button>
+            </div>
+          )}
 
           <Modal
             modalOpen={openModalDeleted}

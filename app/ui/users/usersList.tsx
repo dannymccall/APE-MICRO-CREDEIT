@@ -25,8 +25,8 @@ const UsersList: React.FC<UserListProps> = ({
 }) => {
  
   return (
-    <div className="bg-white w-full">
-      <div className="w-full h-full bg-white relative">
+    <div className="bg-white w-full overflow-x-auto">
+      <div className="w-full h-full bg-white relative oveflow-x-auto">
         <table className="table">
           {/* head */}
           <thead className="relative">
