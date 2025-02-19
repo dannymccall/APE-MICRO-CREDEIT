@@ -27,6 +27,7 @@ import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { clearLocalStorage, makeRequest } from "@/app/lib/helperFunctions";
 import Modal from "@/app/component/Modal";
+import ImageComponent from "@/app/component/Image";
 // Define the type for sidebar links
 interface SidebarLink {
   name: string;
@@ -212,12 +213,12 @@ export default function Sidebar({
 
   return (
     <div
-    className={`min-h-screen bg-violet-700 text-white flex flex-col desktop:w-72 laptop:64 phone:fixed tablet:fixed z-20 desktop:relative laptop:relative transition-all ${
-      isSidebarOpen
-        ? "phone:w-full tablet:w-full phone:h-screen tablet:h-screen overflow-y-auto"
-        : "phone:w-0 desktop:w-72 laptop:w-64 overflow-hidden"
-    }`}
-  >
+      className={`min-h-screen bg-violet-700 text-white flex flex-col desktop:w-72 laptop:64 phone:fixed tablet:fixed z-20 desktop:relative laptop:relative transition-all ${
+        isSidebarOpen
+          ? "phone:w-full tablet:w-full phone:h-screen tablet:h-screen overflow-y-auto"
+          : "phone:w-0 desktop:w-72 laptop:w-64 overflow-hidden"
+      }`}
+    >
       {/* Sidebar Header */}
       <div className="bg-violet-900 p-4 text-xl font-bold border-b border-violet-500 z-10 mb-7 relative">
         <span
@@ -231,14 +232,17 @@ export default function Sidebar({
           <div className="flex flex-col items-center gap-2 relative">
             {profilePicture ? (
               <div className="relative border-2 border-white rounded-full desktop:h-30 laptop:h-30 tablet:h-30 phone:h-32 desktop:w-30 laptop:w-30 tablet:w-30 phone:w-32">
+                process.env.NEXT_PUBLIC_NODE_ENV !== "development" ? (
+                <ImageComponent src={profilePicture} />
+                ) : (
                 <Image
                   src={`/uploads/${profilePicture}`}
                   width={100}
                   height={100}
-                  alt=""
-                  className="rounded-full border-white border-solid w-full h-full"
-                  priority={true}
+                  alt="Profile image"
+                  className=" rounded-md"
                 />
+                )
               </div>
             ) : (
               <div
@@ -266,72 +270,71 @@ export default function Sidebar({
       <nav className="flex-1">
         {/* <ul className="space-y-2 p-2"> */}
         <div className="h-full flex flex-col gap-2">
-
-        <ul className="space-y-2 p-2">
-          {sidebarLinks
-            .filter((link) => hasPermission(link.roles))
-            .map((link) => (
-              <li key={link.name} className="border-b border-b-gray-500">
-                {!link.subLinks ? (
-                  <Link
-                    href={link.href}
-                    className={`flex items-center space-x-2 p-2 rounded-md mb-2 transition-all ${
-                      isActive(link.href)
-                        ? "bg-white text-violet-700 font-semibold"
-                        : "hover:bg-violet-300"
-                    }`}
-                    prefetch={false}
-                  >
-                    <link.icon />
-                    <span>{link.name}</span>
-                  </Link>
-                ) : (
-                  <>
-                    <button
-                      onClick={() => {
-                        toggleMenu(link.name);
-                        console.log({openMenus})
-                      }}
-                      className="w-full flex items-center justify-between p-2 mb-2 rounded-md hover:bg-violet-300 transition-all"
+          <ul className="space-y-2 p-2">
+            {sidebarLinks
+              .filter((link) => hasPermission(link.roles))
+              .map((link) => (
+                <li key={link.name} className="border-b border-b-gray-500">
+                  {!link.subLinks ? (
+                    <Link
+                      href={link.href}
+                      className={`flex items-center space-x-2 p-2 rounded-md mb-2 transition-all ${
+                        isActive(link.href)
+                          ? "bg-white text-violet-700 font-semibold"
+                          : "hover:bg-violet-300"
+                      }`}
+                      prefetch={false}
                     >
-                      <div className="flex items-center space-x-2">
-                        <link.icon />
-                        <span>{link.name}</span>
-                      </div>
-                      {openMenus[link.name] ? (
-                        <FiChevronDown />
-                      ) : (
-                        <FiChevronRight />
-                      )}
-                    </button>
+                      <link.icon />
+                      <span>{link.name}</span>
+                    </Link>
+                  ) : (
+                    <>
+                      <button
+                        onClick={() => {
+                          toggleMenu(link.name);
+                          console.log({ openMenus });
+                        }}
+                        className="w-full flex items-center justify-between p-2 mb-2 rounded-md hover:bg-violet-300 transition-all"
+                      >
+                        <div className="flex items-center space-x-2">
+                          <link.icon />
+                          <span>{link.name}</span>
+                        </div>
+                        {openMenus[link.name] ? (
+                          <FiChevronDown />
+                        ) : (
+                          <FiChevronRight />
+                        )}
+                      </button>
 
-                    {openMenus[link.name] && (
-                      <ul className="ml-6 mt-1 space-y-1">
-                        {link.subLinks
-                          .filter((subLink) => hasPermission(subLink.roles))
-                          .map((subLink) => (
-                            <li key={subLink.name}>
-                              <Link
-                                href={subLink.href}
-                                className={`flex items-center space-x-2 p-2 mb-1 rounded-md transition-all ${
-                                  isActive(subLink.href)
-                                    ? "bg-white text-violet-700 font-semibold"
-                                    : "hover:bg-violet-300"
-                                }`}
-                                prefetch={false}
-                              >
-                                <subLink.icon />
-                                <span>{subLink.name}</span>
-                              </Link>
-                            </li>
-                          ))}
-                      </ul>
-                    )}
-                  </>
-                )}
-              </li>
-            ))}
-        </ul>
+                      {openMenus[link.name] && (
+                        <ul className="ml-6 mt-1 space-y-1">
+                          {link.subLinks
+                            .filter((subLink) => hasPermission(subLink.roles))
+                            .map((subLink) => (
+                              <li key={subLink.name}>
+                                <Link
+                                  href={subLink.href}
+                                  className={`flex items-center space-x-2 p-2 mb-1 rounded-md transition-all ${
+                                    isActive(subLink.href)
+                                      ? "bg-white text-violet-700 font-semibold"
+                                      : "hover:bg-violet-300"
+                                  }`}
+                                  prefetch={false}
+                                >
+                                  <subLink.icon />
+                                  <span>{subLink.name}</span>
+                                </Link>
+                              </li>
+                            ))}
+                        </ul>
+                      )}
+                    </>
+                  )}
+                </li>
+              ))}
+          </ul>
         </div>
 
         {/* <NavbarLinks
