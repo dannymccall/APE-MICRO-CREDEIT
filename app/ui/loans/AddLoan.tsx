@@ -91,7 +91,7 @@ const AddLoan= () => {
       // dispatch({type: "SET_ACTIVE_TAB", payload: 0})
       dispatch({ type: "RESET_STATE" });
       if (logginIdentity && logginIdentity.userRoles.includes("Loan officer")) {
-        const socket = io("http://localhost:3001");
+        const socket = io(`${process.env.NEXT_PUBLIC_SOCKET_URL}`);
         socket.emit("newLoanApplicationSubmited", "A new loan application awaits your approval");
       }
       router.refresh();

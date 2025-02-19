@@ -8,7 +8,7 @@ import { Client } from "@/app/lib/backend/models/client.model";
 import { PaymentSchedule } from "@/app/lib/backend/models/paymentSchdule.model";
 import mongoose from "mongoose";
 import { connectDB } from "@/app/lib/mongodb";
-import { createResponse } from "@/app/lib/helperFunctions";
+import { createResponse, makeRequest } from "@/app/lib/helperFunctions";
 import {
   ITemporalPayment,
   TemporalPayment,
@@ -89,7 +89,11 @@ export async function GET(req: NextRequest) {
           select: ["first_name", "last_name", "systemId"],
         });
       return NextResponse.json(
-        { success: true, message: "Fetched all clients.", data: allPendingPaymentApprovals },
+        {
+          success: true,
+          message: "Fetched all clients.",
+          data: allPendingPaymentApprovals,
+        },
         {
           status: 200,
           headers: {
@@ -173,14 +177,21 @@ export async function POST(req: NextRequest) {
         weeklyAmountExpected: loan?.weeklyAmount as any,
         amountPaid: Number(typedValue.amount),
       };
-      const newTemporalPayment = await TemporalPayment.create(
-        temporalPaymentBody
-      );
 
-      await LoanApplication.findOneAndUpdate(
-        { systemId: typedValue.loanId },
-        { nextPaymentStatus: "Pending" }
-      );
+      await Promise.all([
+        TemporalPayment.create(temporalPaymentBody),
+        LoanApplication.findOneAndUpdate(
+          { systemId: typedValue.loanId },
+          { nextPaymentStatus: "Pending" }
+        ),
+
+        makeRequest(`${process.env.NEXT_PUBLIC_SOCKET_URL}/sockets/notify-admin`, {
+          method: "POST",
+          body: JSON.stringify({
+            message: `Loan Payment of ${typedValue.amount} has been made by ${client?.first_name} ${client?.last_name} for loan ${loan?.systemId}`,
+          }),
+        }),
+      ]);
     }
 
     return createResponse(

@@ -16,7 +16,7 @@ import { AiOutlineUserAdd, AiOutlineFileSearch } from "react-icons/ai"; // Ant D
 import { MdOutlineApproval } from "react-icons/md"; // Material Icons
 import Link from "next/link";
 import { GiCash } from "react-icons/gi";
-import { formatCurrency, formatDate } from "@/app/lib/helperFunctions";
+import { formatCurrency, formatDate, makeRequest } from "@/app/lib/helperFunctions";
 import { LoadingDivs } from "@/app/component/Loading";
 import { IoIosArrowRoundForward } from "react-icons/io";
 import Notifications from "@/app/component/Notification";
@@ -62,12 +62,14 @@ interface Repayment {
   monthlyRepayment: number;
 }
 export async function useDashboardValues() {
-  // const BASE_URL =
-  //   process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:3000";
-  const response:any = await fetch("/api/dashboard", {
+  const BASE_URL =
+    process.env.NEXT_PUBLIC_BASE_URL;
+  const response:any = await makeRequest(`${BASE_URL}/api/dashboard`, {
     method: "GET",
     cache: "no-store",
   });
+
+  
   const {
     monthlyDisbursement,
     monthlyOutstandingBalance,
@@ -82,6 +84,7 @@ export async function useDashboardValues() {
     todayDisbursement,
     activities
   } = response;
+
   const disbursementMonths: string[] = monthlyDisbursement.map(
     (disbursement: Disbursement) => disbursement._id
   );

@@ -9,8 +9,7 @@ import { ActivitymanagementService } from "@/app/lib/backend/services/Activityma
 import { getUserId } from "../auth/route";
 import mongoose from "mongoose";
 
-
-const activitymanagementService = new ActivitymanagementService()
+const activitymanagementService = new ActivitymanagementService();
 
 export async function POST(req: NextRequest) {
   try {
@@ -23,12 +22,14 @@ export async function POST(req: NextRequest) {
     }
 
     // Fetch required data
-    const [pendingLoan, loanApplication,  loanPaymentSchedule] =
-      await Promise.all([
+    const [pendingLoan, loanApplication, loanPaymentSchedule] =
+      (await Promise.all([
         TemporalPayment.findById(pendingLoanId),
-        LoanApplication.findById(loanId).populate({ path: "loanOfficer", select: "username", model: "User" }).exec(),
+        LoanApplication.findById(loanId)
+          .populate({ path: "loanOfficer", select: "username", model: "User" })
+          .exec(),
         PaymentSchedule.findOne({ loan: loanId }),
-      ]) as any[];
+      ])) as any[];
 
     if (!pendingLoan || !loanApplication || !loanPaymentSchedule) {
       return createResponse(false, "404", "Loan data not found");
@@ -43,7 +44,7 @@ export async function POST(req: NextRequest) {
       new Date(date1).getTime() === new Date(date2).getTime();
 
     // Process payment schedule
-    paymentSchedule.forEach((schedule:any) => {
+    paymentSchedule.forEach((schedule: any) => {
       if (schedule.status === "arrears" && balance > 0) {
         const outstanding = Number(schedule.outStandingBalance);
         if (balance >= outstanding) {
@@ -82,28 +83,33 @@ export async function POST(req: NextRequest) {
     // Update database records
     await Promise.all([
       PaymentSchedule.updateOne(
-      { _id: loanPaymentSchedule._id },
-      { schedule: paymentSchedule }
+        { _id: loanPaymentSchedule._id },
+        { schedule: paymentSchedule }
       ),
       LoanApplication.updateOne(
-      { _id: loanId },
-      {
-        nextPayment: new Date(loanApplication.nextPayment as Date).setDate(
-        new Date(loanApplication.nextPayment as Date).getDate() + 7
-        ),
-        nextPaymentStatus: "",
-      }
+        { _id: loanId },
+        {
+          nextPayment: new Date(loanApplication.nextPayment as Date).setDate(
+            new Date(loanApplication.nextPayment as Date).getDate() + 7
+          ),
+          nextPaymentStatus: "",
+        }
       ),
       TemporalPayment.findByIdAndDelete(pendingLoanId),
-      makeRequest(`${process.env.NEXT_PUBLIC_SOCKET_URL}/notify-loan-officer`, 
-        {
-        method: "POST", 
-        body: JSON.stringify({ loanOfficer: loanApplication.loanOfficer.username, message: "Your payment has been approved" }), 
-        headers: { "Content-Type": "application/json" }
-        })
+      makeRequest(`${process.env.NEXT_PUBLIC_SOCKET_URL}/notify-loan-officer`, {
+        method: "POST",
+        body: JSON.stringify({
+          loanOfficer: loanApplication.loanOfficer.username,
+          message: "Your payment has been approved",
+        }),
+        headers: { "Content-Type": "application/json" },
+      }),
     ]);
-     const userId = await getUserId();
-      await activitymanagementService.createActivity("Loan Payment Approval", new mongoose.Types.ObjectId(userId));
+    const userId = await getUserId();
+    await activitymanagementService.createActivity(
+      "Loan Payment Approval",
+      new mongoose.Types.ObjectId(userId)
+    );
     return createResponse(true, "200", "Pending Loan Payment approved");
   } catch (error) {
     console.error("Error processing loan:", error);

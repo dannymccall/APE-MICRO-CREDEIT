@@ -229,7 +229,7 @@ export function useDebounceValue(value: string, time = 250) {
 }
 
 
-const SOCKET_URL = "http://localhost:3001";
+const SOCKET_URL = process.env.NEXT_PUBLIC_SOCKET_URL;
 
 interface ILogginIdentity {
   fullName: string,

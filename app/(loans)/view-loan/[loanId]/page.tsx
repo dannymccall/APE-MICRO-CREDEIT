@@ -13,7 +13,7 @@ export default async function Page({
 }) {
   const loanId = (await params).loanId;
   const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
-  const fullUrl = `/api/loans?loanId=${encodeURIComponent(
+  const fullUrl = `${baseUrl}/api/loans?loanId=${encodeURIComponent(
     loanId
   )}`;
 
