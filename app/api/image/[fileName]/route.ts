@@ -2,17 +2,21 @@ import { NextRequest, NextResponse } from "next/server";
 import { join } from "path";
 import { readFile } from "fs/promises";
 
-export async function GET( { params }: { params: { filename: string } }) {
+// Correct function signature
+export async function GET(req: NextRequest, context: { params: { fileName: string } }) {
   try {
-    // Path to the image in /tmp
-    const filePath = join("/tmp/uploads", params.filename);
+    const { fileName } = context.params;
 
-    // Read the image
+    // Path to the image in the /tmp directory
+    const filePath = join("/tmp/uploads", fileName);
+
+    // Read the image file
     const imageBuffer = await readFile(filePath);
 
+    // Serve the image
     return new NextResponse(imageBuffer, {
       headers: {
-        "Content-Type": "image/png", // Change based on image type
+        "Content-Type": "image/png", // Adjust MIME type as needed
       },
     });
   } catch (error) {
