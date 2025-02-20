@@ -2,38 +2,24 @@ import { NextResponse } from "next/server";
 import fs from "fs";
 import path from "path";
 import ExcelJS from "exceljs";
+import puppeteer from "puppeteer";
 
 export async function POST(req: Request) {
   let browser;
   try {
     const { html } = await req.json();
 
-    // ✅ Use puppeteer-core in production and puppeteer in development
-    const puppeteer =
-      process.env.NODE_ENV === "development"
-        ? await import("puppeteer")
-        : await import("puppeteer-core");
-
-    browser = await puppeteer.default.launch({
-      headless: true,
-      args: [
-        "--no-sandbox",
-        "--disable-setuid-sandbox",
-        "--disable-dev-shm-usage",
-        "--disable-gpu",
-      ],
-      executablePath:
-      process.env.NODE_ENV === "development"
-        ? (await import("puppeteer")).executablePath() // Local path
-        : "/usr/bin/chromium", // Vercel’s Chromium path
-    });
-
-    const page: any = await browser.newPage();
+   
 
     // ✅ Read Tailwind CSS
     const tailwindCSSPath = path.join(process.cwd(), "public", "styles.css");
     const tailwindCSS = fs.readFileSync(tailwindCSSPath, "utf8");
+    browser = await puppeteer.launch({
+      headless: true,
+      
+    });
 
+    const page = await browser.newPage();
     // ✅ Inject Tailwind CSS into the HTML
     const fullHtml = `
       <html>
@@ -50,14 +36,13 @@ export async function POST(req: Request) {
 
     await page.setContent(fullHtml, { waitUntil: "networkidle0" });
 
-// ✅ Extract table data from the HTML
-const tableData = await page.evaluate(() => {
-  const rows = Array.from(document.querySelectorAll("table tr"));
-  return rows.map((row) =>
-    Array.from(row.querySelectorAll("td, th")).map((cell) => cell.textContent || "")
-  );
-});
-
+    // ✅ Extract table data from the HTML
+    const tableData = await page.evaluate(() => {
+      const rows = Array.from(document.querySelectorAll("table tr"));
+      return rows.map((row) =>
+        Array.from(row.querySelectorAll("td, th")).map((cell) => cell.textContent || "")
+      );
+    });
 
     await browser.close();
 
@@ -69,15 +54,8 @@ const tableData = await page.evaluate(() => {
     const maxColumns: number = Math.max(...tableData.map((row: string[]) => row.length));
 
     // ✅ Populate Excel with table data
-    interface TableRow {
-      [index: number]: string;
-    }
-
-    tableData.forEach((row: string[], index: number) => {
-      const newRow = worksheet.addRow([
-        ...row,
-        ...Array(maxColumns - row.length).fill(""), // Fill empty cells
-      ]);
+    tableData.forEach((row: string[]) => {
+      const newRow = worksheet.addRow([...row, ...Array(maxColumns - row.length).fill("")]);
 
       // ✅ Apply bold formatting for "Total" rows
       if (row.some((cell: string) => cell.toLowerCase().includes("total"))) {
@@ -107,10 +85,7 @@ const tableData = await page.evaluate(() => {
     });
   } catch (error) {
     console.error("Error generating Excel:", error);
-    if (browser) await browser.close(); // Ensure browser closes on errors
-    return NextResponse.json(
-      { error: "Failed to generate Excel" },
-      { status: 500 }
-    );
+    if (browser) await browser.close();
+    return NextResponse.json({ error: "Failed to generate Excel" }, { status: 500 });
   }
 }
