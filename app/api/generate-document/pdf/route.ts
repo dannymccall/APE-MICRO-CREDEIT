@@ -46,7 +46,7 @@ export async function POST(req: Request) {
       headless: true,
       executablePath:
         process.env.NEXT_PUBLIC_NODE_ENV !== "development"
-          ? "/usr/bin/chromium"
+          ? "/usr/bin/chromium-browser"
           : undefined,
     });
     const page = await browser.newPage();
