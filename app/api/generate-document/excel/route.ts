@@ -16,7 +16,10 @@ export async function POST(req: Request) {
     const tailwindCSS = fs.readFileSync(tailwindCSSPath, "utf8");
     browser = await puppeteer.launch({
       headless: true,
-      
+      executablePath:
+      process.env.NEXT_PUBLIC_NODE_ENV !== "development"
+        ? "/usr/bin/chromium"
+        : undefined,
     });
 
     const page = await browser.newPage();

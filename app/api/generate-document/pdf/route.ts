@@ -42,7 +42,13 @@ export async function POST(req: Request) {
       </html>
     `;
 
-    browser = await puppeteer.launch({ headless: true });
+    browser = await puppeteer.launch({
+      headless: true,
+      executablePath:
+        process.env.NEXT_PUBLIC_NODE_ENV !== "development"
+          ? "/usr/bin/chromium"
+          : undefined,
+    });
     const page = await browser.newPage();
     await page.setContent(fullHtml, { waitUntil: "networkidle0" });
     const pdfBuffer = await page.pdf({
@@ -50,7 +56,7 @@ export async function POST(req: Request) {
       path: "report.pdf",
       printBackground: true,
       margin: { top: "1cm", right: "1cm", bottom: "1cm", left: "1cm" },
-      landscape: true
+      landscape: true,
     });
 
     return new Response(pdfBuffer, {
