@@ -44,10 +44,7 @@ export async function POST(req: Request) {
 
     browser = await puppeteer.launch({
       headless: true,
-      executablePath:
-        process.env.NEXT_PUBLIC_NODE_ENV !== "development"
-          ? "/usr/bin/chromium-browser"
-          : undefined,
+      executablePath: process.env.PUPPETEER_EXECUTABLE_PATH || puppeteer.executablePath(),
     });
     const page = await browser.newPage();
     await page.setContent(fullHtml, { waitUntil: "networkidle0" });
