@@ -2,6 +2,8 @@ import { NextResponse } from "next/server";
 import fs from "fs";
 import path from "path";
 import puppeteer from "puppeteer";
+import chromium from "@sparticuz/chromium"; // Optimized for Vercel
+
 // Utility to dynamically import Puppeteer
 // const getPuppeteer = async () => {
 //   if (process.env.NODE_ENV === "development") {
@@ -41,10 +43,14 @@ export async function POST(req: Request) {
         <body class="p-6 text-gray-800">${html}</body>
       </html>
     `;
+    const isLocal = process.env.NODE_ENV === "development"; // Detect environment
 
     browser = await puppeteer.launch({
+      args: isLocal ? [] : chromium.args,
+      executablePath: isLocal
+        ? (await import("puppeteer")).default.executablePath() // Local Puppeteer
+        : await chromium.executablePath(), // Vercel Chromium
       headless: true,
-      executablePath: process.env.PUPPETEER_EXECUTABLE_PATH || puppeteer.executablePath(),
     });
     const page = await browser.newPage();
     await page.setContent(fullHtml, { waitUntil: "networkidle0" });

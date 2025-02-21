@@ -3,7 +3,7 @@ import fs from "fs";
 import path from "path";
 import ExcelJS from "exceljs";
 import puppeteer from "puppeteer";
-
+import chromium from "@sparticuz/chromium";
 export async function POST(req: Request) {
   let browser;
   try {
@@ -14,11 +14,15 @@ export async function POST(req: Request) {
     // ✅ Read Tailwind CSS
     const tailwindCSSPath = path.join(process.cwd(), "public", "styles.css");
     const tailwindCSS = fs.readFileSync(tailwindCSSPath, "utf8");
-    browser = await puppeteer.launch({
-      headless: true,
-      executablePath: process.env.PUPPETEER_EXECUTABLE_PATH || puppeteer.executablePath(),
-    });
+    const isLocal = process.env.NODE_ENV === "development"; // Detect environment
 
+    browser = await puppeteer.launch({
+      args: isLocal ? [] : chromium.args,
+      executablePath: isLocal
+        ? (await import("puppeteer")).default.executablePath() // Local Puppeteer
+        : await chromium.executablePath(), // Vercel Chromium
+      headless: true,
+    });
     const page = await browser.newPage();
     // ✅ Inject Tailwind CSS into the HTML
     const fullHtml = `
