@@ -56,16 +56,19 @@ export async function POST(req: Request) {
     await page.setContent(fullHtml, { waitUntil: "networkidle0" });
     const pdfBuffer = await page.pdf({
       format: "A4",
-      path: "report.pdf",
       printBackground: true,
       margin: { top: "1cm", right: "1cm", bottom: "1cm", left: "1cm" },
       landscape: true,
     });
 
+    if (isLocal) {
+      fs.writeFileSync("report.pdf", pdfBuffer);
+      console.log("PDF saved locally: report.pdf");
+    }
     return new Response(pdfBuffer, {
       headers: {
         "Content-Type": "application/pdf",
-        "Content-Disposition": 'attachment; filename="styled-report.pdf"',
+        "Content-Disposition": 'attachment; filename="report.pdf"',
       },
     });
   } catch (error) {
