@@ -73,23 +73,29 @@ const getPaymentScheduleData = async (
   const matchFilter: any = {
     "schedule.status": status,
   };
-
+  console.log({ matchFilter });
   if (startDate && endDate) {
+    const start = new Date(startDate).setHours(0, 0, 0, 0);
     const end = new Date(endDate).setHours(23, 59, 59, 999);
+    
     matchFilter["schedule.nextPayment"] = {
-      $gte: new Date(startDate),
-      $lte: end,
+      $gte: new Date(start),
+      $lte: new Date(end),
     };
+    console.log({ matchFilter });
   } else if (startDate) {
-    matchFilter.nextPayment = {
-      $gte: new Date(startDate),
+    const start = new Date(startDate).setHours(0, 0, 0, 0); // Ensure full day inclusion
+    matchFilter["schedule.nextPayment"] = {
+      $gte: new Date(start),
     };
+    console.log(matchFilter);
   } else if (endDate) {
     const end = new Date(endDate).setHours(23, 59, 59, 999);
-    matchFilter.nextPayment = {
-      $lte: end,
+    matchFilter["schedule.nextPayment"] = {
+      $lte: new Date(end),
     };
   }
+  
 
   const pipeline = [
     { $unwind: "$schedule" },
@@ -157,7 +163,7 @@ const getPaymentScheduleData = async (
   return await PaymentSchedule.aggregate(pipeline);
 };
 
-const activitymanagementService = new ActivitymanagementService()
+const activitymanagementService = new ActivitymanagementService();
 
 export async function POST(req: NextRequest) {
   await connectDB();
@@ -182,14 +188,33 @@ export async function POST(req: NextRequest) {
 
     if (
       (startDate === "" && endDate === "" && filters.length === 0) ||
-      (startDate && endDate && filters.length === 0)
+      (startDate && endDate && filters.length === 0) ||
+      (startDate && !endDate && filters.length === 0) ||
+      (!startDate && endDate && filters.length === 0)
     ) {
-      data = await LoanApplication.find()
+      console.log("good");
+      const start = startDate ? new Date(startDate) : null;
+      const end = endDate ? new Date(endDate).setHours(23, 59, 59, 999) : null;
+
+      // Construct query object
+      const query: any = {};
+      console.log("Start:", start);
+      console.log("End:", end);
+      if (start) query.createdAt = { $gte: start };
+      if (end)
+        query.createdAt = { ...(query.createdAt || {}), $lte: new Date(end) };
+
+      console.log("Query:", query);
+
+      data = await LoanApplication.find(query)
         .populate("client")
         .populate("loanOfficer")
         .populate("guarantor")
         .populate("paymentSchedule");
+
       results["report"] = data;
+
+      console.log(data);
       return NextResponse.json(results);
     }
 
@@ -248,12 +273,16 @@ export async function POST(req: NextRequest) {
           data = [];
           break;
       }
+      console.log({ data });
       if (data.length) {
         results[filter ? filter : "allReport"] = data;
       }
     }
-     const userId = await getUserId();
-      await activitymanagementService.createActivity("Report Generation", new mongoose.Types.ObjectId(userId));
+    const userId = await getUserId();
+    await activitymanagementService.createActivity(
+      "Report Generation",
+      new mongoose.Types.ObjectId(userId)
+    );
     return NextResponse.json(results);
   } catch (error) {
     console.error("Error handling POST request:", error);
