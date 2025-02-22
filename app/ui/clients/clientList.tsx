@@ -42,6 +42,9 @@ const ClientList: React.FC<ClientListProps> = ({
                 System ID
               </th>
               <th className="text-base font-sans font-medium text-gray-700 p-2">
+                Full Name
+              </th>
+              <th className="text-base font-sans font-medium text-gray-700 p-2">
                 Gender
               </th>
               <th className="text-base font-sans font-medium text-gray-700 p-2">

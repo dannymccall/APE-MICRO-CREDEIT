@@ -53,6 +53,8 @@ export default function Sidebar({
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
   const [modalOpen, setModalOpen] = useState<boolean>(false);
   const router = useRouter();
+  const [showUserProfileNavs, setShowUserProfileNavs] =
+    useState<boolean>(false);
   // const [isSidebarOpen, setIsSidebarOpen] = useState<boolean>(true);
   const logginIdentity = useLogginIdentity();
   console.log(logginIdentity);
@@ -233,15 +235,18 @@ export default function Sidebar({
             {profilePicture ? (
               <div className="relative border-2 border-white rounded-full desktop:h-30 laptop:h-30 tablet:h-30 phone:h-32 desktop:w-30 laptop:w-30 tablet:w-30 phone:w-32">
                 {process.env.NEXT_PUBLIC_NODE_ENV !== "development" ? (
-                <ImageComponent src={profilePicture} className="rounded-full border-white border-solid w-full h-full"/>
+                  <ImageComponent
+                    src={profilePicture}
+                    className="rounded-full border-white border-solid w-full h-full"
+                  />
                 ) : (
-                <Image
-                  src={`/uploads/${profilePicture}`}
-                  width={100}
-                  height={100}
-                  alt="Profile image"
-                  className="rounded-full border-white border-solid w-full h-full"
-                />
+                  <Image
+                    src={`/uploads/${profilePicture}`}
+                    width={100}
+                    height={100}
+                    alt="Profile image"
+                    className="rounded-full border-white border-solid w-full h-full"
+                  />
                 )}
               </div>
             ) : (
@@ -334,6 +339,57 @@ export default function Sidebar({
                   )}
                 </li>
               ))}
+            <div className="flex flex-1 flex-col gap-1 phone:block desktop:hidden laptop:hidden tablet:block">
+              <ul className="space-y-2 p-2">
+                <div className="flex items-center space-x-2">
+                  <FiUser />
+                  <button
+                    type="button"
+                    className="w-full flex items-center justify-between p-2 rounded-md hover:bg-violet-300 transition-all"
+                    onClick={() => setShowUserProfileNavs(!showUserProfileNavs)}
+                  >
+                    {logginIdentity ? logginIdentity.userName : "Guest"}{" "}
+                    {showUserProfileNavs ? (
+                      <FiChevronDown />
+                    ) : (
+                      <FiChevronRight />
+                    )}
+                  </button>
+                </div>
+                {showUserProfileNavs && (
+                  <div className="flex flex-col gap-1 ml-5">
+                    <ul className="space-y-2">
+                      <li className="">
+                        <Link
+                          href="/user-profile"
+                          className={`flex items-center gap-2 space-x-2 p-2 rounded-md mb-2 transition-all ${
+                            isActive("")
+                              ? "bg-white text-violet-700 font-semibold"
+                              : "hover:bg-violet-300"
+                          } `}
+                        >
+                          <IoIosInformationCircle />
+                          Basic Info
+                        </Link>
+                      </li>
+                      <li className="">
+                        <button
+                          className={`flex w-full items-center gap-2 space-x-2 p-2 rounded-md  mb-2 transition-all ${
+                            isActive("")
+                              ? "bg-white text-violet-700 font-semibold"
+                              : "hover:bg-violet-300"
+                          } `}
+                          onClick={handleLogout} // Call logout function
+                        >
+                          <IoLogOut />
+                          Logout
+                        </button>
+                      </li>
+                    </ul>
+                  </div>
+                )}
+              </ul>
+            </div>
           </ul>
         </div>
 
@@ -344,47 +400,11 @@ export default function Sidebar({
           toggleDropdown={toggleDropdown}
           className="flex-col justify-center"
         /> */}
-        <div className="flex flex-1 flex-col m-3 gap-1 phone:block desktop:hidden laptop:hidden tablet:block">
-          <h1 className="p-4 border-b border-violet-500">
-            {logginIdentity ? logginIdentity.userName : "Guest"}
-          </h1>
-          <span></span>
-          <div className="flex flex-col gap-1">
-            <ul>
-              <li className="border-b border-b-violet-500">
-                <Link
-                  href="/user-profile"
-                  className={`flex items-center gap-2 space-x-2 p-2 rounded-md mb-2 transition-all ${
-                    isActive("")
-                      ? "bg-white text-violet-700 font-semibold"
-                      : "hover:bg-violet-300"
-                  } `}
-                >
-                  <IoIosInformationCircle />
-                  Basic Info
-                </Link>
-              </li>
-              <li className="border-b border-violet-500">
-                <button
-                  className={`flex w-full items-center gap-2 space-x-2 p-2 rounded-md  mb-2 transition-all ${
-                    isActive("")
-                      ? "bg-white text-violet-700 font-semibold"
-                      : "hover:bg-violet-300"
-                  } `}
-                  onClick={handleLogout} // Call logout function
-                >
-                  <IoLogOut />
-                  Logout
-                </button>
-              </li>
-            </ul>
-          </div>
-        </div>
       </nav>
       {/* Sidebar Footer */}
-      {/* <div className="p-4 border-t border-violet-500 flex-1 flex">
+      <div className="p-4 border-t border-violet-500 flex-1 flex">
         <p className="text-sm">© 2024 My Company</p>
-      </div> */}
+      </div>
       <Modal modalOpen={modalOpen} setModalOpen={setModalOpen}>
         <div className="flex flex-col gap-10 items-center justify-center">
           <p className="font-semibold font-sans text-lg">Sad to see you go</p>

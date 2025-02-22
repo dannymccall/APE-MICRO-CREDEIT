@@ -780,21 +780,21 @@ export function Outstanding({ data, page }: { data: any[]; page: string }) {
           Total
         </td>
         <td className="font-semibold font-sans text-sm text-gray-900 p-1">
-          {formatCurrency(data.reduce((sum, acc) => acc.totalPrincipal, 0))}
+          {formatCurrency(data.reduce((sum, acc) =>sum+ acc.totalPrincipal, 0))}
         </td>
         <td className="font-semibold font-sans text-sm text-gray-900 p-1">
-          {formatCurrency(data.reduce((sum, acc) => acc.totalWeeklyAmount, 0))}
+          {formatCurrency(data.reduce((sum, acc) => sum + acc.totalWeeklyAmount, 0))}
         </td>
         <td className="font-semibold font-sans text-sm text-gray-900 p-1">
-          {formatCurrency(data.reduce((sum, acc) => acc.totalInterest, 0))}
+          {formatCurrency(data.reduce((sum, acc) => sum + acc.totalInterest, 0))}
         </td>
         <td className="font-semibold font-sans text-sm text-gray-900 p-1">
           {formatCurrency(
-            data.reduce((sum, acc) => acc.totalOutstandingBalance, 0)
+            data.reduce((sum, acc) =>sum + acc.totalOutstandingBalance, 0)
           )}
         </td>
         <td className="font-semibold font-sans text-sm text-gray-900 p-1">
-          {formatCurrency(data.reduce((sum, acc) => acc.totalAmountPaid, 0))}
+          {formatCurrency(data.reduce((sum, acc) => sum + acc.totalAmountPaid,0))}
         </td>
         <td className="font-semibold font-sans text-sm text-gray-900 p-1">
           {formatCurrency(data.reduce((sum, acc) => acc.totalAmountLeft, 0))}

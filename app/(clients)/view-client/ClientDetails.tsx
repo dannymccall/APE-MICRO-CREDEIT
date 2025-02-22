@@ -30,6 +30,7 @@ export default function ClientDetails({
 
   const router = useRouter();
   const avatarUrl = `/uploads/${client.avarta}`;
+  console.log({avatarUrl})
   const onClick = () => router.push("/manage-client");
 
   const breadcrumbsLinks = [
@@ -61,7 +62,7 @@ export default function ClientDetails({
                     width={100}
                     height={100}
                     alt="Profile image"
-                    className=" rounded-md"
+                    className="rounded-md"
                   />
                 )}
               </div>

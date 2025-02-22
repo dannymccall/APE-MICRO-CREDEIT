@@ -32,9 +32,7 @@ const AllActivities = () => {
     }
   }
 
-  const handleDelete = () => {
-    fetchUsers();
-  };
+
   useEffect(() => {
     fetchUsers();
   }, [currentPage]);
@@ -79,12 +77,15 @@ const AllActivities = () => {
       :   
       <Suspense fallback={<LoadingDivs />}>
         <div className="p-10">
-          <ActivityList
-            activities={activities}
-            currentPage={currentPage}
-            totalPages={totalPages}
-            setCurrentPage={setCurrentPage}
-          />
+          {
+            activities && activities.length > 0 ? 
+            <ActivityList
+              activities={activities}
+              currentPage={currentPage}
+              totalPages={totalPages}
+              setCurrentPage={setCurrentPage}
+            />: <h1 className="text-center text-2xl">No Activities Found</h1>
+          }
         </div>
       </Suspense>
     }

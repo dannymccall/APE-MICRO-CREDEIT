@@ -96,7 +96,7 @@ export async function POST(req: NextRequest) {
         }
       ),
       TemporalPayment.findByIdAndDelete(pendingLoanId),
-      makeRequest(`${process.env.NEXT_PUBLIC_SOCKET_URL}/notify-loan-officer`, {
+      makeRequest(`${process.env.NEXT_PUBLIC_SOCKET_URL}/sockets/notify-loan-officer`, {
         method: "POST",
         body: JSON.stringify({
           loanOfficer: loanApplication.loanOfficer.username,

@@ -66,12 +66,12 @@ export async function processLoan(state: guarantorState, formData: FormData) {
   console.log(file);
   const { width, height } = await getImageDimensions(file);
 
-  if (!(width >= 600 && width <= 700 && height >= 600 && height <= 700))
-    return {
-      errors: {
-        guarantorPassport: "Passport should be size 600 x 700",
-      },
-    };
+  // if (!(width >= 600 && width <= 700 && height >= 600 && height <= 700))
+  //   return {
+  //     errors: {
+  //       guarantorPassport: "Passport should be size 600 x 700",
+  //     },
+  //   };
 
   formData.append("file", file!);
   const options: RequestInit = {

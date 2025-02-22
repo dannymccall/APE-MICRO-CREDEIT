@@ -55,18 +55,18 @@ export async function addClient(state: AddClientState, formData: FormData) {
     // headers: { "Content-Type": 'multipart/form-data'},
   };
   console.log(body.passport);
-  if (
-    body.service === "addClient" ||
-    (body.service === "updateClient" && body.passport.name !== "")
-  ) {
-    const { width, height } = await getImageDimensions(body.passport);
-    if (!(width >= 600 && width <= 700 && height >= 600 && height <= 700))
-      return {
-        errors: {
-          passport: "Passport should be size 600 x 700",
-        },
-      };
-  }
+  // if (
+  //   body.service === "addClient" ||
+  //   (body.service === "updateClient" && body.passport.name !== "")
+  // ) {
+  //   const { width, height } = await getImageDimensions(body.passport);
+  //   if (!(width >= 600 && width <= 700 && height >= 600 && height <= 700))
+  //     return {
+  //       errors: {
+  //         passport: "Passport should be size 600 x 700",
+  //       },
+  //     };
+  // }
 
   console.log(formData);
 

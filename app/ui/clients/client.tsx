@@ -23,7 +23,6 @@ interface ClientProps {
 }
 
 const Client: React.FC<ClientProps> = ({ client, onDelete, editClient }) => {
-  const [openDropdown, setOpenDropdown] = useState<boolean>(false);
   const [openModalEdit, setOpenModalEdit] = useState<boolean>(false);
   const [openModalDeleted, setOpenModalDeleted] = useState<boolean>(false);
   const [showToast, setShowToast] = useState<boolean>(false);
@@ -63,6 +62,9 @@ const Client: React.FC<ClientProps> = ({ client, onDelete, editClient }) => {
 
       <tr key={client.id} className="hover:bg-gray-100 relative">
         <td className="p-2 text-sm">{client.systemId}</td>
+        <td className="p-2 text-sm">
+          {client.first_name} {client.last_name}
+        </td>
         <td className="p-2 text-sm">
           {client.gender.charAt(0).toUpperCase() +
             client.gender.slice(1).toLowerCase()}

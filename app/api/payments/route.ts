@@ -17,8 +17,7 @@ import { getUserId } from "../auth/route";
 import { ActivitymanagementService } from "@/app/lib/backend/services/ActivitymanagementService";
 
 await connectDB();
-const activitymanagementService = new ActivitymanagementService()
-
+const activitymanagementService = new ActivitymanagementService();
 
 export async function GET(req: NextRequest) {
   mongoose.set("bufferTimeoutMS", 15000);
@@ -80,7 +79,7 @@ export async function GET(req: NextRequest) {
 export async function POST(req: NextRequest) {
   try {
     const formData: any = await req.json();
-    console.log({formData})
+    console.log({ formData });
     for (const [key, value] of Object.entries(formData)) {
       const typedValue = value as {
         amount: string;
@@ -89,13 +88,18 @@ export async function POST(req: NextRequest) {
         clientId: string;
       };
 
-      if(!typedValue.amount || !typedValue.clientId || !typedValue.nextPayment || !typedValue.loanId)
+      if (
+        !typedValue.amount ||
+        !typedValue.clientId ||
+        !typedValue.nextPayment ||
+        !typedValue.loanId
+      )
         continue;
 
       const loan = await LoanApplication.findOne({
         systemId: typedValue.loanId,
       });
-      console.log({loan})
+      console.log({ loan });
       const client = await Client.findOne({ systemId: typedValue.clientId });
 
       const temporalPaymentBody: ITemporalPayment = {
@@ -104,8 +108,8 @@ export async function POST(req: NextRequest) {
         client: client?._id as mongoose.Types.ObjectId,
         weeklyAmountExpected: loan?.weeklyAmount as number,
         amountPaid: Number(typedValue.amount),
-    };
-      console.log(temporalPaymentBody)
+      };
+      console.log(temporalPaymentBody);
 
       await Promise.all([
         TemporalPayment.create(temporalPaymentBody),
@@ -115,8 +119,11 @@ export async function POST(req: NextRequest) {
         ),
       ]);
     }
-  const userId = await getUserId();
-      await activitymanagementService.createActivity("Loan Payment", new mongoose.Types.ObjectId(userId));
+    const userId = await getUserId();
+    await activitymanagementService.createActivity(
+      "Loan Payment",
+      new mongoose.Types.ObjectId(userId)
+    );
     return createResponse(
       true,
       "200",

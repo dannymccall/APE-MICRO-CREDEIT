@@ -16,7 +16,11 @@ import { AiOutlineUserAdd, AiOutlineFileSearch } from "react-icons/ai"; // Ant D
 import { MdOutlineApproval } from "react-icons/md"; // Material Icons
 import Link from "next/link";
 import { GiCash } from "react-icons/gi";
-import { formatCurrency, formatDate, makeRequest } from "@/app/lib/helperFunctions";
+import {
+  formatCurrency,
+  formatDate,
+  makeRequest,
+} from "@/app/lib/helperFunctions";
 import { LoadingDivs } from "@/app/component/Loading";
 import { IoIosArrowRoundForward } from "react-icons/io";
 import Notifications from "@/app/component/Notification";
@@ -45,8 +49,6 @@ interface IActivity {
   };
 }
 
-
-
 interface Disbursement {
   _id: string;
   totalDisbursement: number;
@@ -64,10 +66,9 @@ interface Repayment {
 export async function useDashboardValues() {
   // const BASE_URL =
   //   process.env.NEXT_PUBLIC_BASE_URL;
-  const response = await import("@/app/api/dashboard/route")
-  const data:any = await (await response.GET()).json();
-  console.log(data)
-  
+  const response = await import("@/app/api/dashboard/route");
+  const data: any = await (await response.GET()).json();
+
   const {
     monthlyDisbursement,
     monthlyOutstandingBalance,
@@ -80,7 +81,7 @@ export async function useDashboardValues() {
     totalDisbursement,
     todayRepayment,
     todayDisbursement,
-    activities
+    activities,
   } = data;
 
   const disbursementMonths: string[] = monthlyDisbursement.map(
@@ -119,14 +120,12 @@ export async function useDashboardValues() {
     totalDisbursement,
     todayRepayment,
     todayDisbursement,
-    activities
+    activities,
   ];
 }
 
 const DashboardUI = async () => {
   const breadcrumbsLinks = [{ name: "Dashboard", href: "/dashboard" }];
-
- 
 
   const response = await useDashboardValues();
   const [
@@ -144,7 +143,7 @@ const DashboardUI = async () => {
     totalDisbursement,
     todayRepayment,
     todayDisbursement,
-    activities
+    activities,
   ] = response;
   const dashboardStats: IDashboardStatics[] = [
     { statsType: "Total Clients", stats: totalClients, icon: FiUsers }, // Represents people/users
@@ -295,7 +294,6 @@ const DashboardUI = async () => {
       /> */}
       <Notifications />
       <main className="w-full h-full flex flex-col p-5 gap-10">
-
         <section className="flex flex-row w-full flex-wrap flex-grow-0  items-center justify-center">
           {dashboardStats.map((stats, index) => (
             <div
@@ -352,11 +350,15 @@ const DashboardUI = async () => {
                     <td className="font-semibold text-sm">
                       Total Disbursement
                     </td>
-                    <td className="font-semibold text-sm">{formatCurrency(todayDisbursement)}</td>
+                    <td className="font-semibold text-sm">
+                      {formatCurrency(todayDisbursement)}
+                    </td>
                   </tr>
                   <tr>
                     <td className="font-semibold text-sm">Total Repayment</td>
-                    <td className="font-semibold text-sm">{formatCurrency(todayRepayment)}</td>
+                    <td className="font-semibold text-sm">
+                      {formatCurrency(todayRepayment)}
+                    </td>
                   </tr>
                 </tbody>
               </table>
@@ -381,36 +383,55 @@ const DashboardUI = async () => {
               />
             </div>
             <div className="w-full bg-white m-0 flex flex-col gap-2 p-2">
-              <p className="font-semibold text-lg text-gray-500">Recent Activities</p>
+              <p className="font-semibold text-lg text-gray-500">
+                Recent Activities
+              </p>
               <table className="table">
                 <thead>
                   <tr>
-                    <th className="text-sm font-sans font-medium text-gray-700 text-left">Created Date</th>
-                    <th className="text-sm font-sans font-medium text-gray-700 text-left">Action</th>
-                    <th className="text-sm font-sans font-medium text-gray-700 text-left">Action Taker</th>
+                    <th className="text-sm font-sans font-medium text-gray-700 text-left">
+                      Created Date
+                    </th>
+                    <th className="text-sm font-sans font-medium text-gray-700 text-left">
+                      Action
+                    </th>
+                    <th className="text-sm font-sans font-medium text-gray-700 text-left">
+                      Action Taker
+                    </th>
                   </tr>
-                </thead> 
+                </thead>
                 <tbody>
-                 
-
-                  {
-                    activities && activities.map((activity: IActivity) => (
+                  {activities &&
+                    activities.map((activity: IActivity) => (
                       <tr key={activity.createdAt}>
-                        <td className="text-sm font-mono font-normal text-gray-700 text-left">{new Date(activity.createdAt).toLocaleString()}</td>
-                        <td className="text-sm font-mono font-normal text-gray-700 text-left">{activity.activity}</td>
                         <td className="text-sm font-mono font-normal text-gray-700 text-left">
-                          {activity.userDetails.first_name} {activity.userDetails.other_names} {activity.userDetails.last_name}
+                          {new Date(activity.createdAt).toLocaleString()}
+                        </td>
+                        <td className="text-sm font-mono font-normal text-gray-700 text-left">
+                          {activity.activity}
+                        </td>
+                        <td className="text-sm font-mono font-normal text-gray-700 text-left">
+                        {activity.userDetails
+                            ? `${activity.userDetails.first_name} ${
+                                activity.userDetails.other_names || ""
+                              } ${activity.userDetails.last_name}`
+                            : "Unknown User"}
                         </td>
                       </tr>
-                    ))
-                  }
+                    ))}
                 </tbody>
               </table>
-           <Link href="/view-activities" className="w-full flex gap-4 items-center text-violet-500 link-btn text-base font-mono">
-             See All Activities <IoIosArrowRoundForward size={20} className="relative icon-move-left"/>
-           </Link>
+              <Link
+                href="/view-activities"
+                className="w-full flex gap-4 items-center text-violet-500 link-btn text-base font-mono"
+              >
+                See All Activities{" "}
+                <IoIosArrowRoundForward
+                  size={20}
+                  className="relative icon-move-left"
+                />
+              </Link>
             </div>
-          
           </div>
         </section>
       </main>
