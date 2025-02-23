@@ -36,7 +36,7 @@ import { io } from "socket.io-client";
 import { formatZodErrors, extractFormFields } from "@/app/lib/helperFunctions";
 import { loanSchema } from "@/app/lib/definitions";
 
-const AddLoan= () => {
+const AddLoan = () => {
   const breadcrumbsLinks = [
     { name: "Dashboard", href: "/dashboard" },
 
@@ -53,7 +53,7 @@ const AddLoan= () => {
   // const socket = useSocket();
   const [reducerState, dispatch] = useReducer(useReducerHook, initialState);
   const formData: FormData | any = new FormData();
-  const logginIdentity = useLogginIdentity()
+  const logginIdentity = useLogginIdentity();
   useEffect(() => {
     (async () => {
       const { clientResponse, usersResponse } = await usefetchBranches();
@@ -64,10 +64,14 @@ const AddLoan= () => {
           (client: any) => client.client_status === "active"
         ),
       });
-      dispatch({ type: "SET_USERS", payload: usersResponse.data });
+      dispatch({
+        type: "SET_USERS",
+        payload: usersResponse.data.filter((staff: any) =>
+          staff.roles.includes("Loan officer")
+        ),
+      });
     })();
   }, []); // Empty dependency array ensures this runs once on mount
-
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]; // Get the selected file
@@ -92,7 +96,10 @@ const AddLoan= () => {
       dispatch({ type: "RESET_STATE" });
       if (logginIdentity && logginIdentity.userRoles.includes("Loan officer")) {
         const socket = io(`${process.env.NEXT_PUBLIC_SOCKET_URL}`);
-        socket.emit("newLoanApplicationSubmited", "A new loan application awaits your approval");
+        socket.emit(
+          "newLoanApplicationSubmited",
+          "A new loan application awaits your approval"
+        );
       }
       router.refresh();
 
@@ -245,10 +252,11 @@ const AddLoan= () => {
                 onClick={() =>
                   dispatch({ type: "SET_ACTIVE_TAB", payload: Number(index) })
                 }
-                className={`tab font-mono transition duration-300 ease-in-out ${reducerState.activeTab === index
+                className={`tab font-mono transition duration-300 ease-in-out ${
+                  reducerState.activeTab === index
                     ? "bg-violet-900 text-white rounded-md"
                     : "bg-gray-200 hover:bg-gray-300"
-                  }`}
+                }`}
                 type="button"
               >
                 {tab}
