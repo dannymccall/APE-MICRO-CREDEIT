@@ -413,18 +413,19 @@ export async function PUT(req: NextRequest) {
         loanService.update(loanId, {
           loanApprovalStatus: "Approved",
         }),
-        makeRequest(
-          `${process.env.NEXT_PUBLIC_SOCKET_URL}/sockets/notify-loan-officer`,
-          {
-            method: "POST",
-            body: JSON.stringify({
-              loanOfficer: loan.loanOfficer.username,
-              message: "Your loan application has approved",
-            }),
-            headers: { "Content-Type": "application/json" },
-          }
-        ),
       ]);
+      const response = await makeRequest(
+        `${process.env.NEXT_PUBLIC_SOCKET_URL}/sockets/notify-loan-officer`,
+        {
+          method: "POST",
+          body: JSON.stringify({
+            loanOfficer: loan.loanOfficer.username,
+            message: "Your loan application has approved",
+          }),
+          headers: { "Content-Type": "application/json" },
+        }
+      );
+      console.log(response);
       const userId = await getUserId();
       await activitymanagementService.createActivity(
         "Loan Application Approval",

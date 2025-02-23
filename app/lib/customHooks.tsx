@@ -269,11 +269,11 @@ export const useSocket = (logginIdentity: ILogginIdentity) => {
           clearToast()
         });
 
-        socket.on("loanApproved", (msg) => {
-          setMessage(msg);
-          setShowNotification(true);
-          clearToast()
-        });
+        // socket.on("loanApproved", (msg) => {
+        //   setMessage(msg);
+        //   setShowNotification(true);
+        //   clearToast()
+        // });
 
         break;
 
