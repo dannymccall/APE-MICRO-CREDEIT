@@ -184,6 +184,26 @@ export default function Sidebar({
       icon: TbReportSearch,
       roles: ["Admin", "Loan officer"],
     },
+    {
+      name: "Finance",
+      href: "#",
+      icon: FaCodeBranch,
+      roles: ["Admin"], // Only Admins can see this
+      subLinks: [
+        {
+          name: "Vault",
+          href: "/vault",
+          icon: FiChevronRight,
+          roles: ["Admin"],
+        },
+        {
+          name: "Manage Branch",
+          href: "/manage-branch",
+          icon: FiChevronRight,
+          roles: ["Admin"],
+        },
+      ],
+    },
   ];
 
   // Function to toggle the submenu

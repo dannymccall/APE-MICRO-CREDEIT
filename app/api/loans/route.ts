@@ -423,7 +423,7 @@ export async function PUT(req: NextRequest) {
           method: "POST",
           body: JSON.stringify({
             loanOfficer: loan.loanOfficer.username,
-            message: "Your loan application has approved",
+            message: "Your loan application has been approved",
           }),
           headers: { "Content-Type": "application/json" },
         }
