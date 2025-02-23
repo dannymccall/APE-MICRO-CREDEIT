@@ -14,17 +14,18 @@ import {
   calculateNextPayment,
   makeRequest,
 } from "@/app/lib/helperFunctions";
-import { Client } from "@/app/lib/backend/models/client.model";
+import { Client, IClient } from "@/app/lib/backend/models/client.model";
 import { saveFile } from "../clients/route";
-import { LoanApplication } from "@/app/lib/backend/models/loans.model";
+import { ILoanApplication, LoanApplication } from "@/app/lib/backend/models/loans.model";
 import { getUserId } from "../auth/route";
 import mongoose from "mongoose";
 import { ActivitymanagementService } from "@/app/lib/backend/services/ActivitymanagementService";
 import { getArrayBuffer, uploadToCloudinary } from "@/app/lib/serverFunctions";
+import { CrudService } from "@/app/lib/backend/crudService";
 
 await connectDB();
-const clientService = new ClientService();
-const loanService = new LoanService();
+const clientService: CrudService<IClient> = new ClientService();
+const loanService: CrudService<ILoanApplication> = new LoanService();
 const activitymanagementService = new ActivitymanagementService();
 const isNotEmpty = (value: unknown) =>
   value !== undefined && value !== null && value !== "";
@@ -335,9 +336,9 @@ export async function POST(req: NextRequest) {
     };
     const newPaymentSchedule = await PaymentSchedule.create(paymentSchedule);
     await Promise.all([
-      loanService.update(newLoanApplication._id, {
-        guarantor: newGuarantor._id,
-        paymentSchedule: newPaymentSchedule._id,
+      loanService.update(newLoanApplication._id as string, {
+        guarantor: newGuarantor._id as mongoose.Types.ObjectId,
+        paymentSchedule: newPaymentSchedule._id as mongoose.Types.ObjectId,
       }),
       Client.updateOne(
         { _id: client._id }, // Match the document with this _id
@@ -414,6 +415,8 @@ export async function PUT(req: NextRequest) {
           loanApprovalStatus: "Approved",
         }),
       ]);
+
+      console.log(loan.loanOfficer.username)
       const response = await makeRequest(
         `${process.env.NEXT_PUBLIC_SOCKET_URL}/sockets/notify-loan-officer`,
         {

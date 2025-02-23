@@ -96,15 +96,19 @@ export async function POST(req: NextRequest) {
         }
       ),
       TemporalPayment.findByIdAndDelete(pendingLoanId),
-      makeRequest(`${process.env.NEXT_PUBLIC_SOCKET_URL}/sockets/notify-loan-officer`, {
+    ]);
+    const response = await makeRequest(
+      `${process.env.NEXT_PUBLIC_SOCKET_URL}/sockets/notify-loan-officer`,
+      {
         method: "POST",
         body: JSON.stringify({
           loanOfficer: loanApplication.loanOfficer.username,
           message: "Your payment has been approved",
         }),
         headers: { "Content-Type": "application/json" },
-      }),
-    ]);
+      }
+    );
+    console.log(response);
     const userId = await getUserId();
     await activitymanagementService.createActivity(
       "Loan Payment Approval",

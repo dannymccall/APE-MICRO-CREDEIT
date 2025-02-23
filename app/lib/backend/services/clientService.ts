@@ -1,8 +1,8 @@
 import { CrudService } from "../crudService";
 import bcrypt from "bcrypt";
-import { Client } from "@/app/lib/backend/models/client.model";
+import { Client, IClient } from "@/app/lib/backend/models/client.model";
 
-class ClientService extends CrudService<any> {
+class ClientService extends CrudService<IClient> {
   constructor() {
     super(Client);
   }

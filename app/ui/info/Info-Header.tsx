@@ -33,7 +33,7 @@ const InfoHeader = ({
           <QuickAccess title={title} onClick={onClick} />
         )}
       </div>
-      <div className="breadcrumbs w-72 text-sm phone:hidden desktop:block laptop:block tablet:hidden">
+      <div className="breadcrumbs  text-sm phone:hidden desktop:block laptop:block tablet:hidden">
         <ul>
           {links.map((link) => {
             return (

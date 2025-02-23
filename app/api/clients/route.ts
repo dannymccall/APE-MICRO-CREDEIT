@@ -271,7 +271,7 @@ export async function POST(req: NextRequest) {
       last_name: body.get("lastName") as string,
       nick_name: body.get("nickName") as string,
       title: body.get("title") as string,
-      branch: branch._id, // Ensure branch is fetched correctly
+      branch: branch._id as mongoose.Types.ObjectId, // Ensure branch is fetched correctly
       union: body.get("union") as string,
       unionLocation: body.get("unionLocation") as string,
       mobile: body.get("mobile") as string,
@@ -280,10 +280,10 @@ export async function POST(req: NextRequest) {
       idType: body.get("idType") as string,
       idNumber: body.get("idNumber") as string,
       avarta: newFileName, // Make sure `newFileName` is defined and sanitized
-      staff: staff._id, // Ensure staff is fetched correctly
-      maritalStatus: (body.get("maritalStatus") as string).toLowerCase(), // Prefer explicit type over `any`
+      staff: staff._id as mongoose.Types.ObjectId, // Ensure staff is fetched correctly
+      maritalStatus: body.get("maritalStatus") as "married" | "single" | "divorced" | "widowed" | undefined, // Ensure correct type
       systemId: systemId, // Ensure this is generated uniquely
-      gender: (body.get("gender") as string).toLowerCase(), // Lowercase conversion
+      gender: (body.get("gender") as "male" | "female" | "others" | undefined), // Ensure correct type
     };
 
     const newClient = await clientService.create(client);
@@ -309,7 +309,7 @@ export async function DELETE(req: NextRequest) {
 
     const client = await clientService.findById(id);
     if (!client)
-      return createResponse(false, "001", "Client does not exists", client);
+      return createResponse(false, "001", "Client does not exists");
 
     const deleteClient = await clientService.delete(id);
     if (!deleteClient)
@@ -383,7 +383,7 @@ export async function PUT(req: NextRequest) {
     Object.entries(fieldMapping).forEach(([formKey, clientKey]) => {
       const formValue = body.get(formKey);
       if (isNotEmpty(formValue)) {
-        updatedFields[clientKey] = formValue;
+        (updatedFields as any)[clientKey] = formValue;
       }
     });
 
@@ -401,8 +401,8 @@ export async function PUT(req: NextRequest) {
       updatedFields["avarta"] = newFileName; // Update avatar if a new file is uploaded
     }
 
-    updatedFields["staff"] = staff._id;
-    updatedFields["branch"] = branch._id;
+    updatedFields["staff"] = staff._id as mongoose.Types.ObjectId;
+    updatedFields["branch"] = branch._id as mongoose.Types.ObjectId;
     updatedFields["client_status"] = body.get("clientStatus") as string;
 
     const updatedClient = await clientService.update(body.get('id') as string, updatedFields);
@@ -412,6 +412,9 @@ export async function PUT(req: NextRequest) {
       "Client Information Update",
       new mongoose.Types.ObjectId(userId)
     );
+    if (!updatedClient) {
+      return createResponse(false, "001", "Failed to update client", {});
+    }
     return createResponse(
       true,
       "001",
