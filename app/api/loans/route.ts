@@ -414,7 +414,7 @@ export async function PUT(req: NextRequest) {
           loanApprovalStatus: "Approved",
         }),
         makeRequest(
-          `${process.env.NEXT_PUBLIC_SOCKET_URL}/notify-loan-officer`,
+          `${process.env.NEXT_PUBLIC_SOCKET_URL}/sockets/notify-loan-officer`,
           {
             method: "POST",
             body: JSON.stringify({
