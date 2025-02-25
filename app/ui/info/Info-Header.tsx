@@ -25,7 +25,7 @@ const InfoHeader = ({
 
   return (
     <div className="flex justify-between items-center bg-violet-100 shadow-md p-1">
-      <div className="flex w-full flex-row gap-5 items-center phone:justify-between desktop:justify-start laptop:justify-start tablet:justify-start">
+      <div className="flex  flex-row gap-5 items-center phone:justify-between desktop:justify-start laptop:justify-start tablet:justify-start">
         <h1 className="font-sans font-semibold text-lg text-slate-700">
           {route}
         </h1>

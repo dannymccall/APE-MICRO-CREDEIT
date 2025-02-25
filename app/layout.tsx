@@ -34,7 +34,7 @@ export default function RootLayout({
   const [isSidebarOpen, setIsSidebarOpen] = useState<boolean>(false);
   const [hasError, setHasError] = useState<boolean>(false); // Track errors
 
-  const showLayout = pathName !== "/"; // Hide layout on the error page
+  const showLayout = pathName !== "/" && pathName !== '/forgot-password' && pathName !== "/reset-password"; // Hide layout on the error page
 
   useEffect(() => {
     // Set the sidebar state when the component mounts

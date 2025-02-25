@@ -20,12 +20,13 @@ import {
   formatCurrency,
   formatDate,
   makeRequest,
+  useDashboardValues,
 } from "@/app/lib/helperFunctions";
 import { LoadingDivs } from "@/app/component/Loading";
 import { IoIosArrowRoundForward } from "react-icons/io";
 import Notifications from "@/app/component/Notification";
 // import { useDashboardValues } from "@/app/lib/serverhooks";
-
+import {Activities} from "@/app/component/Dashboard/Activities";
 const DynamicChart = lazy(() => import("@/app/component/DynamicChart"));
 
 interface IDashboardStatics {
@@ -49,80 +50,7 @@ interface IActivity {
   };
 }
 
-interface Disbursement {
-  _id: string;
-  totalDisbursement: number;
-}
 
-interface Outstanding {
-  _id: string;
-  outStandingBalance: number;
-}
-
-interface Repayment {
-  _id: string;
-  monthlyRepayment: number;
-}
-export async function useDashboardValues() {
-  // const BASE_URL =
-  //   process.env.NEXT_PUBLIC_BASE_URL;
-  const response = await import("@/app/api/dashboard/route");
-  const data: any = await (await response.GET()).json();
-
-  const {
-    monthlyDisbursement,
-    monthlyOutstandingBalance,
-    totalUsers,
-    totalClients,
-    totalOutstandingBalance,
-    totalArrears,
-    totalRepayment,
-    monthlyRepayment,
-    totalDisbursement,
-    todayRepayment,
-    todayDisbursement,
-    activities,
-  } = data;
-
-  const disbursementMonths: string[] = monthlyDisbursement.map(
-    (disbursement: Disbursement) => disbursement._id
-  );
-  const disbursementMonthValues: number[] = monthlyDisbursement.map(
-    (disbursement: Disbursement) => disbursement.totalDisbursement
-  );
-
-  const oustandingMonths: string[] = monthlyOutstandingBalance.map(
-    (outstanding: Outstanding) => outstanding._id
-  );
-  const oustandingMonthValues: string[] = monthlyOutstandingBalance.map(
-    (outstanding: Outstanding) => outstanding.outStandingBalance
-  );
-
-  const repaymentMonths: string[] = monthlyRepayment.map(
-    (repayment: Repayment) => repayment._id
-  );
-  const repaymentMonthValues: string[] = monthlyRepayment.map(
-    (repayment: Repayment) => repayment.monthlyRepayment
-  );
-
-  return [
-    disbursementMonths,
-    disbursementMonthValues,
-    oustandingMonths,
-    oustandingMonthValues,
-    repaymentMonths,
-    repaymentMonthValues,
-    totalUsers,
-    totalClients,
-    totalOutstandingBalance,
-    totalArrears,
-    totalRepayment,
-    totalDisbursement,
-    todayRepayment,
-    todayDisbursement,
-    activities,
-  ];
-}
 
 const DashboardUI = async () => {
   const breadcrumbsLinks = [{ name: "Dashboard", href: "/dashboard" }];
@@ -386,41 +314,9 @@ const DashboardUI = async () => {
               <p className="font-semibold text-lg text-gray-500">
                 Recent Activities
               </p>
-              <table className="table">
-                <thead>
-                  <tr>
-                    <th className="text-sm font-sans font-medium text-gray-700 text-left">
-                      Created Date
-                    </th>
-                    <th className="text-sm font-sans font-medium text-gray-700 text-left">
-                      Action
-                    </th>
-                    <th className="text-sm font-sans font-medium text-gray-700 text-left">
-                      Action Taker
-                    </th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {activities &&
-                    activities.map((activity: IActivity) => (
-                      <tr key={activity.createdAt}>
-                        <td className="text-sm font-mono font-normal text-gray-700 text-left">
-                          {new Date(activity.createdAt).toLocaleString()}
-                        </td>
-                        <td className="text-sm font-mono font-normal text-gray-700 text-left">
-                          {activity.activity}
-                        </td>
-                        <td className="text-sm font-mono font-normal text-gray-700 text-left">
-                        {activity.userDetails
-                            ? `${activity.userDetails.first_name} ${
-                                activity.userDetails.other_names || ""
-                              } ${activity.userDetails.last_name}`
-                            : "Unknown User"}
-                        </td>
-                      </tr>
-                    ))}
-                </tbody>
-              </table>
+              <div className="w-full flex flex-col gap-2">
+               <Activities activities={activities} />
+              </div>
               <Link
                 href="/view-activities"
                 className="w-full flex gap-4 items-center text-violet-500 link-btn text-base font-mono"

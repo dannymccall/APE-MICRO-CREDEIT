@@ -10,7 +10,7 @@ export async function makeRequest(url: string, options: RequestInit) {
     const data = await response.json();
     // console.log(data)
     if (!response.ok) {
-      console.log(response)
+      console.log(response);
       const errorResponse = createResponse(
         false,
         data.error?.code,
@@ -43,10 +43,12 @@ export function createResponse(
 ) {
   return NextResponse.json(
     { success, code, message, data, pagination },
-    { status: status,  headers: {
-      "Cache-Control": "no-store", // Prevent caching
-    }, },
-    
+    {
+      status: status,
+      headers: {
+        "Cache-Control": "no-store", // Prevent caching
+      },
+    }
   );
 }
 
@@ -219,12 +221,14 @@ export async function blobToFile(blobType: string, imageName: string) {
     }
 
     const blob = await res.blob();
-    
+
     // Extract file extension from blob type
     const extension = blob.type.split("/")[1] || "png"; // Default to png if unknown
 
     // Ensure the filename has the correct extension
-    const finalFileName = imageName.includes(".") ? imageName : `${imageName}.${extension}`;
+    const finalFileName = imageName.includes(".")
+      ? imageName
+      : `${imageName}.${extension}`;
 
     const file = new File([blob], finalFileName, { type: blob.type });
 
@@ -234,7 +238,6 @@ export async function blobToFile(blobType: string, imageName: string) {
     console.log(e.message);
   }
 }
-
 
 export function generateSystemID(prefix: string): string {
   const year = new Date().getFullYear().toString().slice(-2); // Last two digits of the year
@@ -323,9 +326,9 @@ type SuccessMessage = {
 };
 
 interface ILogginIdentity {
-  fullName: string,
+  fullName: string;
   userRoles: string[];
-  userName: string
+  userName: string;
 }
 
 type MakeRequestFn = (url: string, options: RequestInit) => Promise<any>;
@@ -360,7 +363,7 @@ export async function processFormSubmissions(
 
       body.push({ amount, loanId, clientId, nextPayment });
     });
-    console.log({ body })
+    console.log({ body });
 
     // Validate that at least one field is filled
     const hasAtLeastOneFieldFilled = body.some((item) => item.amount);
@@ -394,7 +397,7 @@ export async function processFormSubmissions(
 
       const socket = io("http://localhost:3001");
       if (userRoles.includes("Loan officer")) {
-        socket.emit("paymentMade", "A new payment awaits your approval")
+        socket.emit("paymentMade", "A new payment awaits your approval");
       }
       // Reload after success with a delay
       const timeout = setTimeout(() => {
@@ -421,8 +424,6 @@ export async function processFormSubmissions(
     setPending(false);
   }
 }
-
-
 
 // const mailOptions: = {
 //   from: '"Your App" no-reply@gmail.com', // Sender address,
@@ -468,7 +469,6 @@ export const formatCurrency = (value: number) =>
     currency: "GHS",
   }).format(value);
 
-
 export function getOutstandingBalances(loans: any) {
   interface LoanDetails {
     loanId: string;
@@ -491,7 +491,6 @@ export function getOutstandingBalances(loans: any) {
 
   const loanArray = Array.isArray(loans) ? loans : [loans];
 
-
   const data = loanArray.map((loan: any): LoanDetails => {
     let totalPrincipal: number = loan.principal || 0;
     let totalInterest: number = 0;
@@ -508,8 +507,8 @@ export function getOutstandingBalances(loans: any) {
       // Calculate totalOutstandingBalance for each loan item
       loan.paymentSchedule.schedule.forEach((schedule: any) => {
         totalOutstandingBalance +=
-          (schedule.principalPayment || 0) +
-          (schedule.interestPayment || 0) || 0;
+          (schedule.principalPayment || 0) + (schedule.interestPayment || 0) ||
+          0;
         totalInterest += schedule.interestPayment || 0;
         totalWeeklyAmount += schedule.principalPayment || 0;
         totalAmountLeft +=
@@ -523,31 +522,35 @@ export function getOutstandingBalances(loans: any) {
       loanMaturityDate: loan.maturityDate,
       loanDisbursementDate: loan.expectedDisbursementDate,
       loanProduct: loan.loanProduct,
-      clientName: `${loan.client && typeof loan.client !== "string"
+      clientName: `${
+        loan.client && typeof loan.client !== "string"
           ? loan.client.first_name
           : "N/A"
-        } ${loan.client && typeof loan.client !== "string"
+      } ${
+        loan.client && typeof loan.client !== "string"
           ? loan.client.last_name
           : "N/A"
-        }`,
-      clientMobile: `${loan.client && typeof loan.client !== "string"
+      }`,
+      clientMobile: `${
+        loan.client && typeof loan.client !== "string"
           ? loan.client.mobile
           : "N/A"
-        }`,
-      clientUnion: `${loan.client && typeof loan.client !== "string"
+      }`,
+      clientUnion: `${
+        loan.client && typeof loan.client !== "string"
           ? loan.client.union
           : "N/A"
-        }`,
-      clientUnionLocation: `${loan.client && typeof loan.client !== "string"
+      }`,
+      clientUnionLocation: `${
+        loan.client && typeof loan.client !== "string"
           ? loan.client.unionLocation
           : "N/A"
-        }`,
+      }`,
       guarantorName:
         loan.guarantor && typeof loan.guarantor !== "string"
           ? loan.guarantor.guarantorFullName
           : "N/A",
-      guarantorMobile: `${loan.guarantor ? loan.guarantor.mobile : "N/A"
-        }`,
+      guarantorMobile: `${loan.guarantor ? loan.guarantor.mobile : "N/A"}`,
       totalPrincipal,
       totalInterest,
       totalWeeklyAmount,
@@ -555,11 +558,10 @@ export function getOutstandingBalances(loans: any) {
       totalAmountLeft,
       totalAmountPaid,
     };
-  })
+  });
 
   return data;
 }
-
 
 export const generateDocument = async (
   reportGenerationRef: React.RefObject<HTMLDivElement>,
@@ -574,11 +576,14 @@ export const generateDocument = async (
   const html = reportGenerationRef.current.outerHTML;
 
   try {
-    const res = await fetch(`http://localhost:3000/api/generate-document/${type}`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ html }),
-    });
+    const res = await fetch(
+      `http://localhost:3000/api/generate-document/${type}`,
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ html }),
+      }
+    );
 
     if (!res.ok) throw new Error(`Failed to generate ${type.toUpperCase()}`);
 
@@ -592,10 +597,84 @@ export const generateDocument = async (
     document.body.appendChild(a);
     a.click();
     a.remove();
-
   } catch (error) {
     console.error(`Error generating ${type.toUpperCase()}:`, error);
   } finally {
     setLoading(false);
   }
 };
+
+interface Disbursement {
+  _id: string;
+  totalDisbursement: number;
+}
+
+interface Outstanding {
+  _id: string;
+  outStandingBalance: number;
+}
+
+interface Repayment {
+  _id: string;
+  monthlyRepayment: number;
+}
+export async function useDashboardValues() {
+  // const BASE_URL =
+  //   process.env.NEXT_PUBLIC_BASE_URL;
+  const response = await import("@/app/api/dashboard/route");
+  const data: any = await (await response.GET()).json();
+
+  const {
+    monthlyDisbursement,
+    monthlyOutstandingBalance,
+    totalUsers,
+    totalClients,
+    totalOutstandingBalance,
+    totalArrears,
+    totalRepayment,
+    monthlyRepayment,
+    totalDisbursement,
+    todayRepayment,
+    todayDisbursement,
+    activities,
+  } = data;
+
+  const disbursementMonths: string[] = monthlyDisbursement.map(
+    (disbursement: Disbursement) => disbursement._id
+  );
+  const disbursementMonthValues: number[] = monthlyDisbursement.map(
+    (disbursement: Disbursement) => disbursement.totalDisbursement
+  );
+
+  const oustandingMonths: string[] = monthlyOutstandingBalance.map(
+    (outstanding: Outstanding) => outstanding._id
+  );
+  const oustandingMonthValues: string[] = monthlyOutstandingBalance.map(
+    (outstanding: Outstanding) => outstanding.outStandingBalance
+  );
+
+  const repaymentMonths: string[] = monthlyRepayment.map(
+    (repayment: Repayment) => repayment._id
+  );
+  const repaymentMonthValues: string[] = monthlyRepayment.map(
+    (repayment: Repayment) => repayment.monthlyRepayment
+  );
+
+  return [
+    disbursementMonths,
+    disbursementMonthValues,
+    oustandingMonths,
+    oustandingMonthValues,
+    repaymentMonths,
+    repaymentMonthValues,
+    totalUsers,
+    totalClients,
+    totalOutstandingBalance,
+    totalArrears,
+    totalRepayment,
+    totalDisbursement,
+    todayRepayment,
+    todayDisbursement,
+    activities,
+  ];
+}

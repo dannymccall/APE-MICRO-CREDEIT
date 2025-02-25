@@ -7,6 +7,7 @@ import { BiSolidLogInCircle } from "react-icons/bi";
 import { signin } from "@/app/actions/loginAuth";
 import { LoadingSpinner } from "@/app/component/Loading";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 const Signin = () => {
   const [state, action, pending] = useActionState(signin, undefined);
   const router = useRouter();
@@ -109,6 +110,11 @@ const Signin = () => {
             </div>
 
             {/* Submit Button */}
+            <div className="w-full flex items-center justify-end">
+              <Link href="/forgot-password" className="text-gray-600 text-end font-semibold">
+                Forgot Password
+              </Link>
+            </div>
             <div className="w-full mt-4 flex justify-center">
               <button
                 type="submit"
@@ -118,7 +124,7 @@ const Signin = () => {
                 {pending && <LoadingSpinner />}
                 {!pending && (
                   <>
-                    <BiSolidLogInCircle className="icon-move-left"/>
+                    <BiSolidLogInCircle className="icon-move-left" />
                     SIGN IN
                   </>
                 )}

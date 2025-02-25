@@ -92,11 +92,7 @@ const UserProfile = () => {
       content: <ChangePasswordTemplate username={user ? user.username : ""} />,
     },
   ];
-  // function selectAnother(): void {
-  //   if (fileInputRef.current) {
-  //     fileInputRef.current.click();
-  //   }
-  // }
+ 
   async function useProfilePhoto(e: React.FormEvent) {
     e.preventDefault();
     setPending(true);
@@ -160,7 +156,7 @@ const UserProfile = () => {
                     <ImageComponent src={avarta} className="rounded-full border-white border-solid w-full h-full"/>
                   ) : (
                     <Image
-                      src={avarta}
+                      src={`/uploads/${avarta}`}
                       width={100}
                       height={100}
                       alt="Profile image"

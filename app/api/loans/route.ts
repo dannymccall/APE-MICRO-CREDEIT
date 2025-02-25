@@ -22,7 +22,7 @@ import mongoose from "mongoose";
 import { ActivitymanagementService } from "@/app/lib/backend/services/ActivitymanagementService";
 import { getArrayBuffer, uploadToCloudinary } from "@/app/lib/serverFunctions";
 import { CrudService } from "@/app/lib/backend/crudService";
-
+import { Vault } from "@/app/lib/backend/models/vault.model";
 await connectDB();
 const clientService: CrudService<IClient> = new ClientService();
 const loanService: CrudService<ILoanApplication> = new LoanService();
@@ -399,7 +399,6 @@ export async function DELETE(req: NextRequest) {
 export async function PUT(req: NextRequest) {
   try {
     const searchParams = req.nextUrl.searchParams;
-
     const approveLoan = searchParams.get("approveLoan");
     const loanId = searchParams.get("_id") as string;
     if (approveLoan) {
@@ -410,13 +409,20 @@ export async function PUT(req: NextRequest) {
 
       if (!loan) return createResponse(false, "400", "Loan ID is Invalid");
 
-      await Promise.all([
+      const userId = new mongoose.Types.ObjectId(await getUserId());
+      const [updatedLoan, vault] = await Promise.all([
         loanService.update(loanId, {
           loanApprovalStatus: "Approved",
         }),
+        
+        Vault.find()
       ]);
-
-      console.log(loan.loanOfficer.username)
+      console.log("vault: ",vault[0])
+      if(!vault[0]) return createResponse(false, "400", "Something went wrong, please try again");
+      // if(vault[0].balance < loan.principal) return createResponse(false, "400", "Insufficient funds in the vault");
+      vault[0].balance -= parseFloat(loan.principal)
+      vault[0].transactions.push({type: "Withdrawal (Loan disbursement)", amount:parseFloat(loan.principal), createdAt: new Date(), staff: userId});
+      await vault[0].save();
       const response = await makeRequest(
         `${process.env.NEXT_PUBLIC_SOCKET_URL}/sockets/notify-loan-officer`,
         {
@@ -428,8 +434,6 @@ export async function PUT(req: NextRequest) {
           headers: { "Content-Type": "application/json" },
         }
       );
-      console.log(response);
-      const userId = await getUserId();
       await activitymanagementService.createActivity(
         "Loan Application Approval",
         new mongoose.Types.ObjectId(userId)

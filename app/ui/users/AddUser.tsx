@@ -22,7 +22,7 @@ const AddUser: React.FC<IAddUser> = ({ route }) => {
     },
   ];
 
-  const formRef = useRef<HTMLFormElement>(null)
+  const formRef = useRef<HTMLFormElement>(null);
   const availableRoles = ["Loan officer", "Admin"];
   const [selectedRoles, setSelectedRoles] = useState<string[]>([]); // State to hold selected roles
   const roles: string[] = selectedRoles;
@@ -43,18 +43,17 @@ const AddUser: React.FC<IAddUser> = ({ route }) => {
 
     if (state?.response?.success) {
       setShowMessage(true);
-      setSelectedRoles([])
+      setSelectedRoles([]);
       timeout = setTimeout(() => {
         setShowMessage(false);
       }, 3000);
     }
-    if(state?.response?.success){
-      formRef.current?.reset()
+    if (state?.response?.success) {
+      formRef.current?.reset();
     }
 
     // Cleanup the timeout when the component unmounts or when state changes
     return () => clearTimeout(timeout);
-
   }, [state?.response]); // Depend on state.message to run when it changes
 
   const onClick = () => {
@@ -143,13 +142,13 @@ const AddUser: React.FC<IAddUser> = ({ route }) => {
             </p>
           )}
           <div className="flex desktop:flex-row laptop:flex-row tablet:flex-col phone:flex-col my-5">
-          <div className="flex flex-row w-32 gap-0 items-center">
-            <Label
-              className="w-32 font-sans text-sm font-semibold text-gray-800"
-              labelName="Working Email:"
-            />
-             <span className="text-red-500 ml-1">*</span>
-             </div>
+            <div className="flex flex-row w-32 gap-0 items-center">
+              <Label
+                className="w-24 font-sans text-sm font-semibold text-gray-800"
+                labelName="Working Email:"
+              />
+              <span className="text-red-500 ml-1">*</span>
+            </div>
             <input
               type="email"
               className="block text-sm desktop:w-96 laptop:w-96 tablet:w-96 phone:w-full px-5 py-2 border-2 border-gray-200 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
@@ -176,7 +175,7 @@ const AddUser: React.FC<IAddUser> = ({ route }) => {
               name="dob"
             />
           </div>
-          <input type="hidden" name="service" value="add"/>
+          <input type="hidden" name="service" value="add" />
           {state?.errors?.dob && (
             <p className=" text-red-500 p-1 text-sm font-semibold">
               {state.errors.dob}

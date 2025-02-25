@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
@@ -28,6 +28,7 @@ import Image from "next/image";
 import { clearLocalStorage, makeRequest } from "@/app/lib/helperFunctions";
 import Modal from "@/app/component/Modal";
 import ImageComponent from "@/app/component/Image";
+import { FaShieldAlt } from "react-icons/fa";
 // Define the type for sidebar links
 interface SidebarLink {
   name: string;
@@ -59,6 +60,10 @@ export default function Sidebar({
   const logginIdentity = useLogginIdentity();
   console.log(logginIdentity);
   // Navbar links configuration
+
+  useEffect(() => {
+    setIsSidebarOpen(false);
+  },[pathname]);
   const navbarLinks: NavbarLink[] = [
     {
       name: `${logginIdentity ? logginIdentity.userName : <LoadingSpinner />}`,
@@ -187,7 +192,7 @@ export default function Sidebar({
     {
       name: "Finance",
       href: "#",
-      icon: FaCodeBranch,
+      icon: FaShieldAlt,
       roles: ["Admin"], // Only Admins can see this
       subLinks: [
         {
@@ -196,12 +201,12 @@ export default function Sidebar({
           icon: FiChevronRight,
           roles: ["Admin"],
         },
-        {
-          name: "Manage Branch",
-          href: "/manage-branch",
-          icon: FiChevronRight,
-          roles: ["Admin"],
-        },
+        // {
+        //   name: "Manage Branch",
+        //   href: "/manage-branch",
+        //   icon: FiChevronRight,
+        //   roles: ["Admin"],
+        // },
       ],
     },
   ];
@@ -244,7 +249,7 @@ export default function Sidebar({
       {/* Sidebar Header */}
       <div className="bg-violet-900 p-4 text-xl font-bold border-b border-violet-500 z-10 mb-7 relative">
         <span
-          className="font-sans text-2xl float-right relative bottom-2 cursor-pointer"
+          className="phone:block desktop:hidden laptop:hidden tablet:block font-sans text-2xl float-right relative bottom-2 cursor-pointer"
           onClick={() => setIsSidebarOpen(false)}
         >
           &times;
@@ -292,7 +297,7 @@ export default function Sidebar({
       </div>
 
       {/* Sidebar Links */}
-      <nav className="flex-1">
+      <nav className="flex-grow">
         {/* <ul className="space-y-2 p-2"> */}
         <div className="h-full flex flex-col gap-2">
           <ul className="space-y-2 p-2">
@@ -422,8 +427,8 @@ export default function Sidebar({
         /> */}
       </nav>
       {/* Sidebar Footer */}
-      <div className="p-4 border-t border-violet-500 flex-1 flex">
-        <p className="text-sm">© 2024 My Company</p>
+      <div className="p-4 border-t border-violet-500 mt-auto">
+        <p className="text-sm text-center">© 2024 My Company</p>
       </div>
       <Modal modalOpen={modalOpen} setModalOpen={setModalOpen}>
         <div className="flex flex-col gap-10 items-center justify-center">

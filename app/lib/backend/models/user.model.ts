@@ -13,7 +13,9 @@ export interface IUser extends Document {
   online_status?: string,
   number_of_password_changes?: number,
   email: string;
-  avarta: string
+  avarta: string;
+  resetToken?: string;
+  resetTokenExpiry?: Date;
 }
 
 // Define the Mongoose schema
@@ -68,7 +70,14 @@ export const UserSchema: Schema = new Schema<IUser>(
       type: String,
       required: true
     }, 
-
+    resetToken: {
+      type: String,
+      required: false
+    },
+    resetTokenExpiry: {
+      type: Date,
+      required: false
+    },
     avarta: {
       type:String,
       required: false

@@ -40,21 +40,21 @@ const AllUsers = () => {
   // useEffect(() => {
   //   fetchUsers();
   // }, [currentPage]);
-   const {
-        data: users,
-        loading,
-        query,
-        handleSearch,
-        totalPages,
-        currentPage,
-        setCurrentPage,
-        response,
-        refresh
-      } = useSearch<IUser>({
-        endpoint: 'api/users',
-        initialPage: 1,
-        limit: 10
-      });
+  const {
+    data: users,
+    loading,
+    query,
+    handleSearch,
+    totalPages,
+    currentPage,
+    setCurrentPage,
+    response,
+    refresh,
+  } = useSearch<IUser>({
+    endpoint: "api/users",
+    initialPage: 1,
+    limit: 10,
+  });
 
   const router = useRouter();
 
@@ -90,15 +90,13 @@ const AllUsers = () => {
       ) : (
         <Suspense fallback={<LoadingDivs />}>
           <div className="p-10">
-            {
-              (users.length > 0 || query) && (
-                <SearchInput
-                  value={query}
-                  onChange={handleSearch}
-                  placeholder="Search users..."
-                />
-              )
-            }
+            {(users.length > 0 || query) && (
+              <SearchInput
+                value={query}
+                onChange={handleSearch}
+                placeholder="Search users..."
+              />
+            )}
             {users.length > 0 ? (
               <UsersList
                 users={users}

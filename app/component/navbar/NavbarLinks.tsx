@@ -61,7 +61,7 @@ const NavbarLinks = ({
                     )}
                   </button>
                 ) : (
-                  <LoadingSpinner color="text-gray-500" />
+                  <LoadingSpinner color="text-gray-500 phone:hidden desktop:block tablet:hidden laptop:block" />
                 )}
 
                 {/* Sublinks Dropdown */}

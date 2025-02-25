@@ -8,7 +8,7 @@ import { createResponse, makeRequest } from "@/app/lib/helperFunctions";
 import { ActivitymanagementService } from "@/app/lib/backend/services/ActivitymanagementService";
 import { getUserId } from "../auth/route";
 import mongoose from "mongoose";
-
+import { Vault } from "@/app/lib/backend/models/vault.model";
 const activitymanagementService = new ActivitymanagementService();
 
 export async function POST(req: NextRequest) {
@@ -16,19 +16,22 @@ export async function POST(req: NextRequest) {
     const searchParameter = req.nextUrl.searchParams;
     const pendingLoanId = searchParameter.get("pendingLoanId");
     const loanId = searchParameter.get("loanId");
+    const userId = await getUserId();
 
+    // const userId = new mongoose.Types.ObjectId(getUserId())
     if (!pendingLoanId || !loanId) {
       return createResponse(false, "400", "Missing required parameters");
     }
 
     // Fetch required data
-    const [pendingLoan, loanApplication, loanPaymentSchedule] =
+    const [pendingLoan, loanApplication, loanPaymentSchedule, vault] =
       (await Promise.all([
         TemporalPayment.findById(pendingLoanId),
         LoanApplication.findById(loanId)
           .populate({ path: "loanOfficer", select: "username", model: "User" })
           .exec(),
         PaymentSchedule.findOne({ loan: loanId }),
+        Vault.find(),
       ])) as any[];
 
     if (!pendingLoan || !loanApplication || !loanPaymentSchedule) {
@@ -36,6 +39,20 @@ export async function POST(req: NextRequest) {
     }
 
     const amountPaid = pendingLoan.amountPaid;
+    console.log(vault[0])
+    if (amountPaid && !(isNaN(amountPaid)) && amountPaid > 0) {
+      console.log({amountPaid})
+
+      if (!vault[0])
+        return createResponse(
+          false,
+          "400",
+          "Something went wrong, please try again"
+        );
+      vault[0].balance += parseFloat(amountPaid)
+      vault[0].transactions.push({type: "Deposit (Loan Repayment)", amount:parseFloat(amountPaid), createdAt: new Date(), staff: userId});
+      await vault[0].save()
+    }
     const paymentSchedule = loanPaymentSchedule.schedule;
     let balance = amountPaid;
 
@@ -47,6 +64,7 @@ export async function POST(req: NextRequest) {
     paymentSchedule.forEach((schedule: any) => {
       if (schedule.status === "arrears" && balance > 0) {
         const outstanding = Number(schedule.outStandingBalance);
+
         if (balance >= outstanding) {
           balance -= outstanding;
           schedule.amountPaid += outstanding;
@@ -109,7 +127,6 @@ export async function POST(req: NextRequest) {
       }
     );
     console.log(response);
-    const userId = await getUserId();
     await activitymanagementService.createActivity(
       "Loan Payment Approval",
       new mongoose.Types.ObjectId(userId)

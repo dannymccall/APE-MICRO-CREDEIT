@@ -6,11 +6,14 @@ interface Props {
   children: React.ReactNode;
   startDate: string;
   endDate: string;
-  generatePdf: () => void;
-  generateCSV: () => void;
-  pending: boolean
+  
 }
-const ReportTemplate: React.FC<Props> = ({ children, startDate, endDate, generateCSV, generatePdf, pending }) => {
+const ReportTemplate: React.FC<Props> = ({
+  children,
+  startDate,
+  endDate,
+  
+}) => {
   return (
     <>
       <main className="max-w-full p-2">
@@ -35,33 +38,14 @@ const ReportTemplate: React.FC<Props> = ({ children, startDate, endDate, generat
                     </span>
                   </p>
                 </div>
-                <div className="flex flex-row gap-5 items-center">
-                  <button className="btn btn-sm flex flex-row gap-3 items-center text-blue-700 text-sm hover:text-blue-900 font-semibold" onClick={generateCSV}>
-                    {
-                      pending ? <span className="loading loading-ring loading-xs"></span>
-                        : <>
-                      
-                          Download Excel
-                          <GrDocumentCsv />
-                        </>
-
-                    }
-                   
-                  </button>
-                  <button className="flex btn btn-sm flex-row gap-3 items-center text-red-700 text-sm hover:text-red-900 font-semibold" onClick={generatePdf}>
-                    {
-                      pending ? <span className="loading loading-ring loading-xs"></span> :
-                        <>
-                          Download PDF
-                          <FaFilePdf />
-                        </>
-                    }
-                    
-                  </button>
-                </div>
+               
               </div>
               <div className="w-full h-1 bg-gray-300"></div>
-              {React.Children.count(children) > 0 ? children : <p>No reports available.</p>}
+              {React.Children.count(children) > 0 ? (
+                children
+              ) : (
+                <p>No reports available.</p>
+              )}
             </div>
           </main>
         </>
