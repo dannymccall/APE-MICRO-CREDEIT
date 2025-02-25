@@ -37,7 +37,6 @@ export default function ResetPassword() {
   };
 
   return (
-    <Suspense fallback={<div>Loading...</div>}>
 
       <div className="max-w-md mx-auto p-4">
         <h2 className="text-xl font-bold mb-4">Reset Password</h2>
@@ -63,6 +62,5 @@ export default function ResetPassword() {
         </form>
         {message && <p className="mt-4 text-green-500">{message}</p>}
       </div>
-    </Suspense>
   );
 }

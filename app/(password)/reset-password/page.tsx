@@ -1,10 +1,10 @@
-import React from "react";
+import React, {Suspense} from "react";
 import ResetPassword from "@/app/ui/Password/ResetPassword";
 const page = () => {
   return (
-    <div>
+    <Suspense fallback={<div>Loading...</div>}>
       <ResetPassword />
-    </div>
+    </Suspense>
   );
 };
 
