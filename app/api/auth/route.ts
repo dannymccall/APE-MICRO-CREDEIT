@@ -10,7 +10,7 @@ import { encryptData, decrypt } from "@/app/lib/session/security";
 import { getSession } from "@/app/lib/session/sessions";
 import { ActivitymanagementService } from "@/app/lib/backend/services/ActivitymanagementService";
 import { cookies } from "next/headers";
-import { EmailPayload, sendEmail } from "../users/route";
+import { sendEmail, EmailPayload } from "@/app/lib/serverFunctions";
 import mongoose from "mongoose";
 // async function getUserService(collectionName: any) {
 //   const client = await clientPromise; // Reuse the MongoDB client

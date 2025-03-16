@@ -3,6 +3,7 @@ import { useState, useEffect, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import { makeRequest } from "@/app/lib/helperFunctions";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 export default function ResetPassword() {
   const searchParams = useSearchParams();
@@ -10,7 +11,7 @@ export default function ResetPassword() {
   const [newPassword, setNewPassword] = useState("");
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState<boolean>(false);
-
+  const [success, setSuccess] = useState<boolean>(false)
   const router = useRouter();
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -28,12 +29,7 @@ export default function ResetPassword() {
     }
     setMessage(res.message);
     setLoading(false);
-
-    const timeOut: NodeJS.Timeout = setTimeout(() => {
-      router.push("/");
-    }, 1500);
-
-    return () => clearTimeout(timeOut);
+    setSuccess(true);
   };
 
   return (
@@ -60,7 +56,12 @@ export default function ResetPassword() {
             )}
           </button>
         </form>
+        <div className="flex gap-5 mt-5 items-center">
         {message && <p className="mt-4 text-green-500">{message}</p>}
+        {success &&  <Link className="btn btn-sm bg-violet-600 text-slate-50" href="/">Go Back to Login</Link>}
+       
+
+        </div>
       </div>
   );
 }

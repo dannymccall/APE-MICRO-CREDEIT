@@ -1,6 +1,5 @@
 import { NextResponse } from "next/server";
-import { EmailPayload, sendEmail } from "../../users/route";
-
+import { sendEmail, EmailPayload } from "@/app/lib/serverFunctions";
 import crypto from "crypto";
 import { connectDB } from "@/app/lib/mongodb";
 import { User } from "@/app/lib/backend/models/user.model";

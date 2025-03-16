@@ -28,7 +28,7 @@ const GenerateDocumentButtons = ({
           </>
         )}
       </button>
-      <button
+      {/* <button
         className="btn btn-sm w-full tablet:w-auto laptop:w-auto desktop:w-auto flex flex-row gap-2 items-center justify-center text-red-700 text-xs phone:text-sm tablet:text-sm laptop:text-sm desktop:text-sm hover:text-red-900 font-semibold"
         onClick={generatePdf}
       >
@@ -40,7 +40,7 @@ const GenerateDocumentButtons = ({
             <FaFilePdf className="hidden phone:inline" />
           </>
         )}
-      </button>
+      </button> */}
     </div>
   );
 };

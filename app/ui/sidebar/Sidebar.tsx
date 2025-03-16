@@ -48,6 +48,7 @@ export default function Sidebar({
   const pathName = usePathname();
   const [openMenus, setOpenMenus] = useState<Record<string, boolean>>({});
   const { profilePicture } = useProfile();
+  console.log(profilePicture)
   // const [isSidebarOpen, setIsSidebarOpen] = useState(false); // New state for toggling sidebar
 
   const pathname = usePathname(); // To get current route path
@@ -64,18 +65,7 @@ export default function Sidebar({
   useEffect(() => {
     setIsSidebarOpen(false);
   },[pathname]);
-  const navbarLinks: NavbarLink[] = [
-    {
-      name: `${logginIdentity ? logginIdentity.userName : <LoadingSpinner />}`,
-      href: "#",
-      icon: FiUser,
-      subLinks: [
-        { name: "Basic info", href: "/users/admins", icon: FiChevronRight },
-        { name: "Logout", href: "/users/guests", icon: FiChevronRight },
-      ],
-    },
-  ];
-
+ 
   // Toggle Dropdown
   const toggleDropdown = (name: string) => {
     setOpenDropdown(openDropdown === name ? null : name);

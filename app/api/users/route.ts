@@ -5,14 +5,15 @@ import { connectDB } from "@/app/lib/mongodb";
 import { createResponse } from "@/app/lib/helperFunctions";
 import { IUser } from "@/app/lib/backend/models/user.model";
 import { User } from "@/app/lib/backend/models/user.model";
-import nodemailer, { Transporter } from "nodemailer";
 import { saveFile } from "../clients/route";
 import { generateFileName } from "../loans/route";
 import { getUserId } from "../auth/route";
 import mongoose from "mongoose";
 import { ActivitymanagementService } from "@/app/lib/backend/services/ActivitymanagementService";
 import {
+  EmailPayload,
   getArrayBuffer,
+  sendEmail,
   uploadToCloudinary,
 } from "@/app/lib/serverFunctions";
 // async function getUserService(collectionName: any) {
@@ -25,34 +26,7 @@ import {
 await connectDB();
 const userService = new UserService();
 const activitymanagementService = new ActivitymanagementService();
-export interface EmailPayload {
-  from: string;
-  to: string;
-  subject: string;
-  text?: string;
-  html?: string;
-}
 
-export async function sendEmail(mailOptions: EmailPayload) {
-  try {
-    const transporter: Transporter = nodemailer.createTransport({
-      host: process.env.NEXT_PUBLIC_SMTP_HOST, // e.g., 'smtp.gmail.com'
-      port: parseInt(process.env.NEXT_PUBLIC_SMTP_PORT || "465", 10), // Port (default: 587)
-      secure: true, // true for 465, false for other ports
-      auth: {
-        user: process.env.NEXT_PUBLIC_SMTP_USER, // SMTP username
-        pass: process.env.NEXT_PUBLIC_SMTP_PASS, // SMTP password
-      },
-    });
-
-    const info = await transporter.sendMail(mailOptions);
-    console.log("Email sent: ", info);
-    return info;
-  } catch (error: any) {
-    console.error("Error sending email:", error);
-    throw new Error(`Failed to send email: ${error.message}`);
-  }
-}
 
 export async function GET(req: NextRequest) {
   try {

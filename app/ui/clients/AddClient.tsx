@@ -129,7 +129,7 @@ const AddUser = () => {
             />
           )}
           <p className=" text-red-600 p-3 font-bold">
-            {!state?.errors && state?.message}
+            {state?.errors && state?.message}
           </p>
 
           <div className="flex flex-col  my-5 relative">

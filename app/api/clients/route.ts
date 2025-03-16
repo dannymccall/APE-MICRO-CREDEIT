@@ -4,8 +4,7 @@ import { connectDB } from "@/app/lib/mongodb";
 import { IUser } from "@/app/lib/backend/models/user.model";
 import { User } from "@/app/lib/backend/models/user.model";
 import { Branch } from "@/app/lib/backend/models/branch.model";
-import { join } from "path";
-import { writeFile, mkdir } from "fs/promises";
+
 import {
   LoanApplicationSchema,
   ILoanApplication,
@@ -21,30 +20,12 @@ import mongoose from "mongoose";
 import { generateFileName } from "../loans/route";
 import { getUserId } from "../auth/route";
 import { ActivitymanagementService } from "@/app/lib/backend/services/ActivitymanagementService";
-import { uploadToCloudinary, getArrayBuffer } from "@/app/lib/serverFunctions";
+import { uploadToCloudinary, getArrayBuffer, saveFile } from "@/app/lib/serverFunctions";
 await connectDB();
 const clientService = new ClientService();
 const activitymanagementService = new ActivitymanagementService();
 
-export const saveFile = async (fileName: string, buffer: Buffer) => {
-  try {
-    // Define the directory and file path
-    // const uploadDir = join(process.cwd(), "public", "uploads");
-    const uploadDir = "/tmp/uploads";
-    const filePath = join(uploadDir, fileName);
 
-    // Ensure the directory exists
-    await mkdir(uploadDir, { recursive: true });
-
-    // Write the file
-    await writeFile(filePath, buffer);
-
-    console.log(`File saved to ${filePath}`);
-  } catch (error) {
-    console.error("Error saving file:", error);
-    throw error;
-  }
-};
 
 export async function GET(req: NextRequest) {
   try {
@@ -283,10 +264,10 @@ export async function POST(req: NextRequest) {
       staff: staff._id as mongoose.Types.ObjectId, // Ensure staff is fetched correctly
       maritalStatus: body.get("maritalStatus") as "married" | "single" | "divorced" | "widowed" | undefined, // Ensure correct type
       systemId: systemId, // Ensure this is generated uniquely
-      gender: (body.get("gender") as "male" | "female" | "others" | undefined), // Ensure correct type
+      gender: (body.get("gender") as "male" | "female" | "others" | undefined)?.toLowerCase(), // Ensure correct type
     };
 
-    const newClient = await clientService.create(client);
+    const newClient = await clientService.create(client as any);
     const userId = await getUserId();
 
     await activitymanagementService.createActivity(
@@ -295,6 +276,7 @@ export async function POST(req: NextRequest) {
     );
     return createResponse(true, "001", "Client added successfully", newClient);
   } catch (error) {
+    console.log(error);
     return NextResponse.json(
       { error: "An error occurred while processing the request." },
       { status: 500 }
@@ -428,3 +410,5 @@ export async function PUT(req: NextRequest) {
     );
   }
 }
+export { saveFile };
+

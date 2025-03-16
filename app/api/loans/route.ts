@@ -24,7 +24,6 @@ import { getArrayBuffer, uploadToCloudinary } from "@/app/lib/serverFunctions";
 import { CrudService } from "@/app/lib/backend/crudService";
 import { Vault } from "@/app/lib/backend/models/vault.model";
 await connectDB();
-const clientService: CrudService<IClient> = new ClientService();
 const loanService: CrudService<ILoanApplication> = new LoanService();
 const activitymanagementService = new ActivitymanagementService();
 const isNotEmpty = (value: unknown) =>
