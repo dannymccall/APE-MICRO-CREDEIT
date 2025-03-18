@@ -74,6 +74,7 @@ const getPaymentScheduleData = async (
   const matchFilter: any = {
     "schedule.status": status,
   };
+  const staffMatch: any = {};
   console.log({ matchFilter });
   if (startDate && endDate) {
     const start = new Date(startDate).setHours(0, 0, 0, 0);
@@ -96,13 +97,24 @@ const getPaymentScheduleData = async (
     console.log({staff})
   } else if (staff) {
     console.log(staff)
-    matchFilter["staff"] = new mongoose.Types.ObjectId(staff);
+    staffMatch["staff"] = new mongoose.Types.ObjectId(staff);
   }
   
+  const pipeline = [];
 
-  const pipeline = [
-    { $unwind: "$schedule" },
-    { $match: matchFilter },
+  // ✅ Add the $match filter for staff ONLY if it's provided
+  if (staff) {
+    pipeline.push({ $match: { "staff": new mongoose.Types.ObjectId(staff) } });
+  }
+  
+  // ✅ Unwind schedules
+  pipeline.push({ $unwind: "$schedule" });
+  
+  // ✅ Apply the general match filters
+  pipeline.push({ $match: matchFilter });
+  
+  // ✅ Lookup for loan details
+  pipeline.push(
     {
       $lookup: {
         from: "loanapplications",
@@ -126,46 +138,47 @@ const getPaymentScheduleData = async (
         foreignField: "_id",
         as: "guarantorDetails",
       },
-    },
-    {
-      $group: {
-        _id: null,
-        paymentSchedule: {
-          $push: {
-            schedules: {
-              nextPayment: {
-                $dateToString: {
-                  format: "%Y-%m-%d",
-                  date: "$schedule.nextPayment",
-                },
+    }
+  );
+  
+  // ✅ Group the data
+  pipeline.push({
+    $group: {
+      _id: null,
+      paymentSchedule: {
+        $push: {
+          schedules: {
+            nextPayment: {
+              $dateToString: {
+                format: "%Y-%m-%d",
+                date: "$schedule.nextPayment",
               },
-              amountToPay: "$schedule.amountToPay",
-              status: "$schedule.status",
-              amountPaid: "$schedule.amountPaid",
-              week: "$schedule.week",
-              principalPayment: "$schedule.principalPayment",
-              interestPayment: "$schedule.interestPayment",
-              outStandingBalance: "$schedule.outStandingBalance",
             },
-            loanDetails: { $first: "$loanDetails" },
-            clientDetails: { $first: "$clientDetails" },
-            guarantorDetails: { $first: "$guarantorDetails" },
+            amountToPay: "$schedule.amountToPay",
+            status: "$schedule.status",
+            amountPaid: "$schedule.amountPaid",
+            week: "$schedule.week",
+            principalPayment: "$schedule.principalPayment",
+            interestPayment: "$schedule.interestPayment",
+            outStandingBalance: "$schedule.outStandingBalance",
           },
+          loanDetails: { $first: "$loanDetails" },
+          clientDetails: { $first: "$clientDetails" },
+          guarantorDetails: { $first: "$guarantorDetails" },
         },
-        grantTotalOfPaid: { $sum: "$schedule.amountPaid" },
-        grandTotalOutStanding: { $sum: "$schedule.outStandingBalance" },
-        totalPricipalPayment: { $sum: "$loanDetails.principalPayment" },
-        totalInterestPayment: { $sum: "$loanDetails.interestPayment" },
-        totalAmountToPay: { $sum: "$schedule.amountToPay" },
-        totalAmountPaid: { $sum: "$schedule.amountPaid" },
-        totalOutStandingBalance: { $sum: "$schedule.outStandingBalance" },
       },
+      grantTotalOfPaid: { $sum: "$schedule.amountPaid" },
+      grandTotalOutStanding: { $sum: "$schedule.outStandingBalance" },
+      totalPricipalPayment: { $sum: "$loanDetails.principalPayment" },
+      totalInterestPayment: { $sum: "$loanDetails.interestPayment" },
+      totalAmountToPay: { $sum: "$schedule.amountToPay" },
+      totalAmountPaid: { $sum: "$schedule.amountPaid" },
+      totalOutStandingBalance: { $sum: "$schedule.outStandingBalance" },
     },
-  ];
-
+  });
+  
   return await PaymentSchedule.aggregate(pipeline);
-};
-
+}
 const activitymanagementService = new ActivitymanagementService();
 
 export async function POST(req: NextRequest) {
