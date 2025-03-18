@@ -66,11 +66,9 @@ const Report = () => {
             setStartDate={setStartDate}
           />
         ) : (
-          <button className="btn mt-5 bg-violet-500 text-slate-100">
-            Generate New Report
-          </button>
+          <LoadingDivs />
         )}
-        {pending && <LoadingDivs />}
+        {/* {pending && <LoadingDivs />} */}
 
         <>
           <ReportTemplate startDate={startDate} endDate={endDate}>
