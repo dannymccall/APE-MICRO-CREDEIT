@@ -13,8 +13,9 @@ type ReportState =
   | undefined;
 
 export async function processReport(state: ReportState, formData: FormData) {
-  const expectedFields = ["startDate", "endDate", "filters"];
+  const expectedFields = ["startDate", "endDate", "filters", "staff"];
   const body = extractFormFields(formData, expectedFields);
+  console.log({body})
   if (new Date(body.startDate as string) > new Date(body.endDate as string)) {
     return {
       errors: {

@@ -1,5 +1,6 @@
+import { makeRequest } from "@/app/lib/helperFunctions";
 import { Label } from "@/app/lib/MyFormInput/FormTemplates";
-import React from "react";
+import React, { useCallback, useEffect, useState } from "react";
 
 type ReportState =
   | {
@@ -22,7 +23,7 @@ interface ReportFormProps {
   setEndDate: React.Dispatch<React.SetStateAction<string>>;
   toggleFilter: (filter: string) => void;
   pending: boolean;
-  selectedFilters: string[]
+  selectedFilters: string[];
 }
 const ReportGenerationForm = ({
   state,
@@ -33,8 +34,19 @@ const ReportGenerationForm = ({
   setEndDate,
   toggleFilter,
   pending,
-  selectedFilters
+  selectedFilters,
 }: ReportFormProps) => {
+  const [staff, setStaff] = useState<any[]>([]);
+
+  const fetchUsers = useCallback(async () => {
+    const users = await makeRequest("/api/users", { method: "GET" });
+    setStaff(users.data);
+  }, []);
+
+  useEffect(() => {
+    fetchUsers();
+  }, [fetchUsers]);
+
   const availableFilters = [
     "disbursement",
     "repayments",
@@ -106,6 +118,30 @@ const ReportGenerationForm = ({
                 </button>
               ))}
             </div>
+          </div>
+          <div className="w-full flex flex-col justify-center ">
+            <Label
+              className="font-sans w-40 font-medium text-gray-500 phone:text-sm laptop:text-base desktop:text-base tablet:text-sm"
+              labelName="Staff:"
+            />
+            <select
+              name="staff"
+              className="block w-full text-sm font-sans px-5 py-2 border border-gray-200 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm cursor-pointer"
+            >
+              <option  value="" className="text-sm font-sans">
+                Select Loan Officer
+              </option>
+              {staff.map((user: any) => (
+                <option
+                  value={user._id}
+                  key={user.username}
+                  className="text-sm font-sans"
+                >
+                  {user.first_name} {user.other_names} {user.last_name}
+                </option>
+              ))}
+            </select>
+           
           </div>
           <input type="hidden" name="filters" value={selectedFilters} />
         </div>

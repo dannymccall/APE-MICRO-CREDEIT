@@ -260,14 +260,20 @@ type PaymentSchedule = {
   amountPaid: number;
 };
 
+
+function getTotalWeeks(months: number): number {
+  const weeksPerMonth = 4;
+  return months * weeksPerMonth;
+}
 export function generatePaymentSchedule(
   principal: number,
   startDate: Date,
-  amountToPay: number
+  amountToPay: number,
+  loanTerms: number
 ): PaymentSchedule[] {
   const schedule: PaymentSchedule[] = [];
-
-  for (let i = 1; i <= 12; i++) {
+  const numberOfWeeks = getTotalWeeks(loanTerms);
+  for (let i = 1; i <= numberOfWeeks; i++) {
     const paymentDate = new Date(startDate);
     paymentDate.setDate(startDate.getDate() + i * 7); // Add 7 days per week
     schedule.push({

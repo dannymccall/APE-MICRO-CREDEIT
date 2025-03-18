@@ -27,6 +27,7 @@ interface IVault {
       _id: string;
       type: string;
       amount: number;
+      purpose: string;
       staff: {
         first_name: string;
         other_names: string;
@@ -49,12 +50,12 @@ const VaultDashboard = () => {
     showNoditifcation?: boolean;
   }>({ message: "", showNoditifcation: false });
 
-  const handleClick = async (type: string, amount: number) => {
+  const handleClick = async (type: string, amount: number, purpose: string) => {
     console.log(type);
     setLoading(true);
     const response = await makeRequest("/api/vault", {
       method: "POST",
-      body: JSON.stringify({ type, amount }),
+      body: JSON.stringify({ type, amount, purpose }),
       headers: { "Content-Type": "application/json" },
     });
     console.log(response);

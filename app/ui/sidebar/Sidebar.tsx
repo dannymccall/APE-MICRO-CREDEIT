@@ -418,7 +418,7 @@ export default function Sidebar({
       </nav>
       {/* Sidebar Footer */}
       <div className="p-4 border-t border-violet-500 mt-auto">
-        <p className="text-sm text-center">© 2024 My Company</p>
+        <p className="text-sm text-center">{`© ${new Date().getFullYear()} APE CREDIT`}</p>
       </div>
       <Modal modalOpen={modalOpen} setModalOpen={setModalOpen}>
         <div className="flex flex-col gap-10 items-center justify-center">

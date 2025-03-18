@@ -51,7 +51,8 @@ interface LoanApplication {
 const getPaymentScheduleData = async (
   type: string,
   startDate?: string,
-  endDate?: string
+  endDate?: string,
+  staff?:string
 ) => {
   const status =
     type === "repayments"
@@ -82,18 +83,20 @@ const getPaymentScheduleData = async (
       $gte: new Date(start),
       $lte: new Date(end),
     };
-    console.log({ matchFilter });
   } else if (startDate) {
     const start = new Date(startDate).setHours(0, 0, 0, 0); // Ensure full day inclusion
     matchFilter["schedule.nextPayment"] = {
       $gte: new Date(start),
     };
-    console.log(matchFilter);
   } else if (endDate) {
     const end = new Date(endDate).setHours(23, 59, 59, 999);
     matchFilter["schedule.nextPayment"] = {
       $lte: new Date(end),
     };
+    console.log({staff})
+  } else if (staff) {
+    console.log(staff)
+    matchFilter["staff"] = new mongoose.Types.ObjectId(staff);
   }
   
 
@@ -182,7 +185,9 @@ export async function POST(req: NextRequest) {
 
     const results: Record<string, any[]> = {};
     const body = await req.json();
-    const { startDate, endDate, filters } = body;
+    console.log({body})
+    const { startDate, endDate, filters, staff } = body;
+    console.log({staff})
     const filterArray = filters.split(",");
     let data: any[] = [];
 
@@ -192,7 +197,6 @@ export async function POST(req: NextRequest) {
       (startDate && !endDate && filters.length === 0) ||
       (!startDate && endDate && filters.length === 0)
     ) {
-      console.log("good");
       const start = startDate ? new Date(startDate) : null;
       const end = endDate ? new Date(endDate).setHours(23, 59, 59, 999) : null;
 
@@ -203,7 +207,10 @@ export async function POST(req: NextRequest) {
       if (start) query.createdAt = { $gte: start };
       if (end)
         query.createdAt = { ...(query.createdAt || {}), $lte: new Date(end) };
-
+      if (staff) {
+        console.log("Staff:",staff)
+        query["loanOfficer"] = new mongoose.Types.ObjectId(staff);
+      }
       console.log("Query:", query);
 
       data = await LoanApplication.find(query)
@@ -230,6 +237,12 @@ export async function POST(req: NextRequest) {
         if (startDate) matchStage["createdAt"].$gte = start;
         if (endDate) matchStage["createdAt"].$lte = end;
       }
+      if (staff) {
+        console.log("Staff:",staff)
+        matchStage["loanOfficer"] = new mongoose.Types.ObjectId(staff);
+      }
+
+      console.log(matchStage)
 
       switch (filter) {
         case "disbursement":
@@ -243,7 +256,7 @@ export async function POST(req: NextRequest) {
         case "arrears":
         case "default":
         case "payments":
-          data = await getPaymentScheduleData(filter, startDate, endDate);
+          data = await getPaymentScheduleData(filter, startDate, endDate,staff);
           break;
         case "outstanding":
           const loans = await LoanApplication.find(matchStage)
@@ -273,7 +286,7 @@ export async function POST(req: NextRequest) {
           data = [];
           break;
       }
-      console.log({ data });
+      // console.log({ data });
       if (data.length) {
         results[filter ? filter : "allReport"] = data;
       }

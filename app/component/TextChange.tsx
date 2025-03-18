@@ -8,7 +8,7 @@ const TextChange = ({ className }: { className?: string }) => {
   const changingText = [
     "Providing access to financial resources for individuals and small businesses to help build a brighter future.",
     "Even a small loan can make a huge difference in someone’s life. Let us help you grow.",
-    "Every entrepreneur has a dream. With our microfinance programs, those dreams can become reality."
+    "Every entrepreneur has a dream. With our loan packages, those dreams can become reality."
   ];
 
   useEffect(() => {
@@ -28,7 +28,7 @@ const TextChange = ({ className }: { className?: string }) => {
       {/* {changingText[currentIndex]}  */}
       {changingText?.map((items, idx) => (
         <div
-          className={`${className} opacity-0 text-white text-center font-semibold transition-opacity duration-[0.3s] ease-[ease] drop-shadow-md capitalize ${
+          className={`${className}  opacity-0 text-white absolute text-center font-semibold transition-opacity duration-[0.3s] ease-[ease] drop-shadow-md capitalize ${
             idx === currentIndex ? "!opacity-100" : ""
           }`}
           key={idx}

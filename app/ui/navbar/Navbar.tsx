@@ -69,7 +69,7 @@ export default function Navbar({
 
     clearLocalStorage();
    
-    router.push("/");
+    router.replace("/");
   }
 
   // Check if link is active

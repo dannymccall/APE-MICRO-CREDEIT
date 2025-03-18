@@ -16,7 +16,10 @@ import {
 } from "@/app/lib/helperFunctions";
 import { Client, IClient } from "@/app/lib/backend/models/client.model";
 import { saveFile } from "../clients/route";
-import { ILoanApplication, LoanApplication } from "@/app/lib/backend/models/loans.model";
+import {
+  ILoanApplication,
+  LoanApplication,
+} from "@/app/lib/backend/models/loans.model";
 import { getUserId } from "../auth/route";
 import mongoose from "mongoose";
 import { ActivitymanagementService } from "@/app/lib/backend/services/ActivitymanagementService";
@@ -250,7 +253,8 @@ export async function POST(req: NextRequest) {
     const schedule = generatePaymentSchedule(
       Number(body.get("principal")),
       new Date(body.get("expectedDisbursementDate")),
-      Number(weeklyPayment)
+      Number(weeklyPayment),
+      Number(body.get("loanTerms"))
     );
     const nextPayment = calculateNextPayment(
       new Date(body.get("expectedDisbursementDate"))
@@ -331,6 +335,7 @@ export async function POST(req: NextRequest) {
     const paymentSchedule = {
       loan: newLoanApplication._id,
       client: client._id,
+      staff: staff._id,
       schedule: schedule,
     };
     const newPaymentSchedule = await PaymentSchedule.create(paymentSchedule);
@@ -413,14 +418,25 @@ export async function PUT(req: NextRequest) {
         loanService.update(loanId, {
           loanApprovalStatus: "Approved",
         }),
-        
-        Vault.find()
+
+        Vault.find(),
       ]);
-      console.log("vault: ",vault[0])
-      if(!vault[0]) return createResponse(false, "400", "Something went wrong, please try again");
+      console.log("vault: ", vault[0]);
+      if (!vault[0])
+        return createResponse(
+          false,
+          "400",
+          "Something went wrong, please try again"
+        );
       // if(vault[0].balance < loan.principal) return createResponse(false, "400", "Insufficient funds in the vault");
-      vault[0].balance -= parseFloat(loan.principal)
-      vault[0].transactions.push({type: "Withdrawal (Loan disbursement)", amount:parseFloat(loan.principal), createdAt: new Date(), staff: userId});
+      vault[0].balance -= parseFloat(loan.principal);
+      vault[0].transactions.push({
+        type: "Withdrawal",
+        amount: parseFloat(loan.principal),
+        createdAt: new Date(),
+        staff: userId,
+        purpose: "Loan Disbursement",
+      });
       await vault[0].save();
       const response = await makeRequest(
         `${process.env.NEXT_PUBLIC_SOCKET_URL}/sockets/notify-loan-officer`,

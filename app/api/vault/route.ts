@@ -27,8 +27,8 @@ export async function GET(req: NextRequest) {
 }
 
 export async function POST(req: NextRequest) {
-  const { type, amount } = await req.json();
-
+  const { type, amount, purpose } = await req.json();
+  console.log({type, amount, purpose})
   try {
     const userId = new mongoose.Types.ObjectId(await getUserId());
     if (typeof amount !== "number" || amount <= 0)
@@ -41,6 +41,7 @@ export async function POST(req: NextRequest) {
         transactions: [
           {
             type: toCapitalized(type),
+            purpose,
             amount: amount,
             staff: userId,
             createdAt: new Date(),
@@ -61,6 +62,7 @@ export async function POST(req: NextRequest) {
     vault.transactions.push({
       type: toCapitalized(type),
       amount,
+      purpose,
       staff: userId,
       createdAt: new Date(),
     });

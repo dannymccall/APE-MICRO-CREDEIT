@@ -7,11 +7,11 @@ export const TransactionForm = ({
   loading,
 }: {
   type: string;
-  handleClick: (type: string, amount: number) => Promise<any>;
+  handleClick: (type: string, amount: number, purpose: string) => Promise<any>;
   loading: boolean;
 }) => {
   const [amount, setAmount] = useState<number>();
-
+  const [purpose, setPurpose] = useState<string>("");
   return (
     <div className="flex flex-1 flex-col gap-4">
       <h1 className="font-sans font-semibold text-gray-600">
@@ -26,11 +26,18 @@ export const TransactionForm = ({
         }`}
         className="block text-sm font-sans w-full px-5 py-2 border border-gray-200 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm "
       />
+      <input
+        type="text"
+        value={purpose}
+        onChange={(e) => setPurpose((e.target.value))}
+        placeholder="Purpose"
+        className="block text-sm font-sans w-full px-5 py-2 border border-gray-200 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm "
+      />
       <button
         type="button"
         className="btn btn-sm glass bg-gradient-to-tr from-violet-200 to-violet-300 hover:from-violet-700 hover:to-violet-900 hover:text-slate-100 transition-all duration-75"
         disabled={isNaN(amount ?? 0) || (amount ?? 0) <= 0}
-        onClick={() => handleClick(type, amount ?? 0)}
+        onClick={() => handleClick(type, amount ?? 0, purpose)}
       >
         {type === "deposit" ? (
           loading ? (
