@@ -248,9 +248,10 @@ const AddLoan = () => {
                   reducerState.activeTab === index
                     ? "bg-violet-900 text-white rounded-md"
                     : "bg-gray-200 hover:bg-gray-300"
-                }`}
+                } ${tab === "Guarantor" && !hasApplicantFilled ? "tooltip" : ""}`}
                 type="button"
                 disabled={ index == 1 && !hasApplicantFilled}
+                data-tip="Please fill the applicant form first!"
               >
                 {tab}
               </button>
