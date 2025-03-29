@@ -1,23 +1,15 @@
 import { NextResponse, type NextRequest } from "next/server";
-import { Db, Collection } from "mongodb";
 import { UserService } from "@/app/lib/backend/services/userService";
 import { connectDB } from "@/app/lib/mongodb";
 import { createResponse } from "@/app/lib/helperFunctions";
 import { IUser } from "@/app/lib/backend/models/user.model";
 import { User } from "@/app/lib/backend/models/user.model";
 import { createSession } from "@/app/lib/session/sessions";
-import { encryptData, decrypt } from "@/app/lib/session/security";
-import { getSession } from "@/app/lib/session/sessions";
+import {  decrypt } from "@/app/lib/session/security";
 import { ActivitymanagementService } from "@/app/lib/backend/services/ActivitymanagementService";
 import { cookies } from "next/headers";
 import { sendEmail, EmailPayload } from "@/app/lib/serverFunctions";
 import mongoose from "mongoose";
-// async function getUserService(collectionName: any) {
-//   const client = await clientPromise; // Reuse the MongoDB client
-//   const db: Db = client.db("microservice"); // Replace "test" with your database name
-//   const collection: Collection = db.collection(collectionName); // Replace "movies" with your collection name
-//   return new UserService(collection);
-// }
 
 await connectDB();
 const userService = new UserService();
@@ -100,7 +92,6 @@ export async function POST(req: NextRequest) {
       password,
       user.password
     );
-    console.log({ isPasswordValid });
     if (!isPasswordValid) {
       return createResponse(false, "001", "Invalid Credentials", {}, {});
     }
