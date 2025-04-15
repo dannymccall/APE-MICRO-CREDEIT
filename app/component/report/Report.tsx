@@ -379,6 +379,7 @@ export function GeneralReport({ reports }: { reports: any[] }) {
     totalAmountPaid: number;
     totalOutstandingBalance: number;
   } => {
+    console.log(data)
     const totalAmountToPay: number = data.reduce(
       (sum: number, accum: { schedules: { amountToPay: number } }) =>
         sum + accum.schedules.amountToPay,
@@ -832,7 +833,7 @@ export function Outstanding({ data, page }: { data: any[]; page: string }) {
             {formatCurrency(loan.totalAmountPaid)}
           </td>
           <td className="text-sm font-sans font-medium text-gray-700 p-1 border text-left">
-            {formatCurrency(loan.totalAmountLeft)}
+            {formatCurrency(loan.totalOutstandingBalance - loan.totalAmountPaid)}
           </td>
           {page === "report" && (
             <React.Fragment>
@@ -893,7 +894,7 @@ export function Outstanding({ data, page }: { data: any[]; page: string }) {
           {formatCurrency(data.reduce((sum, acc) => sum + acc.totalAmountPaid,0))}
         </td>
         <td className="font-semibold font-sans text-sm text-gray-900 p-1">
-          {formatCurrency(data.reduce((sum, acc) => acc.totalAmountLeft, 0))}
+          {formatCurrency(data.reduce((sum, acc) =>sum +( acc.totalOutstandingBalance - acc.totalAmountPaid), 0))}
         </td>
         <td className="p-1">....</td> {/* Empty cell for consistent layout */}
       </tr>

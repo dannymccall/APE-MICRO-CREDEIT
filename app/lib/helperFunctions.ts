@@ -281,7 +281,7 @@ export function generatePaymentSchedule(
       nextPayment: paymentDate.toISOString().split("T")[0], // Format as YYYY-MM-DD
       amountToPay,
       status: "not paid",
-      principalPayment: Math.floor(Number(principal) / 12),
+      principalPayment: Math.floor(Number(principal) / numberOfWeeks),
       interestPayment: Math.ceil(Number(principal) * 0.0267),
       outStandingBalance: amountToPay,
       amountPaid: 0,

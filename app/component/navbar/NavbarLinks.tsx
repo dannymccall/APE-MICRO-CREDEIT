@@ -27,10 +27,10 @@ const NavbarLinks = ({
     <main className="flex justify-between w-full items-center">
         <Link
           href="/"
-          className="w-96 text-violet-500 font-mono font-semibold text-xl flex flex-row gap-2 items-center"
+          className="w-96 text-violet-500 font-mono font-semibold text-xl flex flex-row  items-center"
         >
         <Image src={Icon} alt="icon" width={35}/>
-          APE CREDIT
+          PE CREDIT
         </Link>
 
       <ul

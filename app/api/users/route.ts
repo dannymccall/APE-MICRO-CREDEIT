@@ -16,6 +16,7 @@ import {
   sendEmail,
   uploadToCloudinary,
 } from "@/app/lib/serverFunctions";
+import { validateFields } from "@/app/lib/helperFunctions";
 // async function getUserService(collectionName: any) {
 //   const client = await clientPromise; // Reuse the MongoDB client
 //   const db: Db = client.db("microservice"); // Replace "test" with your database name
@@ -26,7 +27,6 @@ import {
 await connectDB();
 const userService = new UserService();
 const activitymanagementService = new ActivitymanagementService();
-
 
 export async function GET(req: NextRequest) {
   try {
@@ -93,17 +93,13 @@ export async function GET(req: NextRequest) {
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
+    console.log(body);
 
-    for (const [key, value] of Object.entries(body)) {
-      if (key !== "dob" && key !== "roles" && key !== "email") {
-        const validateMessage = userService.validateString(
-          value as string,
-          key
-        );
-        if (validateMessage) {
-          return createResponse(false, "001", validateMessage, {});
-        }
-      }
+    const excludedKeys = new Set(["dob", "roles", "email", "id", "service"]);
+
+    const validateMessage = validateFields(body, excludedKeys);
+    if (validateMessage) {
+      return createResponse(false, "001", validateMessage, {});
     }
 
     const password = userService.generateSecurePassword(8);
@@ -196,6 +192,7 @@ export async function POST(req: NextRequest) {
       registeredUser
     );
   } catch (error) {
+    console.log(error);
     return NextResponse.json(
       { error: "An error occurred while processing the request." },
       { status: 500 }
