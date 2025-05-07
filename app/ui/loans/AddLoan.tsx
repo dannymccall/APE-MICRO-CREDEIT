@@ -117,12 +117,8 @@ const AddLoan = () => {
   };
 
   const loanProduct = [
-    { name: "Business Loan (monthly repayment - 10.67%)" },
     { name: "Business Loan (weekly repayment - 2.67%)" },
-    { name: "Business Loan (daily repayment - 0.5%)" },
-    { name: "Vehicle Loan (monthly repayment - 10.67%)" },
     { name: "Vehicle Loan (weekly repayment - 2.67%)" },
-    { name: "Vehicle Loan (daily repayment - 0.5%)" },
   ];
 
   async function fetchClients(search: string) {
@@ -570,7 +566,7 @@ const AddLoan = () => {
                             >
                               Select type
                             </option>
-                            {["Months"].map((frequency: any) => (
+                            {["Monthly","Weekly"].map((frequency: any) => (
                               <option
                                 value={frequency}
                                 key={frequency}

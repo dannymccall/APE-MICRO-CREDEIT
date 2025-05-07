@@ -196,6 +196,8 @@ export function calculateLoanInformaion(
   return Math.floor(expectedWeeklyPayment);
 }
 
+console.log(calculateLoanInformaion(1000, 3, 2.67)); // Example usage
+
 export function calculateProcessingAndAdvanceFee(principal: number) {
   const processingFee = (Number(principal) * 0.05).toFixed(2);
   const advanceFee = (Number(principal) * 0.1).toFixed(2);

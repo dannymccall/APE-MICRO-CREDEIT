@@ -128,7 +128,7 @@ export default function Sidebar({
       roles: ["Admin", "Loan officer"],
       subLinks: [
         {
-          name: "Add Loans",
+          name: "Apply Loans",
           href: "/add-loan",
           icon: FiChevronRight,
           roles: ["Admin", "Loan officer"],
