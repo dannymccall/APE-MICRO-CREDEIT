@@ -44,6 +44,9 @@ const TransactionList: React.FC<TransactionListProps> = ({ transactions }) => {
                 Amount
               </th>
               <th className="text-base font-sans font-medium text-gray-700 p-2">
+                Purpose
+              </th>
+              <th className="text-base font-sans font-medium text-gray-700 p-2">
                 Action Taker
               </th>
             </tr>

@@ -92,7 +92,7 @@ const DashboardUI = async () => {
       icon: FaHandHoldingUsd,
     }, // Symbolizes disbursement
     {
-      statsType: "Total Repayments",
+      statsType: "Total Payments",
       stats: formatCurrency(totalRepayment),
       icon: FaMoneyBillWave,
     }, // Represents repayment/money flow
@@ -209,7 +209,7 @@ const DashboardUI = async () => {
   const disbursementOptions = generateChartOptions(
     "Monthly Disbursement Statistics"
   );
-  const repaymentOptions = generateChartOptions("Monthly Repayment Statistics");
+  const repaymentOptions = generateChartOptions("Monthly Payment Statistics");
   const outStandingOptions = generateChartOptions(
     "Monthly Outstanding Balance Statistics"
   );

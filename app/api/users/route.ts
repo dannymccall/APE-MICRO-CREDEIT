@@ -5,16 +5,18 @@ import { connectDB } from "@/app/lib/mongodb";
 import { createResponse } from "@/app/lib/helperFunctions";
 import { IUser } from "@/app/lib/backend/models/user.model";
 import { User } from "@/app/lib/backend/models/user.model";
-import nodemailer, { Transporter } from "nodemailer";
 import { saveFile } from "../clients/route";
 import { generateFileName } from "../loans/route";
 import { getUserId } from "../auth/route";
 import mongoose from "mongoose";
 import { ActivitymanagementService } from "@/app/lib/backend/services/ActivitymanagementService";
 import {
+  EmailPayload,
   getArrayBuffer,
+  sendEmail,
   uploadToCloudinary,
 } from "@/app/lib/serverFunctions";
+import { validateFields } from "@/app/lib/helperFunctions";
 // async function getUserService(collectionName: any) {
 //   const client = await clientPromise; // Reuse the MongoDB client
 //   const db: Db = client.db("microservice"); // Replace "test" with your database name
@@ -25,34 +27,6 @@ import {
 await connectDB();
 const userService = new UserService();
 const activitymanagementService = new ActivitymanagementService();
-export interface EmailPayload {
-  from: string;
-  to: string;
-  subject: string;
-  text?: string;
-  html?: string;
-}
-
-export async function sendEmail(mailOptions: EmailPayload) {
-  try {
-    const transporter: Transporter = nodemailer.createTransport({
-      host: process.env.NEXT_PUBLIC_SMTP_HOST, // e.g., 'smtp.gmail.com'
-      port: parseInt(process.env.NEXT_PUBLIC_SMTP_PORT || "465", 10), // Port (default: 587)
-      secure: true, // true for 465, false for other ports
-      auth: {
-        user: process.env.NEXT_PUBLIC_SMTP_USER, // SMTP username
-        pass: process.env.NEXT_PUBLIC_SMTP_PASS, // SMTP password
-      },
-    });
-
-    const info = await transporter.sendMail(mailOptions);
-    console.log("Email sent: ", info);
-    return info;
-  } catch (error: any) {
-    console.error("Error sending email:", error);
-    throw new Error(`Failed to send email: ${error.message}`);
-  }
-}
 
 export async function GET(req: NextRequest) {
   try {
@@ -119,17 +93,13 @@ export async function GET(req: NextRequest) {
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
+    console.log(body);
 
-    for (const [key, value] of Object.entries(body)) {
-      if (key !== "dob" && key !== "roles" && key !== "email") {
-        const validateMessage = userService.validateString(
-          value as string,
-          key
-        );
-        if (validateMessage) {
-          return createResponse(false, "001", validateMessage, {});
-        }
-      }
+    const excludedKeys = new Set(["dob", "roles", "email", "id", "service"]);
+
+    const validateMessage = validateFields(body, excludedKeys);
+    if (validateMessage) {
+      return createResponse(false, "001", validateMessage, {});
     }
 
     const password = userService.generateSecurePassword(8);
@@ -222,6 +192,7 @@ export async function POST(req: NextRequest) {
       registeredUser
     );
   } catch (error) {
+    console.log(error);
     return NextResponse.json(
       { error: "An error occurred while processing the request." },
       { status: 500 }

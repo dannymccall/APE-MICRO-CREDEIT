@@ -48,6 +48,7 @@ export default function Sidebar({
   const pathName = usePathname();
   const [openMenus, setOpenMenus] = useState<Record<string, boolean>>({});
   const { profilePicture } = useProfile();
+  console.log(profilePicture)
   // const [isSidebarOpen, setIsSidebarOpen] = useState(false); // New state for toggling sidebar
 
   const pathname = usePathname(); // To get current route path
@@ -64,18 +65,7 @@ export default function Sidebar({
   useEffect(() => {
     setIsSidebarOpen(false);
   },[pathname]);
-  const navbarLinks: NavbarLink[] = [
-    {
-      name: `${logginIdentity ? logginIdentity.userName : <LoadingSpinner />}`,
-      href: "#",
-      icon: FiUser,
-      subLinks: [
-        { name: "Basic info", href: "/users/admins", icon: FiChevronRight },
-        { name: "Logout", href: "/users/guests", icon: FiChevronRight },
-      ],
-    },
-  ];
-
+ 
   // Toggle Dropdown
   const toggleDropdown = (name: string) => {
     setOpenDropdown(openDropdown === name ? null : name);
@@ -138,7 +128,7 @@ export default function Sidebar({
       roles: ["Admin", "Loan officer"],
       subLinks: [
         {
-          name: "Add Loans",
+          name: "Apply Loans",
           href: "/add-loan",
           icon: FiChevronRight,
           roles: ["Admin", "Loan officer"],
@@ -428,7 +418,7 @@ export default function Sidebar({
       </nav>
       {/* Sidebar Footer */}
       <div className="p-4 border-t border-violet-500 mt-auto">
-        <p className="text-sm text-center">© 2024 My Company</p>
+        <p className="text-sm text-center">{`© ${new Date().getFullYear()} APE CREDIT`}</p>
       </div>
       <Modal modalOpen={modalOpen} setModalOpen={setModalOpen}>
         <div className="flex flex-col gap-10 items-center justify-center">

@@ -93,7 +93,7 @@ const BulkPayment: React.FC<PaymentClientDetails> = ({ loans }) => {
         </h1>
       )}
       <div className="w-full flex gap-10">
-        {loans.map((loan, index: number) => (
+        {loans && Array.isArray(loans) && loans.length > 0 ? loans.map((loan, index: number) => (
           <div
             className="max-w-80 gap-5 flex flex-col bg-[url('../public/checkout.jpg')] bg-cover bg-center rounded-md"
             key={index}
@@ -161,9 +161,11 @@ const BulkPayment: React.FC<PaymentClientDetails> = ({ loans }) => {
               </div>
             </form>
           </div>
-        ))}
+        )): <h1>No Bulk Payments availble for today.</h1>}
         {/* A global button to process all forms */}
       </div>
+      {
+        loans && Array.isArray(loans) && loans.length > 0 && 
       <button
         type="button"
         className="btn w-28 h-10 mt-5 flex items-center rounded-md justify-center gap-3 bg-slate-200 hover:bg-gradient-to-r from-violet-700 to-violet-900 text-slate-600 hover:text-slate-400 font-bold font-sans transition ease-in-out"
@@ -174,6 +176,7 @@ const BulkPayment: React.FC<PaymentClientDetails> = ({ loans }) => {
       >
         Submit All
       </button>
+      }
     </>
   );
 };

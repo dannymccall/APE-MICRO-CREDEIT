@@ -112,7 +112,7 @@ const Loan: React.FC<LoanProps> = ({ loan }) => {
           </span>{" "}
         </td>
 
-        <td className="p-2 text-sm relative flex flex-row gap-3 items-center">
+        <td className="p-2 text-sm relative flex phone:flex-col desktop:flex-row laptop:flex-row tablet:flex-row gap-3 items-center ">
           <div className="tooltip" data-tip="View">
             <Link
               role="menuitem"

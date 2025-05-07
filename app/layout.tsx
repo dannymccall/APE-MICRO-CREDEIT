@@ -10,6 +10,7 @@ import { ProfileProvider } from "./context/ProfileContext";
 // import { ErrorBoundary } from "next/dist/client/components/error-boundary";
 import { ErrorBoundary } from "react-error-boundary";
 import GlobalError from "./error";
+// import { Metadata } from "next";
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
@@ -34,7 +35,10 @@ export default function RootLayout({
   const [isSidebarOpen, setIsSidebarOpen] = useState<boolean>(false);
   const [hasError, setHasError] = useState<boolean>(false); // Track errors
 
-  const showLayout = pathName !== "/" && pathName !== '/forgot-password' && pathName !== "/reset-password"; // Hide layout on the error page
+  const showLayout =
+    pathName !== "/" &&
+    pathName !== "/forgot-password" &&
+    pathName !== "/reset-password"; // Hide layout on the error page
 
   useEffect(() => {
     // Set the sidebar state when the component mounts
@@ -51,9 +55,14 @@ export default function RootLayout({
   }, []);
   return (
     <html lang="en">
+      <head>
+        <link rel="icon" href="/vercel.svg" sizes="32x32" type="image/x-icon" />
+        <link rel="apple-touch-icon" href="/vercel.svg" />
+        <title>APE CREDIT</title>
+      </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} ${
-          isSidebarOpen ? 'phone:overflow-hidden tablet:overflow-hidden' : ''
+          isSidebarOpen ? "phone:overflow-hidden tablet:overflow-hidden" : ""
         }`}
       >
         {showLayout && !hasError ? (
@@ -73,7 +82,7 @@ export default function RootLayout({
                 <div
                   className={`w-full h-full flex-col transition-all duration-300 ${
                     isSidebarOpen ? "desktop:ml-72 laptop:ml-64" : "ml-0"
-                  } ${isSidebarOpen ? 'phone:fixed tablet:fixed' : ''}`}
+                  } ${isSidebarOpen ? "phone:fixed tablet:fixed" : ""}`}
                 >
                   <Notifications />
                   <Navbar

@@ -281,7 +281,7 @@ export const ChangePasswordSchema = z.object({
   }, "Password is Required"),
   confirm_password: z.string().refine((value: string) => {
     return value.trim() !== "";
-  }, "Confirm Password is Required"),
+  }, "Confirm Password is Required"), 
 });
 
 export type ChangePasswordState = {

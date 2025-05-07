@@ -257,10 +257,21 @@ export function Disbursement({ disbursements }: { disbursements: any[] }) {
       ))}
       <tr className="border">
         <td
-          colSpan={5}
           className="font-semibold font-sans text-sm text-gray-900 p-1"
         >
           Total
+        </td>
+        <td className="font-semibold font-sans text-sm text-gray-900 p-1">
+          {"-".repeat(15)}
+        </td>
+        <td className="font-semibold font-sans text-sm text-gray-900 p-1">
+        {"-".repeat(15)}
+        </td>
+        <td className="font-semibold font-sans text-sm text-gray-900 p-1">
+        {"-".repeat(15)}
+        </td>
+        <td className="font-semibold font-sans text-sm text-gray-900 p-1">
+        {"-".repeat(10)}
         </td>
         <td className="font-semibold font-sans text-sm text-gray-900 p-1">
           {formatCurrency(
@@ -368,6 +379,7 @@ export function GeneralReport({ reports }: { reports: any[] }) {
     totalAmountPaid: number;
     totalOutstandingBalance: number;
   } => {
+    console.log(data)
     const totalAmountToPay: number = data.reduce(
       (sum: number, accum: { schedules: { amountToPay: number } }) =>
         sum + accum.schedules.amountToPay,
@@ -533,15 +545,41 @@ export function Repayments({
         ))}
       <tr className="border">
         <td
-          colSpan={10}
           className="font-semibold font-sans text-sm text-gray-900 p-1"
         >
           Total
         </td>
         <td className="font-semibold font-sans text-sm text-gray-900 p-1">
+        {"-".repeat(15)}
+        </td>
+        <td className="font-semibold font-sans text-sm text-gray-900 p-1">
+        {"-".repeat(15)}
+        </td>
+        <td className="font-semibold font-sans text-sm text-gray-900 p-1">
+        {"-".repeat(15)}
+        </td>
+        <td className="font-semibold font-sans text-sm text-gray-900 p-1">
+        {"-".repeat(15)}
+        </td>
+        <td className="font-semibold font-sans text-sm text-gray-900 p-1">
+        {"-".repeat(15)}
+        </td>
+        <td className="font-semibold font-sans text-sm text-gray-900 p-1">
+        {"-".repeat(15)}
+        </td>
+        <td className="font-semibold font-sans text-sm text-gray-900 p-1">
+        {"-".repeat(15)}
+        </td>
+        <td className="font-semibold font-sans text-sm text-gray-900 p-1">
+        {"-".repeat(15)}
+        </td>
+        <td className="font-semibold font-sans text-sm text-gray-900 p-1">
+        {"-".repeat(15)}
+        </td>
+        <td className="font-semibold font-sans text-sm text-gray-900 p-1">
           {formatCurrency(totalAmountToPay)}
         </td>
-        <td className="p-1">.....</td> {/* Empty cell for consistent layout */}
+        <td className="p-1">{"-".repeat(15)}</td> {/* Empty cell for consistent layout */}
       </tr>
     </tbody>
   );
@@ -605,10 +643,36 @@ export function Arrears({
         ))}
       <tr className="border">
         <td
-          colSpan={10}
           className="font-semibold font-sans text-sm text-gray-900 p-1"
         >
           Total
+        </td>
+        <td className="font-semibold font-sans text-sm text-gray-900 p-1">
+        {"-".repeat(15)}
+        </td>
+        <td className="font-semibold font-sans text-sm text-gray-900 p-1">
+        {"-".repeat(15)}
+        </td>
+        <td className="font-semibold font-sans text-sm text-gray-900 p-1">
+        {"-".repeat(15)}
+        </td>
+        <td className="font-semibold font-sans text-sm text-gray-900 p-1">
+        {"-".repeat(15)}
+        </td>
+        <td className="font-semibold font-sans text-sm text-gray-900 p-1">
+        {"-".repeat(15)}
+        </td>
+        <td className="font-semibold font-sans text-sm text-gray-900 p-1">
+        {"-".repeat(15)}
+        </td>
+        <td className="font-semibold font-sans text-sm text-gray-900 p-1">
+        {"-".repeat(15)}
+        </td>
+        <td className="font-semibold font-sans text-sm text-gray-900 p-1">
+        {"-".repeat(10)}
+        </td>
+        <td className="font-semibold font-sans text-sm text-gray-900 p-1">
+        {"-".repeat(15)}
         </td>
         <td className="font-semibold font-sans text-sm text-gray-900 p-1">
           {formatCurrency(totalAmountToPay)}
@@ -691,10 +755,27 @@ export function Default({
       )}
       <tr className="border">
         <td
-          colSpan={6}
           className="font-semibold font-sans text-sm text-gray-900 p-1"
         >
           Total
+        </td>
+        <td className="font-semibold font-sans text-sm text-gray-900 p-1">
+        {"-".repeat(15)}
+        </td>
+        <td className="font-semibold font-sans text-sm text-gray-900 p-1">
+        {"-".repeat(15)}
+        </td>
+        <td className="font-semibold font-sans text-sm text-gray-900 p-1">
+        {"-".repeat(15)}
+        </td>
+        <td className="font-semibold font-sans text-sm text-gray-900 p-1">
+        {"-".repeat(15)}
+        </td>
+        <td className="font-semibold font-sans text-sm text-gray-900 p-1">
+        {"-".repeat(15)}
+        </td>
+        <td className="font-semibold font-sans text-sm text-gray-900 p-1">
+        {"-".repeat(15)}
         </td>
         <td className="font-semibold font-sans text-sm text-gray-900 p-1">
           {formatCurrency(totalAmountPaid)}
@@ -752,7 +833,7 @@ export function Outstanding({ data, page }: { data: any[]; page: string }) {
             {formatCurrency(loan.totalAmountPaid)}
           </td>
           <td className="text-sm font-sans font-medium text-gray-700 p-1 border text-left">
-            {formatCurrency(loan.totalAmountLeft)}
+            {formatCurrency(loan.totalOutstandingBalance - loan.totalAmountPaid)}
           </td>
           {page === "report" && (
             <React.Fragment>
@@ -774,11 +855,27 @@ export function Outstanding({ data, page }: { data: any[]; page: string }) {
       ))}
       <tr className="border">
         <td
-          colSpan={page === "report" ? 5 : 0}
           className="font-semibold font-sans text-sm text-gray-900 p-1"
         >
           Total
         </td>
+        {
+          page === "report" && <React.Fragment>
+
+        <td className="font-semibold font-sans text-sm text-gray-900 p-1">
+        {"-".repeat(15)}
+        </td>
+        <td className="font-semibold font-sans text-sm text-gray-900 p-1">
+        {"-".repeat(15)}
+        </td>
+        <td className="font-semibold font-sans text-sm text-gray-900 p-1">
+        {"-".repeat(15)}
+        </td>
+        <td className="font-semibold font-sans text-sm text-gray-900 p-1">
+        {"-".repeat(10)}
+        </td>
+          </React.Fragment>
+        }
         <td className="font-semibold font-sans text-sm text-gray-900 p-1">
           {formatCurrency(data.reduce((sum, acc) =>sum+ acc.totalPrincipal, 0))}
         </td>
@@ -797,7 +894,7 @@ export function Outstanding({ data, page }: { data: any[]; page: string }) {
           {formatCurrency(data.reduce((sum, acc) => sum + acc.totalAmountPaid,0))}
         </td>
         <td className="font-semibold font-sans text-sm text-gray-900 p-1">
-          {formatCurrency(data.reduce((sum, acc) => acc.totalAmountLeft, 0))}
+          {formatCurrency(data.reduce((sum, acc) =>sum +( acc.totalOutstandingBalance - acc.totalAmountPaid), 0))}
         </td>
         <td className="p-1">....</td> {/* Empty cell for consistent layout */}
       </tr>

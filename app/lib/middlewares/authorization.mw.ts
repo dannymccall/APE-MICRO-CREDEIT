@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { decrypt } from "../session/security";
 
-const protectedRoutes = ["/dashboard", "/addUser", "/manage-user", "/add-client", "/manage-client"];
+const protectedRoutes = ["/dashboard", "/addUser", "/manage-user", "/add-client", "/manage-client","/vault", "/add-loan", "/loan-recovery", "/approve-loan-payment","/user-profile"];
 const publicRoutes = ["/"];
 
 export async function authMiddleware(req: NextRequest) {

@@ -129,7 +129,7 @@ const AddUser = () => {
             />
           )}
           <p className=" text-red-600 p-3 font-bold">
-            {!state?.errors && state?.message}
+            {state?.errors && state?.message}
           </p>
 
           <div className="flex flex-col  my-5 relative">
@@ -420,7 +420,7 @@ const AddUser = () => {
               <div className="flex flex-row w-32 gap-0 items-center">
                 <Label
                   className="font-sans font-semibold text-gray-500"
-                  labelName="Passport"
+                  labelName="Photo"
                 />
                 <span className="text-red-500 ml-1">*</span>
               </div>

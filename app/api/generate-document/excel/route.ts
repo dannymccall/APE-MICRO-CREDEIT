@@ -8,23 +8,21 @@ export async function POST(req: Request) {
   let browser;
   try {
     const { html } = await req.json();
-
-   
-
+    
     // ✅ Read Tailwind CSS
     const tailwindCSSPath = path.join(process.cwd(), "public", "styles.css");
     const tailwindCSS = fs.readFileSync(tailwindCSSPath, "utf8");
-    const isLocal = process.env.NODE_ENV === "development"; // Detect environment
+    const isLocal = process.env.NODE_ENV === "development";
 
     browser = await puppeteer.launch({
       args: isLocal ? [] : chromium.args,
       executablePath: isLocal
-        ? (await import("puppeteer")).default.executablePath() // Local Puppeteer
-        : await chromium.executablePath(), // Vercel Chromium
+        ? (await import("puppeteer")).default.executablePath()
+        : await chromium.executablePath(),
       headless: true,
     });
+
     const page = await browser.newPage();
-    // ✅ Inject Tailwind CSS into the HTML
     const fullHtml = `
       <html>
         <head>
@@ -37,9 +35,9 @@ export async function POST(req: Request) {
         </body>
       </html>
     `;
-
+    
     await page.setContent(fullHtml, { waitUntil: "networkidle0" });
-
+    
     // ✅ Extract table data from the HTML
     const tableData = await page.evaluate(() => {
       const rows = Array.from(document.querySelectorAll("table tr"));
@@ -48,39 +46,32 @@ export async function POST(req: Request) {
       );
     });
 
+    console.log(tableData)
+    
     await browser.close();
-
-    // ✅ Create Excel workbook and worksheet
+    
     const workbook = new ExcelJS.Workbook();
     const worksheet = workbook.addWorksheet("Report");
-
-    // ✅ Determine max columns length
-    const maxColumns: number = Math.max(...tableData.map((row: string[]) => row.length));
-
-    // ✅ Populate Excel with table data
-    tableData.forEach((row: string[]) => {
-      const newRow = worksheet.addRow([...row, ...Array(maxColumns - row.length).fill("")]);
-
-      // ✅ Apply bold formatting for "Total" rows
-      if (row.some((cell: string) => cell.toLowerCase().includes("total"))) {
-        newRow.eachCell((cell: ExcelJS.Cell) => {
-          cell.font = { bold: true };
-          cell.alignment = { horizontal: "right" };
-        });
+    
+    let previousCategory = ""; // Track the previous section to insert blank rows
+    tableData.forEach((row) => {
+      const currentCategory = row[0]?.toLowerCase().includes("loan") ? "Loan Report" :
+                              row[0]?.toLowerCase().includes("default") ? "Default Report" : "General Report";
+      
+      if (previousCategory && previousCategory !== currentCategory) {
+        worksheet.addRow([]); // Insert a blank row before a new section
       }
+      worksheet.addRow(row);
+      previousCategory = currentCategory;
     });
-
-    // ✅ Auto-adjust column widths based on content
+    
     worksheet.columns.forEach((column, index) => {
-      const maxLength: number = Math.max(
-        ...tableData.map((row: string[]) => row[index]?.length || 10)
-      );
+      const maxLength = Math.max(...tableData.map((row) => row[index]?.length || 10));
       column.width = maxLength < 15 ? 15 : maxLength + 5;
     });
-
-    // ✅ Write Excel file to buffer
+    
     const buffer = await workbook.xlsx.writeBuffer();
-
+    
     return new Response(buffer, {
       headers: {
         "Content-Type": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",

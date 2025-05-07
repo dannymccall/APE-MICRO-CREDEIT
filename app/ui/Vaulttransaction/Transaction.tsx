@@ -7,6 +7,7 @@ export interface ITransaction {
     _id: string;
     type: string;
     amount: number;
+    purpose: string;
     staff: {
       first_name: string;
       other_names: string;
@@ -32,6 +33,9 @@ const Transaction: React.FC<ITransaction> = ({ transaction }) => {
         </td>
         <td className="p-2 font-mono font-normal text-gray-700 text-left">
           {formatCurrency(transaction.amount)}
+        </td>
+        <td className="p-2 font-mono font-normal text-gray-700 text-left">
+          {transaction.purpose}
         </td>
         <td className="p-2 font-mono font-normal text-gray-700 text-left">
           {transaction.staff

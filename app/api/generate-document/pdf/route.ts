@@ -4,26 +4,7 @@ import path from "path";
 import puppeteer from "puppeteer";
 import chromium from "@sparticuz/chromium"; // Optimized for Vercel
 
-// Utility to dynamically import Puppeteer
-// const getPuppeteer = async () => {
-//   if (process.env.NODE_ENV === "development") {
-//     const puppeteer = await import("puppeteer");
-//     return {
-//       puppeteer: puppeteer.default,
-//       executablePath: puppeteer.executablePath(),
-//     };
-//   } else {
-//     const [puppeteerCore, chromium] = await Promise.all([
-//       import("puppeteer-core"),
-//       import("@sparticuz/chromium"),
-//     ]);
-//     return {
-//       puppeteer: puppeteerCore.default,
-//       executablePath: chromium.default.executablePath() || "/usr/bin/chromium",
-//       args: chromium.default.args || [],
-//     };
-//   }
-// };
+
 
 export async function POST(req: Request) {
   let browser;

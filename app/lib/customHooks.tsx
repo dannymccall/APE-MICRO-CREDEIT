@@ -188,8 +188,11 @@ export const useReducerHook = (state: typeof initialState, action: Action) => {
 export function getLoanInfomation(type: string) {
   let interestRate: number = 0;
   switch (type.toLowerCase()) {
-    case "months":
+    case "monthly":
       interestRate = 10.67;
+      break;
+    case "weekly":
+      interestRate = 2.67;
       break;
     default:
       return "invalid type";

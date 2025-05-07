@@ -3,7 +3,8 @@ import Link from "next/link";
 import React from "react";
 import { FiChevronDown, FiChevronRight } from "react-icons/fi";
 import { LoadingSpinner } from "../Loading";
-
+import Icon from "@/public/apc.png";
+import Image from "next/image";
 interface Props {
   navbarLinks: any[];
   isActive: (linkHref: string) => boolean;
@@ -24,9 +25,13 @@ const NavbarLinks = ({
 
   return (
     <main className="flex justify-between w-full items-center">
-      <h1 className="w-96 text-violet-500 font-mono font-semibold text-xl phone:visible ml-10 desktop:hidden laptop:hidden tablet:block">
-        APE CREDIT
-      </h1>
+        <Link
+          href="/"
+          className="w-96 text-violet-500 font-mono font-semibold text-xl flex flex-row  items-center"
+        >
+        <Image src={Icon} alt="icon" width={35}/>
+          PE CREDIT
+        </Link>
 
       <ul
         className={`flex space-x-6 ${className} desktop:place-content-end laptop:place-content-end w-full`}

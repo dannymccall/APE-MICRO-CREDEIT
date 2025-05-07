@@ -5,6 +5,7 @@ export interface IVault extends Schema {
   balance: number;
   transactions: Array<{
     type: string;
+    purpose?: string;
     amount: number;
     staff: mongoose.Types.ObjectId;
     createdAt: Date;
@@ -23,6 +24,10 @@ export const VaultSchema: Schema = new Schema<IVault>(
         type: {
           type: String,
           required: true,
+        },
+        purpose: {
+          type: String,
+    
         },
         amount: {
           type: Number,

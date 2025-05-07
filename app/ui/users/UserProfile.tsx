@@ -42,7 +42,7 @@ const UserProfile = () => {
   const { profilePicture, updateProfilePicture } = useProfile();
   const fetchUser = useCallback(async () => {
     const user = await makeRequest(`/api/auth?service=fetchUser`, {
-      method: "GET",
+      method: "GET", 
       cache: "no-store",
     });
     console.log(user);

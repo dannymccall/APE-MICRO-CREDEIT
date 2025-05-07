@@ -3,6 +3,7 @@ import mongoose, { Document, Schema } from "mongoose";
 export interface IPaymentSchedule extends Document {
   loan: mongoose.Types.ObjectId;
   client: mongoose.Types.ObjectId;
+  staff?: mongoose.Types.ObjectId;
   schedule: Array<{
     nextPayment: Date;
     amountToPay: number;
@@ -26,7 +27,11 @@ export const PaymentScheduleSchema: Schema = new Schema<IPaymentSchedule>({
     ref: "Client", // Reference to the Loan model
     required: true,
   },
-
+  staff: {
+    type: Schema.Types.ObjectId,
+    ref: "User",
+    required: true
+  },
   schedule: [
     {
       nextPayment: {

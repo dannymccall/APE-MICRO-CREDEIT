@@ -196,6 +196,8 @@ export function calculateLoanInformaion(
   return Math.floor(expectedWeeklyPayment);
 }
 
+console.log(calculateLoanInformaion(1000, 3, 2.67)); // Example usage
+
 export function calculateProcessingAndAdvanceFee(principal: number) {
   const processingFee = (Number(principal) * 0.05).toFixed(2);
   const advanceFee = (Number(principal) * 0.1).toFixed(2);
@@ -260,14 +262,20 @@ type PaymentSchedule = {
   amountPaid: number;
 };
 
+
+function getTotalWeeks(months: number): number {
+  const weeksPerMonth = 4;
+  return months * weeksPerMonth;
+}
 export function generatePaymentSchedule(
   principal: number,
   startDate: Date,
-  amountToPay: number
+  amountToPay: number,
+  loanTerms: number
 ): PaymentSchedule[] {
   const schedule: PaymentSchedule[] = [];
-
-  for (let i = 1; i <= 12; i++) {
+  const numberOfWeeks = getTotalWeeks(loanTerms);
+  for (let i = 1; i <= numberOfWeeks; i++) {
     const paymentDate = new Date(startDate);
     paymentDate.setDate(startDate.getDate() + i * 7); // Add 7 days per week
     schedule.push({
@@ -275,7 +283,7 @@ export function generatePaymentSchedule(
       nextPayment: paymentDate.toISOString().split("T")[0], // Format as YYYY-MM-DD
       amountToPay,
       status: "not paid",
-      principalPayment: Math.floor(Number(principal) / 12),
+      principalPayment: Math.floor(Number(principal) / numberOfWeeks),
       interestPayment: Math.ceil(Number(principal) * 0.0267),
       outStandingBalance: amountToPay,
       amountPaid: 0,

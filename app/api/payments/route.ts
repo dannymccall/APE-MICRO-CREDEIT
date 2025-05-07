@@ -43,7 +43,6 @@ export async function GET(req: NextRequest) {
         })
         .exec();
 
-      console.log(client.loans); // Only loans with paymentStatus "not completed"
       if (!client.loans || client.loans.length === 0) {
         return createResponse(
           false,
@@ -55,9 +54,21 @@ export async function GET(req: NextRequest) {
     }
 
     if (paymentType === "bulkPayment") {
+      // Get today's midnight UTC
+      const startOfDay = new Date(new Date().setHours(0, 0, 0, 0));
+    
+      // Get the next day's midnight to form an exclusive range
+      const endOfDay = new Date(new Date().setHours(24, 0, 0, 0));
+    
+      console.log("Start of Day:", startOfDay);
+      console.log("End of Day:", endOfDay);
+    
+      // Query loans due today
       const loans: any = await LoanApplication.find({
         paymentStatus: "not completed",
         nextPaymentStatus: "",
+        nextPayment: { $gte: startOfDay, $lt: endOfDay }, // ✅ Date range
+        loanApprovalStatus: "Approved",
       })
         .select("nextPayment weeklyAmount systemId")
         .populate({
@@ -65,8 +76,12 @@ export async function GET(req: NextRequest) {
           select: ["first_name", "last_name", "systemId"],
         })
         .exec();
+    
+      console.log({ loans });
       return NextResponse.json(loans);
     }
+    
+    
   } catch (error) {
     console.log(error);
     return NextResponse.json(

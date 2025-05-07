@@ -11,15 +11,6 @@ import Link from "next/link";
 const Signin = () => {
   const [state, action, pending] = useActionState(signin, undefined);
   const router = useRouter();
-  // const handleSubmit = (e) => {
-  //   e.preventDefault();
-  //   setLoading(true);
-  //   // Simulate form submission
-  //   setTimeout(() => {
-  //     setLoading(false);
-  //     alert("Form Submitted!");
-  //   }, 2000);
-  // };
 
   useEffect(() => {
     let timeOut: NodeJS.Timeout;

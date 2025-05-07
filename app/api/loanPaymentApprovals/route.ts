@@ -50,7 +50,7 @@ export async function POST(req: NextRequest) {
           "Something went wrong, please try again"
         );
       vault[0].balance += parseFloat(amountPaid)
-      vault[0].transactions.push({type: "Deposit (Loan Repayment)", amount:parseFloat(amountPaid), createdAt: new Date(), staff: userId});
+      vault[0].transactions.push({type: "Deposit", amount:parseFloat(amountPaid), createdAt: new Date(), staff: userId, purpose: "Loan Payment"});
       await vault[0].save()
     }
     const paymentSchedule = loanPaymentSchedule.schedule;

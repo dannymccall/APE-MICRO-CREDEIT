@@ -95,7 +95,7 @@ const ClientDetails: React.FC<PaymentClientDetails> = ({ client }) => {
         {
           client && (
 
-        <div className="w-full flex flex-col  bg-[url('../public/checkout.jpg')] bg-cover bg-center py-4">
+        <div className="w-full flex flex-col  bg-[url('../public/checkout.jpg')] bg-cover bg-center py-4 overflow-y-auto">
           <div className="w-full h-full flex flex-col justify-evenly">
             <div className="w-full flex desktop:flex-row laptop:flex-row tablet:flex-row phone:flex-col mb-2 justify-between desktop:items-center laptop:items-center tablet:items-center phone:items-start px-5">
               <p className="text-base font-mono text-slate-100">

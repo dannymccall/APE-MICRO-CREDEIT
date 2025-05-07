@@ -49,6 +49,7 @@ const AddLoan = () => {
   const formRef = useRef<HTMLFormElement>(null);
   const [state, action, pending] = useActionState(processLoan, undefined);
   const [showMessage, setShowMessage] = useState<boolean>(false);
+  const [hasApplicantFilled, setHasApplicantFilled] = useState<boolean>(false)
   const router = useRouter();
   // const socket = useSocket();
   const [reducerState, dispatch] = useReducer(useReducerHook, initialState);
@@ -75,7 +76,6 @@ const AddLoan = () => {
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]; // Get the selected file
-    console.log(file);
     if (file) {
       // Create a URL for the file and update the stat
       const fileUrl: CustomFile | any = URL.createObjectURL(file);
@@ -108,30 +108,17 @@ const AddLoan = () => {
       }, 1000);
     }
 
-    // Cleanup the timeout when the component unmounts or when state changes
     return () => clearTimeout(timeout);
   }, [state?.response?.message, router]); // Depend on state.message to run when it changes
 
-  // useEffect(() => {
-  //   const socket = io();
-  //   socket.on("connected", (value) => {
-  //     if(logginIdentity.userRoles.includes("Loan Officer")){
-  //       socket.emit("newLoanApplicationSubmited");
-  //     }
-  //   });
-  //   console.log("hello");
-  // }, []);
+
   const onClick = () => {
     router.push("/manage-loan");
   };
 
   const loanProduct = [
-    { name: "Business Loan (monthly repayment - 10.67%)" },
     { name: "Business Loan (weekly repayment - 2.67%)" },
-    { name: "Business Loan (daily repayment - 0.5%)" },
-    { name: "Vehicle Loan (monthly repayment - 10.67%)" },
     { name: "Vehicle Loan (weekly repayment - 2.67%)" },
-    { name: "Vehicle Loan (daily repayment - 0.5%)" },
   ];
 
   async function fetchClients(search: string) {
@@ -183,6 +170,7 @@ const AddLoan = () => {
       }
 
       dispatch({ type: "SET_ACTIVE_TAB", payload: Number(1) });
+      setHasApplicantFilled(true);
       dispatch({ type: "SET_FORM_ERRORS", payload: {} });
     }
   };
@@ -246,7 +234,7 @@ const AddLoan = () => {
           onSubmit={handleSubmit}
         >
           <div role="tablist" className="tabs h-full w-1/2 gap-5">
-            {["Application", "Guarantor"].map((tab, index) => (
+            {["Applicant", "Guarantor"].map((tab, index) => (
               <button
                 key={index}
                 onClick={() =>
@@ -256,8 +244,10 @@ const AddLoan = () => {
                   reducerState.activeTab === index
                     ? "bg-violet-900 text-white rounded-md"
                     : "bg-gray-200 hover:bg-gray-300"
-                }`}
+                } ${tab === "Guarantor" && !hasApplicantFilled ? "tooltip" : ""}`}
                 type="button"
+                disabled={ index == 1 && !hasApplicantFilled}
+                data-tip="Please fill the applicant form first!"
               >
                 {tab}
               </button>
@@ -289,8 +279,8 @@ const AddLoan = () => {
                         }
                         className=" w-full px-5 py-2 flex justify-between text-sm border border-gray-200 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                       >
-                        {reducerState.selectedClient
-                          ? `${reducerState.selectedClient.first_name} ${reducerState.selectedClient.last_name} `
+                        {reducerState.selectedClient.first_name ?
+                           `${reducerState.selectedClient.first_name} ${reducerState.selectedClient.last_name}`
                           : "Select client"}
                         <MdOutlineKeyboardArrowDown size={20} />
                       </button>
@@ -315,10 +305,6 @@ const AddLoan = () => {
                                 <li
                                   key={client.systemId}
                                   onClick={() => {
-                                    // setSelectedClient({
-                                    //   clientId: client.systemId,
-                                    //   clientName: `${client.first_name} ${client.last_name}`,
-                                    // });
                                     handleClientSelect(client);
                                     dispatch({
                                       type: "SET_SELECTED_CLIENT",
@@ -580,7 +566,7 @@ const AddLoan = () => {
                             >
                               Select type
                             </option>
-                            {["Months"].map((frequency: any) => (
+                            {["Monthly","Weekly"].map((frequency: any) => (
                               <option
                                 value={frequency}
                                 key={frequency}
@@ -1009,7 +995,7 @@ const AddLoan = () => {
                     <div className="flex flex-row w-32 items-center ">
                       <Label
                         className="font-sans font-medium text-gray-500 phone:text-sm laptop:text-base desktop:text-base tablet:text-sm"
-                        labelName="Passport:"
+                        labelName="Photo:"
                       />
                       <span className="text-red-500 ml-1">*</span>
                     </div>
