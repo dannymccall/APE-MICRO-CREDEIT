@@ -181,15 +181,21 @@ export function toCapitalized(str: string): string {
   return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
 }
 
+
+function getTotalWeeks(months: number): number {
+  const weeksPerMonth = 4;
+  return months * weeksPerMonth;
+}
 export function calculateLoanInformaion(
   principal: number,
   duration: number,
   interstPerMonth: any
 ) {
+  const numberOfWeeks = getTotalWeeks(duration);
   const monthlyInterest = (parseFloat(interstPerMonth) / 100) * principal;
   const interstForTerm = monthlyInterest * duration;
-  const weeklyInterest = interstForTerm / 12;
-  const weeklyPayment = principal / 12;
+  const weeklyInterest = interstForTerm / numberOfWeeks;
+  const weeklyPayment = principal / numberOfWeeks;
 
   const expectedWeeklyPayment = weeklyPayment + weeklyInterest;
 
@@ -263,10 +269,7 @@ type PaymentSchedule = {
 };
 
 
-function getTotalWeeks(months: number): number {
-  const weeksPerMonth = 4;
-  return months * weeksPerMonth;
-}
+
 export function generatePaymentSchedule(
   principal: number,
   startDate: Date,

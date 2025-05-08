@@ -37,7 +37,7 @@ const LoanDetails: React.FC<LoanDetailsProps> = ({ loan, loanId }) => {
 
   if (env === "development") {
     setClientAvarta(`/uploads/${loan.client.avarta}`);
-  guarantorAvarta(`/uploads/${loan.guarantor.avarta}`);
+  setGuarantor(`/uploads/${loan.guarantor.avarta}`);
   }
 
   // const today: Date = new Date("2025-01-25");
