@@ -246,7 +246,7 @@ export async function POST(req: NextRequest) {
     const loanSystemId: string = generateSystemID("LOA");
     const weeklyPayment = calculateLoanInformaion(
       Number(body.get("principal")),
-      3,
+      Number(body.get("loanTerms")),
       Number(body.get("interest"))
     );
 

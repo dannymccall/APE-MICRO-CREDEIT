@@ -200,7 +200,7 @@ export const loanSchema = z.object({
   // registrationFee: z.string().refine((value: string) => {
   //   return value.trim() !== "";
   // }, "Registration Fee Required"),
-  type: z.enum(["Months", "Days", "Weeks"]),
+  type: z.enum(["Monthly",  "Weekly"]),
 });
 
 export type loanState =

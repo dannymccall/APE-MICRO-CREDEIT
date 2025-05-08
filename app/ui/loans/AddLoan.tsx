@@ -566,7 +566,7 @@ const AddLoan = () => {
                             >
                               Select type
                             </option>
-                            {["Monthly","Weekly"].map((frequency: any) => (
+                            {["Monthly"].map((frequency: any) => (
                               <option
                                 value={frequency}
                                 key={frequency}
