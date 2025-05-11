@@ -45,6 +45,7 @@ export async function GET() {
         { $sort: { _id: 1 } },
       ]),
       LoanApplication.aggregate([
+        {$match: {loanApprovalStatus: "Approved"}},
         {
           $group: {
             _id: { $dateToString: { format: "%Y-%m", date: "$createdAt" } },
