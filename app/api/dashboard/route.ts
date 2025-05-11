@@ -7,10 +7,11 @@ import { Activitymanagement } from "@/app/lib/backend/models/activitymanagement.
 import { connectDB } from "@/app/lib/mongodb";
 
 // Force Dynamic Rendering
-export const dynamic = "force-dynamic";
+// export const dynamic = "force-dynamic";
 
 export async function GET() {
   try {
+
     await connectDB();
 
     // Date ranges for today
@@ -133,7 +134,42 @@ export async function GET() {
         { $limit: 5 },
       ]),
     ]);
-
+    interface Disbursement {
+      _id: string;
+      totalDisbursement: number;
+    }
+    
+    interface Outstanding {
+      _id: string;
+      outStandingBalance: number;
+    }
+    
+    interface Repayment {
+      _id: string;
+      monthlyRepayment: number;
+    }
+  
+    const disbursementMonths: string[] = monthlyDisbursement.map(
+      (disbursement: Disbursement) => disbursement._id
+    );
+    const disbursementMonthValues: number[] = monthlyDisbursement.map(
+      (disbursement: Disbursement) => disbursement.totalDisbursement
+    );
+  
+    const oustandingMonths: string[] = monthlyOutstandingBalance.map(
+      (outstanding: Outstanding) => outstanding._id
+    );
+    const oustandingMonthValues: number[] = monthlyOutstandingBalance.map(
+      (outstanding: Outstanding) => outstanding.outStandingBalance
+    );
+  
+    const repaymentMonths: string[] = monthlyRepayment.map(
+      (repayment: Repayment) => repayment._id
+    );
+    const repaymentMonthValues: number[] = monthlyRepayment.map(
+      (repayment: Repayment) => repayment.monthlyRepayment
+    );
+    
     return NextResponse.json(
       {
         monthlyOutstandingBalance,
@@ -148,6 +184,12 @@ export async function GET() {
         todayRepayment: todayRepayment[0]?.dailyRepayment || 0,
         todayDisbursement: todayDisbursement[0]?.todayDisbursement || 0,
         activities,
+        disbursementMonths,
+        disbursementMonthValues,
+        oustandingMonths,
+        oustandingMonthValues,
+        repaymentMonths,
+        repaymentMonthValues,
       },
       {
         headers: {

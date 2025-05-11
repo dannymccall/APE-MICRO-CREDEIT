@@ -1,4 +1,6 @@
-import React, { lazy, Suspense } from "react";
+"use client";
+
+import React, { lazy, Suspense, useCallback, useEffect, useState } from "react";
 import InfoHeaderComponent from "@/app/component/Info-header/Info-Header";
 import {
   FiUsers,
@@ -6,23 +8,18 @@ import {
   FiCheckSquare,
   FiBarChart2,
 } from "react-icons/fi";
-import {
-  FaHandHoldingUsd,
-  FaMoneyBillWave,
-} from "react-icons/fa"; // Font Awesome
+import { FaHandHoldingUsd, FaMoneyBillWave } from "react-icons/fa"; // Font Awesome
 import { AiOutlineUserAdd, AiOutlineFileSearch } from "react-icons/ai"; // Ant Design
 import { MdOutlineApproval } from "react-icons/md"; // Material Icons
 import Link from "next/link";
 import { GiCash } from "react-icons/gi";
 import { getDashboardData } from "@/app/lib/serverFunctions";
-import {
-  formatCurrency,
-} from "@/app/lib/helperFunctions";
+import { formatCurrency, makeRequest } from "@/app/lib/helperFunctions";
 import { LoadingDivs } from "@/app/component/Loading";
 import { IoIosArrowRoundForward } from "react-icons/io";
 import Notifications from "@/app/component/Notification";
 // import { useDashboardValues } from "@/app/lib/serverhooks";
-import {Activities} from "@/app/component/Dashboard/Activities";
+import { Activities } from "@/app/component/Dashboard/Activities";
 const DynamicChart = lazy(() => import("@/app/component/DynamicChart"));
 
 interface IDashboardStatics {
@@ -46,11 +43,21 @@ interface IActivity {
   };
 }
 
+const DashboardUI = () => {
+  const [data, setData] = useState<any>({});
 
+  const fetchDashbordData = async () => {
+    const response = await makeRequest("/api/dashboard", { method: "GET" });
+    console.log({ response });
+    setData(response);
+  };
 
-const DashboardUI = async () => {
-
-  const response: any = await getDashboardData();
+  useEffect(() => {
+    fetchDashbordData();
+  }, []);
+  useEffect(() => {
+    console.log(data);
+  }, []);
 
   const {
     disbursementMonths,
@@ -68,9 +75,9 @@ const DashboardUI = async () => {
     todayRepayment,
     todayDisbursement,
     activities,
-   } = response;
+  } = data;
 
-   console.log(response)
+  console.log({ data }); 
   const dashboardStats: IDashboardStatics[] = [
     { statsType: "Total Clients", stats: totalClients, icon: FiUsers }, // Represents people/users
     { statsType: "Total Users", stats: totalUsers, icon: FiUsers }, // Also represents users
@@ -219,6 +226,8 @@ const DashboardUI = async () => {
         title="Dashboard" 
       /> */}
       <Notifications />
+      {
+        Object.keys(data).length > 0 ? 
       <main className="w-full h-full flex flex-col p-5 gap-10">
         <section className="flex flex-row w-full flex-wrap flex-grow-0  items-center justify-center">
           {dashboardStats.map((stats, index) => (
@@ -313,7 +322,7 @@ const DashboardUI = async () => {
                 Recent Activities
               </p>
               <div className="w-full flex flex-col gap-2">
-               <Activities activities={activities} />
+                <Activities activities={activities} />
               </div>
               <Link
                 href="/view-activities"
@@ -328,7 +337,12 @@ const DashboardUI = async () => {
             </div>
           </div>
         </section>
-      </main>
+      </main>: <>
+          <LoadingDivs />
+          <LoadingDivs />
+          <LoadingDivs />
+      </>
+      }
     </>
   );
 };
