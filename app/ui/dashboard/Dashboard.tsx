@@ -6,21 +6,17 @@ import {
   FiCheckSquare,
   FiBarChart2,
 } from "react-icons/fi";
-import { RxDashboard } from "react-icons/rx"; // If you still need a dashboard icon
 import {
   FaHandHoldingUsd,
-  FaFileInvoiceDollar,
   FaMoneyBillWave,
 } from "react-icons/fa"; // Font Awesome
 import { AiOutlineUserAdd, AiOutlineFileSearch } from "react-icons/ai"; // Ant Design
 import { MdOutlineApproval } from "react-icons/md"; // Material Icons
 import Link from "next/link";
 import { GiCash } from "react-icons/gi";
+import { getDashboardData } from "@/app/lib/serverFunctions";
 import {
   formatCurrency,
-  formatDate,
-  makeRequest,
-  useDashboardValues,
 } from "@/app/lib/helperFunctions";
 import { LoadingDivs } from "@/app/component/Loading";
 import { IoIosArrowRoundForward } from "react-icons/io";
@@ -53,10 +49,10 @@ interface IActivity {
 
 
 const DashboardUI = async () => {
-  const breadcrumbsLinks = [{ name: "Dashboard", href: "/dashboard" }];
 
-  const response = await useDashboardValues();
-  const [
+  const response: any = await getDashboardData();
+
+  const {
     disbursementMonths,
     disbursementMonthValues,
     oustandingMonths,
@@ -72,7 +68,7 @@ const DashboardUI = async () => {
     todayRepayment,
     todayDisbursement,
     activities,
-  ] = response;
+   } = response;
   const dashboardStats: IDashboardStatics[] = [
     { statsType: "Total Clients", stats: totalClients, icon: FiUsers }, // Represents people/users
     { statsType: "Total Users", stats: totalUsers, icon: FiUsers }, // Also represents users
