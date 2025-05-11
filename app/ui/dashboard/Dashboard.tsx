@@ -69,6 +69,8 @@ const DashboardUI = async () => {
     todayDisbursement,
     activities,
    } = response;
+
+   console.log(response)
   const dashboardStats: IDashboardStatics[] = [
     { statsType: "Total Clients", stats: totalClients, icon: FiUsers }, // Represents people/users
     { statsType: "Total Users", stats: totalUsers, icon: FiUsers }, // Also represents users
