@@ -91,7 +91,7 @@ export const ClientSchema: Schema = new Schema<IClient>(
     },
     client_status: {
       type: String,
-      default: "active",
+      default: "in active",
     },
     staff: {
       type: Schema.Types.ObjectId,
