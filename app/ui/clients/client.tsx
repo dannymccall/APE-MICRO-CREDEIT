@@ -71,7 +71,7 @@ const Client: React.FC<ClientProps> = ({ client, onDelete, editClient }) => {
         </td>
         <td className="p-2 text-sm">{client.mobile}</td>
         <td className="p-2 text-sm">
-          {client.client_status === "in-active" ? "In Active" : "Active"}
+          {client.client_status === "in active" ? "In Active" : "Active"}
         </td>
         <td className="p-2 text-sm">
           {" "}
