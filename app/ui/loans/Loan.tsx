@@ -8,7 +8,7 @@ import { makeRequest, toCapitalized } from "@/app/lib/helperFunctions";
 import { useRouter } from "next/navigation";
 import { ILoanApplication } from "@/app/lib/backend/models/loans.model";
 import { FcApprove } from "react-icons/fc";
-
+import { useLogginIdentity } from "@/app/lib/customHooks";
 import Link from "next/link";
 import {
   RiArrowDropDownFill,
@@ -29,8 +29,11 @@ const Loan: React.FC<LoanProps> = ({ loan }) => {
   const [openModalEdit, setOpenModalEdit] = useState<boolean>(false);
   const [openModalDeleted, setOpenModalDeleted] = useState<boolean>(false);
   const [openApprodalModal, setOpenApprodalModal] = useState<boolean>(false);
+  const logginIdentity = useLogginIdentity()
   const [message, setMessage] = useState<string>("");
   const router = useRouter();
+
+    const userRoles = logginIdentity?.userRoles || [];
 
   const approveLoan = async (loanId: string) => {
     const response = await makeRequest(
@@ -54,6 +57,7 @@ const Loan: React.FC<LoanProps> = ({ loan }) => {
     }
   };
 
+  const isAdmin = userRoles.includes('Admin');
   const deleteLoan = async (loanId: string) => {
     const response = await makeRequest(`/api/loans?_id=${loanId}`, {
       method: "DELETE",
@@ -158,7 +162,7 @@ const Loan: React.FC<LoanProps> = ({ loan }) => {
             </button>
           </div>
 
-          {loan.loanApprovalStatus === "Pending" && (
+          {loan.loanApprovalStatus === "Pending"  && isAdmin && (
             <div className="tooltip" data-tip="Approve">
               <button
                 role="menuitem"
