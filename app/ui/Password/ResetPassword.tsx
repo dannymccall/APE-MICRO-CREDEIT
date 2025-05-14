@@ -52,15 +52,13 @@ export default function ResetPassword() {
             {loading ? (
               <span className="loading loading-ring loading-xs"></span>
             ) : (
-              <>Send Reset Link</>
+              <>Reset Password</>
             )}
           </button>
         </form>
         <div className="flex gap-5 mt-5 items-center">
         {message && <p className="mt-4 text-green-500">{message}</p>}
         {success &&  <Link className="btn btn-sm bg-violet-600 text-slate-50" href="/">Go Back to Login</Link>}
-       
-
         </div>
       </div>
   );

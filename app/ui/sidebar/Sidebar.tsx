@@ -29,6 +29,7 @@ import { clearLocalStorage, makeRequest } from "@/app/lib/helperFunctions";
 import Modal from "@/app/component/Modal";
 import ImageComponent from "@/app/component/Image";
 import { FaShieldAlt } from "react-icons/fa";
+import { FaUserLarge } from "react-icons/fa6";
 // Define the type for sidebar links
 interface SidebarLink {
   name: string;
@@ -268,7 +269,7 @@ export default function Sidebar({
               <div
                 className={` bg-violet-500  rounded-full items-center relative flex justify-center desktop:w-32 desktop:h-32 laptop:w-28 laptop:h-28 phone:w-24 phone:h-24 tablet:w-24 tablet:h-24`}
               >
-                <p className="text-center font-mono">Profile Picture</p>
+                <FaUserLarge size={40}/>
               </div>
             )}
 

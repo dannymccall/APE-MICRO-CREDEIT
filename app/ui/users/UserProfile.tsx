@@ -21,6 +21,9 @@ import { FaCircleCheck } from "react-icons/fa6";
 import ProfileImage from "@/public/profile.jpg";
 import { useProfile } from "@/app/context/ProfileContext";
 import ImageComponent from "@/app/component/Image";
+import { FaUserLarge } from "react-icons/fa6";
+
+
 const ContactInformation = lazy(
   () => import("@/app/component/users/ProfileInfomation")
 );
@@ -165,9 +168,8 @@ const UserProfile = () => {
                   )
                 ) : (
                   <div className="w-full h-full bg-gray-800 rounded-full flex justify-center items-center">
-                    <h1 className="text-slate-100 font-mono text-sm">
-                      Profile Picture
-                    </h1>
+                    <FaUserLarge size={40}/>
+
                   </div>
                 )}
                 <IoIosCamera
