@@ -52,7 +52,7 @@ const getPaymentScheduleData = async (
   type: string,
   startDate?: string,
   endDate?: string,
-  staff?:string
+  staff?: string
 ) => {
   const status =
     type === "repayments"
@@ -73,13 +73,14 @@ const getPaymentScheduleData = async (
 
   const matchFilter: any = {
     "schedule.status": status,
+    
   };
   const staffMatch: any = {};
   console.log({ matchFilter });
   if (startDate && endDate) {
     const start = new Date(startDate).setHours(0, 0, 0, 0);
     const end = new Date(endDate).setHours(23, 59, 59, 999);
-    
+
     matchFilter["schedule.nextPayment"] = {
       $gte: new Date(start),
       $lte: new Date(end),
@@ -94,25 +95,24 @@ const getPaymentScheduleData = async (
     matchFilter["schedule.nextPayment"] = {
       $lte: new Date(end),
     };
-    console.log({staff})
+    console.log({ staff });
   } else if (staff) {
-    console.log(staff)
+    console.log(staff);
     staffMatch["staff"] = new mongoose.Types.ObjectId(staff);
   }
-  
+
   const pipeline = [];
 
   // ✅ Add the $match filter for staff ONLY if it's provided
   if (staff) {
-    pipeline.push({ $match: { "staff": new mongoose.Types.ObjectId(staff) } });
+    pipeline.push({ $match: { staff: new mongoose.Types.ObjectId(staff) } });
   }
-  
+
   // ✅ Unwind schedules
-  pipeline.push({ $unwind: "$schedule" });
-  
+
   // ✅ Apply the general match filters
   pipeline.push({ $match: matchFilter });
-  
+
   // ✅ Lookup for loan details
   pipeline.push(
     {
@@ -121,6 +121,12 @@ const getPaymentScheduleData = async (
         localField: "loan",
         foreignField: "_id",
         as: "loanDetails",
+      },
+    },
+
+    {
+      $match: {
+        "loanDetails.loanApprovalStatus": "Approved",
       },
     },
     {
@@ -140,7 +146,7 @@ const getPaymentScheduleData = async (
       },
     }
   );
-  
+  pipeline.push({ $unwind: "$schedule" });
   // ✅ Group the data
   pipeline.push({
     $group: {
@@ -176,9 +182,9 @@ const getPaymentScheduleData = async (
       totalOutStandingBalance: { $sum: "$schedule.outStandingBalance" },
     },
   });
-  
+
   return await PaymentSchedule.aggregate(pipeline);
-}
+};
 const activitymanagementService = new ActivitymanagementService();
 
 export async function POST(req: NextRequest) {
@@ -198,9 +204,9 @@ export async function POST(req: NextRequest) {
 
     const results: Record<string, any[]> = {};
     const body = await req.json();
-    console.log({body})
+    console.log({ body });
     const { startDate, endDate, filters, staff } = body;
-    console.log({staff})
+    console.log({ staff });
     const filterArray = filters.split(",");
     let data: any[] = [];
 
@@ -221,11 +227,13 @@ export async function POST(req: NextRequest) {
       if (end)
         query.createdAt = { ...(query.createdAt || {}), $lte: new Date(end) };
       if (staff) {
-        console.log("Staff:",staff)
+        console.log("Staff:", staff);
         query["loanOfficer"] = new mongoose.Types.ObjectId(staff);
       }
-      console.log("Query:", query);
+      // console.log("Query:", query);
 
+      query["loanApprovalStatus"] =  "Approved"
+      console.log({query})
       data = await LoanApplication.find(query)
         .populate("client")
         .populate("loanOfficer")
@@ -251,12 +259,14 @@ export async function POST(req: NextRequest) {
         if (endDate) matchStage["createdAt"].$lte = end;
       }
       if (staff) {
-        console.log("Staff:",staff)
+        console.log("Staff:", staff);
         matchStage["loanOfficer"] = new mongoose.Types.ObjectId(staff);
       }
 
-      console.log(matchStage)
+      console.log(matchStage);
 
+      matchStage["loanApprovalStatus"] = "Approved";
+      console.log({matchStage})
       switch (filter) {
         case "disbursement":
           data = await LoanApplication.find(matchStage)
@@ -269,7 +279,12 @@ export async function POST(req: NextRequest) {
         case "arrears":
         case "default":
         case "payments":
-          data = await getPaymentScheduleData(filter, startDate, endDate,staff);
+          data = await getPaymentScheduleData(
+            filter,
+            startDate,
+            endDate,
+            staff
+          );
           break;
         case "outstanding":
           const loans = await LoanApplication.find(matchStage)

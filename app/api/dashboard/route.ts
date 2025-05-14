@@ -11,7 +11,6 @@ import { connectDB } from "@/app/lib/mongodb";
 
 export async function GET() {
   try {
-
     await connectDB();
 
     // Date ranges for today
@@ -35,6 +34,16 @@ export async function GET() {
       activities,
     ] = await Promise.all([
       PaymentSchedule.aggregate([
+           {
+          $lookup: {
+            from: "loanapplications", // collection name in MongoDB (should be lowercase and plural)
+            localField: "loan",
+            foreignField: "_id",
+            as: "loanDetails",
+          },
+        },
+        { $match: { "loanDetails.loanApprovalStatus": "Approved" } },
+        
         { $unwind: "$schedule" },
         {
           $group: {
@@ -45,7 +54,7 @@ export async function GET() {
         { $sort: { _id: 1 } },
       ]),
       LoanApplication.aggregate([
-        {$match: {loanApprovalStatus: "Approved"}},
+        { $match: { loanApprovalStatus: "Approved" } },
         {
           $group: {
             _id: { $dateToString: { format: "%Y-%m", date: "$createdAt" } },
@@ -57,6 +66,15 @@ export async function GET() {
       User.countDocuments(),
       Client.countDocuments(),
       PaymentSchedule.aggregate([
+           {
+          $lookup: {
+            from: "loanapplications", // collection name in MongoDB (should be lowercase and plural)
+            localField: "loan",
+            foreignField: "_id",
+            as: "loanDetails",
+          },
+        },
+        { $match: { "loanDetails.loanApprovalStatus": "Approved" } },
         { $unwind: "$schedule" },
         {
           $group: {
@@ -66,7 +84,17 @@ export async function GET() {
         },
       ]),
       PaymentSchedule.aggregate([
+        {
+          $lookup: {
+            from: "loanapplications", // collection name in MongoDB (should be lowercase and plural)
+            localField: "loan",
+            foreignField: "_id",
+            as: "loanDetails",
+          },
+        },
+        { $match: { "loanDetails.loanApprovalStatus": "Approved" } },
         { $unwind: "$schedule" },
+
         { $match: { "schedule.status": "arrears" } },
         {
           $group: {
@@ -85,6 +113,15 @@ export async function GET() {
         },
       ]),
       PaymentSchedule.aggregate([
+         {
+          $lookup: {
+            from: "loanapplications", // collection name in MongoDB (should be lowercase and plural)
+            localField: "loan",
+            foreignField: "_id",
+            as: "loanDetails",
+          },
+        },
+        { $match: { "loanDetails.loanApprovalStatus": "Approved" } },
         { $unwind: "$schedule" },
         {
           $group: {
@@ -95,6 +132,7 @@ export async function GET() {
         { $sort: { _id: 1 } },
       ]),
       LoanApplication.aggregate([
+        { $match: { loanApprovalStatus: "Approved" } },
         {
           $group: {
             _id: null,
@@ -103,6 +141,15 @@ export async function GET() {
         },
       ]),
       PaymentSchedule.aggregate([
+         {
+          $lookup: {
+            from: "loanapplications", // collection name in MongoDB (should be lowercase and plural)
+            localField: "loan",
+            foreignField: "_id",
+            as: "loanDetails",
+          },
+        },
+        { $match: { "loanDetails.loanApprovalStatus": "Approved" } },
         { $unwind: "$schedule" },
         { $match: { createdAt: { $gte: startOfDay, $lt: endOfDay } } },
         {
@@ -113,7 +160,16 @@ export async function GET() {
         },
       ]),
       LoanApplication.aggregate([
-        { $match: { createdAt: { $gte: startOfDay, $lt: endOfDay } } },
+        {
+          $match: {
+            createdAt: {
+              $gte: startOfDay,
+              $lt: endOfDay,
+              
+            },
+            loanApprovalStatus: "Approved"
+          },
+        },
         {
           $group: {
             _id: null,
@@ -139,45 +195,46 @@ export async function GET() {
       _id: string;
       totalDisbursement: number;
     }
-    
+
     interface Outstanding {
       _id: string;
       outStandingBalance: number;
     }
-    
+
     interface Repayment {
       _id: string;
       monthlyRepayment: number;
     }
-  
+
     const disbursementMonths: string[] = monthlyDisbursement.map(
       (disbursement: Disbursement) => disbursement._id
     );
     const disbursementMonthValues: number[] = monthlyDisbursement.map(
       (disbursement: Disbursement) => disbursement.totalDisbursement
     );
-  
+
     const oustandingMonths: string[] = monthlyOutstandingBalance.map(
       (outstanding: Outstanding) => outstanding._id
     );
     const oustandingMonthValues: number[] = monthlyOutstandingBalance.map(
       (outstanding: Outstanding) => outstanding.outStandingBalance
     );
-  
+
     const repaymentMonths: string[] = monthlyRepayment.map(
       (repayment: Repayment) => repayment._id
     );
     const repaymentMonthValues: number[] = monthlyRepayment.map(
       (repayment: Repayment) => repayment.monthlyRepayment
     );
-    
+
     return NextResponse.json(
       {
         monthlyOutstandingBalance,
         monthlyDisbursement,
         totalUsers,
         totalClients,
-        totalOutstandingBalance: totalOutstandingBalance[0]?.totalOutstanding || 0,
+        totalOutstandingBalance:
+          totalOutstandingBalance[0]?.totalOutstanding || 0,
         totalArrears: totalArrears[0]?.totalOutstanding || 0,
         totalRepayment: totalRepayment[0]?.totalRepayment || 0,
         monthlyRepayment,
