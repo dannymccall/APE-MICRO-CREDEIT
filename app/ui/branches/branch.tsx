@@ -107,8 +107,8 @@ const Branch: React.FC<UserProps> = ({ branch, onDelete, editBranch }) => {
             modalOpen={openModalDeleted}
             setModalOpen={setOpenModalDeleted}
           >
-            <section className="w-full h-full flex flex-col items-center justify-center gap-2">
-              <section className="w-full h-full flex gap-1 items-center">
+            <section className="w-full h-full flex flex-col items-center justify-center gap-2 text-center">
+              <section className="w-full h-full flex gap-1 items-center text-center">
                 <h1 className="text-lg font-sans font-semibold">Question</h1>
                 <BsQuestionCircleFill className="text-red-500" />
               </section>
