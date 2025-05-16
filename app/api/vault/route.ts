@@ -12,7 +12,7 @@ export const dynamic = "force-dynamic";
 
 export async function GET(req: NextRequest) {
   const vaults: IVault[] = await Vault.find().populate({
-    path: "transactions.staff",
+    path: "transactions.staff", 
     select: ["first_name", "last_name", "other_names"],
   });
   const vault = vaults[0]; // Assuming you want the first vault

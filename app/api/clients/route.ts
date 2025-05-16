@@ -363,7 +363,7 @@ export async function PUT(req: NextRequest) {
     const updatedFields: Partial<typeof client> = {};
 
     Object.entries(fieldMapping).forEach(([formKey, clientKey]) => {
-      const formValue = body.get(formKey);
+      const formValue = body.get(formKey);    
       if (isNotEmpty(formValue)) {
         (updatedFields as any)[clientKey] = formValue;
       }

@@ -128,7 +128,7 @@ const Client: React.FC<ClientProps> = ({ client, onDelete, editClient }) => {
             modalOpen={openModalDeleted}
             setModalOpen={setOpenModalDeleted}
           >
-            <section className="w-full h-full flex flex-col gap-2">
+            <section className="w-full h-full flex flex-col items-center justify-center gap-2">
               <section className="w-full h-full flex gap-1 items-center">
                 <h1 className="text-lg font-sans font-semibold">Question</h1>
                 <BsQuestionCircleFill className="text-red-500" />
