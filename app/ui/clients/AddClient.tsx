@@ -10,7 +10,7 @@ import QuickAccess from "@/app/component/QuickAccess";
 import { useRouter } from "next/navigation";
 import { makeRequest } from "@/app/lib/helperFunctions";
 import Image from "next/image";
-
+import { IoIosAddCircleOutline } from "react-icons/io";
 
 const AddUser = () => {
   const breadcrumbsLinks = [
@@ -257,6 +257,10 @@ const AddUser = () => {
                 </option>
               ))}
             </select>
+            <button className="flex flex-row gap-2 mt-3 items-center text-violet-600" type="button">
+              Add Branch
+              <IoIosAddCircleOutline />
+            </button>
           </div>
           {state?.errors?.branch && (
             <p className=" text-red-500 p-3 font-semibold">

@@ -154,6 +154,8 @@ export async function GET(req: NextRequest) {
       );
     }
 
+    console.log(pageParam, limitParam)
+
     const page = parseInt(pageParam || "1", 10);
     const limit = parseInt(limitParam || "10", 10);
 

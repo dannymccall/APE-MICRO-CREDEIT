@@ -383,13 +383,12 @@ export function useSearch<T>({ endpoint, initialPage = 1, limit = 10 }: UseSearc
   const [query, setQuery] = useState<string>('');
   const debouncedQuery = useDebounceValue(query);
 
-  const fetchData = async (searchQuery = '') => {
+  const fetchData = async (searchQuery = '', page = state.currentPage) => {
     setState(prev => ({ ...prev, loading: true, error: null }));
     try {
       const url = searchQuery.trim()
-        ? `${endpoint}?query=${searchQuery}`
-        : `${endpoint}?page=${state.currentPage}&limit=${limit}`;
-
+    ? `${endpoint}?query=${searchQuery}&page=${page}&limit=${limit}`
+    : `${endpoint}?page=${page}&limit=${limit}`;
       const response = await makeRequest(url, {
         method: 'GET',
         cache: 'no-store',
@@ -431,11 +430,9 @@ export function useSearch<T>({ endpoint, initialPage = 1, limit = 10 }: UseSearc
     setState(prev => ({ ...prev, currentPage: page }));
   };
 
-  useEffect(() => {
-    if (debouncedQuery !== undefined) {
-      fetchData(debouncedQuery);
-    }
-  }, [debouncedQuery]);
+useEffect(() => {
+  fetchData(debouncedQuery, state.currentPage);
+}, [debouncedQuery, state.currentPage]);
 
   useEffect(() => {
     if (state.currentPage === 1 && !query) {
