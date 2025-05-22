@@ -1,19 +1,22 @@
 "use client";
 import React, { useActionState, useEffect, useState, useRef } from "react";
-import {  Label } from "@/app/lib/MyFormInput/FormTemplates";
+import { Label } from "@/app/lib/MyFormInput/FormTemplates";
 import { addClient } from "@/app/actions/addClientAuth";
 import Toast from "@/app/component/toast/Toast";
 import { FaCircleCheck } from "react-icons/fa6";
 import { LoadingSpinner } from "@/app/component/Loading";
-import { formatDate, makeRequest, toCapitalized } from "@/app/lib/helperFunctions";
+import {
+  formatDate,
+  makeRequest,
+  toCapitalized,
+} from "@/app/lib/helperFunctions";
 import Image from "next/image";
 import { IClient } from "@/app/lib/backend/models/client.model";
 import { useRouter } from "next/navigation";
 
-
 export interface IEditClient {
   client: IClient | any;
- setOpenModalEdit: React.Dispatch<React.SetStateAction<boolean>>
+  setOpenModalEdit: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 const EditClient: React.FC<IEditClient> = ({ client, setOpenModalEdit }) => {
@@ -23,7 +26,7 @@ const EditClient: React.FC<IEditClient> = ({ client, setOpenModalEdit }) => {
   const [branches, setBranches] = useState<any>([]);
   const [users, setUsers] = useState<any>([]);
   const [passport, setPassport] = useState<string>("");
-  const router = useRouter()
+  const router = useRouter();
 
   useEffect(() => {
     const fetchBranches = async () => {
@@ -59,9 +62,9 @@ const EditClient: React.FC<IEditClient> = ({ client, setOpenModalEdit }) => {
   };
 
   const onEditClient = () => {
-    setOpenModalEdit(false)
-    router.refresh()
-  } 
+    setOpenModalEdit(false);
+    router.refresh();
+  };
   // useEffect(() => {
   //   fetchBranches();
   // },[]);
@@ -80,8 +83,6 @@ const EditClient: React.FC<IEditClient> = ({ client, setOpenModalEdit }) => {
     // Cleanup the timeout when the component unmounts or when state changes
     return () => clearTimeout(timeout);
   }, [state?.message]); // Depend on state.message to run when it changes
-
-
 
   const title = [
     { name: "Mr", value: "Mr" },
@@ -123,7 +124,7 @@ const EditClient: React.FC<IEditClient> = ({ client, setOpenModalEdit }) => {
           <p className=" text-red-600 p-3 font-bold">
             {!state?.errors && state?.message}
           </p>
-          <input type="hidden" name="service" value="updateClient"/>
+          <input type="hidden" name="service" value="updateClient" />
           <div className="flex flex-col  my-5 relative">
             <div className="flex flex-row w-32 gap-0 items-center">
               <Label
@@ -201,7 +202,7 @@ const EditClient: React.FC<IEditClient> = ({ client, setOpenModalEdit }) => {
               defaultValue=""
               className="block text-sm font-sans w-full px-5 py-2 border border-gray-200 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm cursor-pointer tablet:w-96 desktop:w-full laptop:w-full phone:w-64"
             >
-              <option disabled value={client.title}>
+              <option  value={client.title}>
                 {client.title}
               </option>
               {title && title.length > 0 ? (
@@ -239,7 +240,7 @@ const EditClient: React.FC<IEditClient> = ({ client, setOpenModalEdit }) => {
               className="block text-sm font-sans w-full px-5 py-2 border border-gray-200 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm cursor-pointer tablet:w-96 desktop:w-full laptop:w-full phone:w-64"
               defaultValue=""
             >
-              <option disabled value={client.branch.branchName}>
+              <option  value={client.branch.branchName}>
                 {client.branch.branchName || "No Branch"}
               </option>
               {branches.map((branch: any) => (
@@ -272,7 +273,7 @@ const EditClient: React.FC<IEditClient> = ({ client, setOpenModalEdit }) => {
               defaultValue=""
             >
               <option disabled value={client.client_status.toLowerCase()}>
-              { toCapitalized(client.client_status)}
+                {toCapitalized(client.client_status)}
               </option>
               {["Active", "Dormant", "In Active"].map((status: any) => (
                 <option
@@ -363,7 +364,7 @@ const EditClient: React.FC<IEditClient> = ({ client, setOpenModalEdit }) => {
             </div>
             <input
               type="text"
-              className="block text-sm font-sans w-full px-5 py-2 border border-gray-200 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm tablet:w-96 desktop:w-full laptop:w-full phone:w-64" 
+              className="block text-sm font-sans w-full px-5 py-2 border border-gray-200 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm tablet:w-96 desktop:w-full laptop:w-full phone:w-64"
               placeholder={"Enter residence"}
               name="residence"
               defaultValue={client.residence}
@@ -407,7 +408,11 @@ const EditClient: React.FC<IEditClient> = ({ client, setOpenModalEdit }) => {
               className="block text-sm font-sans  w-full px-5 py-2 border border-gray-200 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm cursor-pointer tablet:w-96 desktop:w-full laptop:w-full phone:w-64"
               defaultValue=""
             >
-              <option disabled value={client.idType} className="text-sm font-sans">
+              <option
+                disabled
+                value={client.idType}
+                className="text-sm font-sans"
+              >
                 {client.idType}
               </option>
               {idType.map((id: any) => (
@@ -479,7 +484,7 @@ const EditClient: React.FC<IEditClient> = ({ client, setOpenModalEdit }) => {
             <div className="flex flex-row w-32 gap-0 items-center">
               <Label
                 className="font-sans font-semibold text-gray-500"
-                labelName="staff"
+                labelName="Staff"
               />
               <span className="text-red-500 ml-1">*</span>
             </div>
@@ -488,18 +493,24 @@ const EditClient: React.FC<IEditClient> = ({ client, setOpenModalEdit }) => {
               className="block w-full text-sm font-sans px-5 py-2 border border-gray-200 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm cursor-pointer tablet:w-96 desktop:w-full laptop:w-full phone:w-64"
               defaultValue=""
             >
-              <option disabled value={client.staff.username} className="text-sm font-sans">
-              {client.staff.first_name} {client.staff.other_names} {client.staff.last_name}
+              <option
+                
+                value={client.staff.username}
+                className="text-sm font-sans"
+              >
+                {client.staff.first_name} {client.staff.other_names}{" "}
+                {client.staff.last_name}
               </option>
-              {users.length > 0 && users.map((user: any) => (
-                <option
-                  value={user.username}
-                  key={user.username}
-                  className="text-sm font-sans"
-                >
-                  {user.first_name} {user.other_names} {user.last_name}
-                </option>
-              ))}
+              {users.length > 0 &&
+                users.map((user: any) => (
+                  <option
+                    value={user.username}
+                    key={user.username}
+                    className="text-sm font-sans"
+                  >
+                    {user.first_name} {user.other_names} {user.last_name}
+                  </option>
+                ))}
             </select>
           </div>
           {state?.errors?.staff && (
@@ -507,7 +518,7 @@ const EditClient: React.FC<IEditClient> = ({ client, setOpenModalEdit }) => {
               {state.errors.staff}
             </p>
           )}
-          <input type="hidden" name="id" value={client._id}/>
+          <input type="hidden" name="id" value={client._id} />
           <div className="flex flex-col my-2 relative">
             <div className="flex flex-row w-32 items-center my-5">
               <Label
@@ -517,29 +528,28 @@ const EditClient: React.FC<IEditClient> = ({ client, setOpenModalEdit }) => {
               <span className="text-red-500 ml-1">*</span>
             </div>
             <div className="w-full flex flex-row tablet:w-96 desktop:flex-row laptop:flex-row phone:flex-col">
-            {["Single", "Married", "Divorced", "Widowed"].map(
-              (maritalStatus, index) => (
-                <div
-                  className="flex flex-row items-center mr-10 gap-3"
-                  key={maritalStatus}
-                >
-                  <Label
-                    className="w-16 font-sans font-semibold text-gray-500"
-                    labelName={maritalStatus}
-                  />
-                  <input
-                    type="radio"
-                    name="maritalStatus"
-                    className="radio radio-primary text-sm w-4 h-4"
-                    defaultChecked={index === 0}
-                    value={maritalStatus}
-                  />
-                </div>
-              )
-            )}
-          </div>
-
+              {["Single", "Married", "Divorced", "Widowed"].map(
+                (maritalStatus, index) => (
+                  <div
+                    className="flex flex-row items-center mr-10 gap-3"
+                    key={maritalStatus}
+                  >
+                    <Label
+                      className="w-16 font-sans font-semibold text-gray-500"
+                      labelName={maritalStatus}
+                    />
+                    <input
+                      type="radio"
+                      name="maritalStatus"
+                      className="radio radio-primary text-sm w-4 h-4"
+                      defaultChecked={index === 0}
+                      value={maritalStatus}
+                    />
+                  </div>
+                )
+              )}
             </div>
+          </div>
           {state?.errors?.sex && (
             <p className=" text-red-500 p-3 font-semibold">
               {state.errors.sex}

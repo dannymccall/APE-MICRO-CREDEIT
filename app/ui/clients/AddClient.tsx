@@ -257,10 +257,10 @@ const AddUser = () => {
                 </option>
               ))}
             </select>
-            <button className="flex flex-row gap-2 mt-3 items-center text-violet-600" type="button">
+            {/* <button className="flex flex-row gap-2 mt-3 items-center text-violet-600" type="button">
               Add Branch
               <IoIosAddCircleOutline />
-            </button>
+            </button> */}
           </div>
           {state?.errors?.branch && (
             <p className=" text-red-500 p-3 font-semibold">
