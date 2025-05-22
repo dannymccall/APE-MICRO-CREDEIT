@@ -272,7 +272,7 @@ const EditClient: React.FC<IEditClient> = ({ client, setOpenModalEdit }) => {
               className="block text-sm font-sans w-full px-5 py-2 border border-gray-200 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm cursor-pointer tablet:w-96 desktop:w-full laptop:w-full phone:w-64"
               defaultValue=""
             >
-              <option disabled value={client.client_status.toLowerCase()}>
+              <option  value={client.client_status.toLowerCase()}>
                 {toCapitalized(client.client_status)}
               </option>
               {["Active", "Dormant", "In Active"].map((status: any) => (
@@ -409,7 +409,7 @@ const EditClient: React.FC<IEditClient> = ({ client, setOpenModalEdit }) => {
               defaultValue=""
             >
               <option
-                disabled
+
                 value={client.idType}
                 className="text-sm font-sans"
               >
