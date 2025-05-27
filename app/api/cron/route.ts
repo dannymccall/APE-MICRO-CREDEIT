@@ -41,6 +41,7 @@ export async function GET() {
       select: "schedule",
     }) as unknown as ILoan[];
 
+    console.log(loans)
     const today = new Date();
   
     await Promise.all(
