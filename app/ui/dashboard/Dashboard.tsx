@@ -48,16 +48,16 @@ const DashboardUI = () => {
 
   const fetchDashbordData = async () => {
     const response = await makeRequest("/api/dashboard", { method: "GET" });
-    console.log({ response });
+    // console.log({ response });
     setData(response);
   };
 
   useEffect(() => {
     fetchDashbordData();
   }, []);
-  useEffect(() => {
-    console.log(data);
-  }, []);
+  // useEffect(() => {
+  //   console.log(data);
+  // }, []);
 
   const {
     disbursementMonths,
@@ -77,7 +77,7 @@ const DashboardUI = () => {
     activities,
   } = data;
 
-  console.log({ data }); 
+  // console.log({ data }); 
   const dashboardStats: IDashboardStatics[] = [
     { statsType: "Total Clients", stats: totalClients, icon: FiUsers }, // Represents people/users
     { statsType: "Total Users", stats: totalUsers, icon: FiUsers }, // Also represents users

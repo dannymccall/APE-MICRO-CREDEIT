@@ -42,6 +42,6 @@ export async function deleteSession() {
 
 export async function getSession(name: string){
   const session = (await cookies()).get(name)?.value;
-  console.log({session})
+  // console.log({session})
   return session;
 }

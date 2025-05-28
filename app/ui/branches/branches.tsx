@@ -52,8 +52,8 @@ const AllBranches = () => {
   const onClick = () => router.push("/add-branch");
 
   const editBranch = (updatedBranch: any, id: string) => {
-    console.log({updatedBranch, id})
-    if(id === updatedBranch._id)console.log("correct")
+    // console.log({updatedBranch, id})
+    // if(id === updatedBranch._id)console.log("correct")
     setBranches((prevBranch) =>
       prevBranch.map((branch) =>
         branch._id === id ? { ...branch, ...updatedBranch } : branch

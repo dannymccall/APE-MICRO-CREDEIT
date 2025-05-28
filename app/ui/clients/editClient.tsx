@@ -46,14 +46,14 @@ const EditClient: React.FC<IEditClient> = ({ client, setOpenModalEdit }) => {
   }, []); // Empty dependency array ensures this runs once on mount
 
   // Monitor changes to `branches`
-  useEffect(() => {
-    console.log("Updated branches state:", branches);
-    console.log(users, branches);
-  }, [branches, users]); // Logs whenever `branches` changes // Empty dependency array ensures this runs once on mount
+  // useEffect(() => {
+  //   console.log("Updated branches state:", branches);
+  //   console.log(users, branches);
+  // }, [branches, users]); // Logs whenever `branches` changes // Empty dependency array ensures this runs once on mount
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]; // Get the selected file
-    console.log(file);
+    // console.log(file);
     if (file) {
       // Create a URL for the file and update the stat
       const fileUrl = URL.createObjectURL(file);

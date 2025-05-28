@@ -262,7 +262,7 @@ export const useSocket = (logginIdentity: ILogginIdentity) => {
     const socket = io(SOCKET_URL);
 
     const userRoles: string[] = logginIdentity.userRoles || [];
-    console.log(userRoles)
+    // console.log(userRoles)
 
     switch (true) {
       case userRoles.includes("Admin"):

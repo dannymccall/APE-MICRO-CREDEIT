@@ -39,9 +39,9 @@ export async function POST(req: NextRequest) {
     }
 
     const amountPaid = pendingLoan.amountPaid;
-    console.log(vault[0])
+    // console.log(vault[0])
     if (amountPaid && !(isNaN(amountPaid)) && amountPaid > 0) {
-      console.log({amountPaid})
+      // console.log({amountPaid})
 
       if (!vault[0])
         return createResponse(
@@ -126,7 +126,7 @@ export async function POST(req: NextRequest) {
         headers: { "Content-Type": "application/json" },
       }
     );
-    console.log(response);
+    // console.log(response);
     await activitymanagementService.createActivity(
       "Loan Payment Approval",
       new mongoose.Types.ObjectId(userId)

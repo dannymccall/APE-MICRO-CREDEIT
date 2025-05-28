@@ -59,7 +59,7 @@ const AllClients = () => {
       limit: 10
     });
   
-    console.log(clients)
+    // console.log(clients)
 
   const onClick = useCallback(() => router.push("/add-client"), [router]);
 

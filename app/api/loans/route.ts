@@ -54,7 +54,7 @@ export async function generateFileName(passport: File | null) {
   const buffer = Buffer.from(bytes);
   const originalName = passport?.name;
   const fileExtension = originalName?.substring(originalName.lastIndexOf("."));
-  console.log(fileExtension);
+  // console.log(fileExtension);
   const newFileName = `${Date.now()}${fileExtension}`;
   return { newFileName, buffer };
 }
@@ -107,7 +107,7 @@ export async function GET(req: NextRequest) {
           { status: 200, headers: { "Cache-Control": "no-store" } }
         );
       } catch (error) {
-        console.error("Error searching loans:", error);
+        // console.error("Error searching loans:", error);
         return createResponse(false, "500", "Error searching loans", {});
       }
     }
@@ -193,7 +193,7 @@ export async function GET(req: NextRequest) {
       }
     );
   } catch (error: any) {
-    console.error("Error in GET /api/loans:", error);
+    // console.error("Error in GET /api/loans:", error);
     return NextResponse.json(
       { error: "An error occurred while processing the request" },
       { status: 500 }
@@ -233,12 +233,12 @@ export async function POST(req: NextRequest) {
         const result = await generateFileName(passport);
         newFileName = result.newFileName;
         await saveFile(newFileName, result.buffer);
-        console.log(newFileName);
+        // console.log(newFileName);
       } else {
         const buffer = await getArrayBuffer(passport);
         const result = await uploadToCloudinary(buffer, "uploads");
         newFileName = (result as { secure_url: string }).secure_url;
-        console.log(newFileName);
+        // console.log(newFileName);
       }
     }
 
@@ -324,7 +324,7 @@ export async function POST(req: NextRequest) {
       fields,
       body
     );
-    console.log({ newFileName });
+    // console.log({ newFileName });
     generatedGuarantorModelFields["systemId"] = guarantorSystemId;
     generatedGuarantorModelFields["avarta"] = newFileName;
     generatedGuarantorModelFields["loan"] = newLoanApplication._id;
@@ -357,7 +357,7 @@ export async function POST(req: NextRequest) {
     );
     return createResponse(true, "001", "Loan application successfully", {});
   } catch (error) {
-    console.log(error);
+    // console.log(error);
     return NextResponse.json(
       { error: "An error occurred while processing the request." },
       { status: 500 }
@@ -421,7 +421,7 @@ export async function PUT(req: NextRequest) {
 
         Vault.find(),
       ]);
-      console.log("vault: ", vault[0]);
+      // console.log("vault: ", vault[0]);
       if (!vault[0])
         return createResponse(
           false,
@@ -456,7 +456,7 @@ export async function PUT(req: NextRequest) {
       return createResponse(true, "200", "Loan Approval Successful");
     }
   } catch (error) {
-    console.log(error);
+    // console.log(error);
     return NextResponse.json(
       { error: "An error occurred while processing the request." },
       { status: 500 }

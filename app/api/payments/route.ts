@@ -60,8 +60,8 @@ export async function GET(req: NextRequest) {
       // Get the next day's midnight to form an exclusive range
       const endOfDay = new Date(new Date().setHours(24, 0, 0, 0));
     
-      console.log("Start of Day:", startOfDay);
-      console.log("End of Day:", endOfDay);
+      // console.log("Start of Day:", startOfDay);
+      // console.log("End of Day:", endOfDay);
     
       // Query loans due today
       const loans: any = await LoanApplication.find({
@@ -77,13 +77,13 @@ export async function GET(req: NextRequest) {
         })
         .exec();
     
-      console.log({ loans });
+      // console.log({ loans });
       return NextResponse.json(loans);
     }
     
     
   } catch (error) {
-    console.log(error);
+    // console.log(error);
     return NextResponse.json(
       { error: "An error occurred while processing the request." },
       { status: 500 }
@@ -94,7 +94,7 @@ export async function GET(req: NextRequest) {
 export async function POST(req: NextRequest) {
   try {
     const formData: any = await req.json();
-    console.log({ formData });
+    // console.log({ formData });
     for (const [key, value] of Object.entries(formData)) {
       const typedValue = value as {
         amount: string;
@@ -114,7 +114,7 @@ export async function POST(req: NextRequest) {
       const loan = await LoanApplication.findOne({
         systemId: typedValue.loanId,
       });
-      console.log({ loan });
+      // console.log({ loan });
       const client = await Client.findOne({ systemId: typedValue.clientId });
 
       const temporalPaymentBody: ITemporalPayment = {
@@ -124,7 +124,7 @@ export async function POST(req: NextRequest) {
         weeklyAmountExpected: loan?.weeklyAmount as number,
         amountPaid: Number(typedValue.amount),
       };
-      console.log(temporalPaymentBody);
+      // console.log(temporalPaymentBody);
 
       await Promise.all([
         TemporalPayment.create(temporalPaymentBody),
@@ -146,7 +146,7 @@ export async function POST(req: NextRequest) {
       {}
     );
   } catch (error) {
-    console.error("Error:", error);
+    // console.error("Error:", error);
     return NextResponse.json(
       { error: "An error occurred while processing the request." },
       { status: 500 }

@@ -10,7 +10,7 @@ export async function makeRequest(url: string, options: RequestInit) {
     const data = await response.json();
     // console.log(data)
     if (!response.ok) {
-      console.log(response);
+      // console.log(response);
       const errorResponse = createResponse(
         false,
         data.error?.code,
@@ -22,7 +22,7 @@ export async function makeRequest(url: string, options: RequestInit) {
 
     return data;
   } catch (error: any) {
-    console.error("Request failed:", error.message);
+    // console.error("Request failed:", error.message);
     return {
       success: false,
       error: {
@@ -202,7 +202,7 @@ export function calculateLoanInformaion(
   return Math.floor(expectedWeeklyPayment);
 }
 
-console.log(calculateLoanInformaion(1000, 3, 2.67)); // Example usage
+// console.log(calculateLoanInformaion(1000, 3, 2.67)); // Example usage
 
 export function calculateProcessingAndAdvanceFee(principal: number) {
   const processingFee = (Number(principal) * 0.05).toFixed(2);
@@ -240,7 +240,7 @@ export async function blobToFile(blobType: string, imageName: string) {
 
     const file = new File([blob], finalFileName, { type: blob.type });
 
-    console.log(file);
+    // console.log(file);
     return file;
   } catch (e: any) {
     console.log(e.message);
@@ -425,7 +425,7 @@ export async function processFormSubmissions(
       });
     }
   } catch (error) {
-    console.error("Error processing forms:", error);
+    // console.error("Error processing forms:", error);
     setSuccessMessage({
       showMessage: true,
       message: "An error occurred while processing forms.",
@@ -608,8 +608,9 @@ export const generateDocument = async (
     document.body.appendChild(a);
     a.click();
     a.remove();
-  } catch (error) {
-    console.error(`Error generating ${type.toUpperCase()}:`, error);
+  } catch (error:any) {
+    // console.error(`Error generating ${type.toUpperCase()}:`, error);
+    throw new Error(error)
   } finally {
     setLoading(false);
   }

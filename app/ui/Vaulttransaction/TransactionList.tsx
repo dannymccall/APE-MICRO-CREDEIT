@@ -22,7 +22,7 @@ const TransactionList: React.FC<TransactionListProps> = ({ transactions }) => {
     currentPage * PAGE_SIZE
   );
 
-  console.log({paginatedTransactions})
+  // console.log({paginatedTransactions})
   return (
     // <div className="bg-white w-full">
     //   <div className="w-full h-full bg-white relative">

@@ -58,7 +58,7 @@ const VaultDashboard = () => {
       body: JSON.stringify({ type, amount, purpose }),
       headers: { "Content-Type": "application/json" },
     });
-    console.log(response);
+    // console.log(response);
 
     if (!response.success) {
       setNotification({
@@ -95,9 +95,9 @@ const VaultDashboard = () => {
         method: "GET",
       });
 
-      console.log(response.transactions);
+      // console.log(response.transactions);
       setVault(response);
-      console.log(vault?.transactions);
+      // console.log(vault?.transactions);
     })();
   }, []);
 

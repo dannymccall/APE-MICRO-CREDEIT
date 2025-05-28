@@ -20,7 +20,7 @@ export const ProfileProvider = ({
       const response = await makeRequest(`/api/auth?service=fetchUser`, {
         method: "GET",
       });
-      console.log(response);
+      // console.log(response);
       if (response && response.avarta) {
         setProfilePicture(response.avarta);
       }

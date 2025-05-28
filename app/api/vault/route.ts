@@ -16,7 +16,7 @@ export async function GET(req: NextRequest) {
     select: ["first_name", "last_name", "other_names"],
   });
   const vault = vaults[0]; // Assuming you want the first vault
-  console.log(vault);
+  // console.log(vault);
   return NextResponse.json(vault, {
     headers: {
       "Cache-Control": "no-store, no-cache, must-revalidate, proxy-revalidate",

@@ -40,7 +40,7 @@ const Loan: React.FC<LoanProps> = ({ loan }) => {
       `/api/loans?_id=${loanId}&approveLoan=${true}`,
       { method: "PUT" }
     );
-    console.log(response);
+    // console.log(response);
     const { success, message } = response;
     if (success) {
       setOpenApprodalModal(false);

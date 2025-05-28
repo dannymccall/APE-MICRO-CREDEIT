@@ -28,10 +28,11 @@ const LoanRecovery = () => {
           "",
           "bulkPayment"
         );
-        console.log(res)
+        // console.log(res)
         setClients(res);
-      } catch (error) {
-        console.error("Failed to fetch clients:", error);
+      } catch (error: any) {
+        // console.error("Failed to fetch clients:", error);
+        throw new Error ("Failed to fetch clients: ", error)
       }
     })();
   }, []);

@@ -35,6 +35,7 @@ import { io } from "socket.io-client";
 
 import { formatZodErrors, extractFormFields } from "@/app/lib/helperFunctions";
 import { loanSchema } from "@/app/lib/definitions";
+import GuarantorFormSection from "@/app/component/guarantor/GuarantorFormSection";
 
 const AddLoan = () => {
   const breadcrumbsLinks = [
@@ -49,7 +50,7 @@ const AddLoan = () => {
   const formRef = useRef<HTMLFormElement>(null);
   const [state, action, pending] = useActionState(processLoan, undefined);
   const [showMessage, setShowMessage] = useState<boolean>(false);
-  const [hasApplicantFilled, setHasApplicantFilled] = useState<boolean>(false)
+  const [hasApplicantFilled, setHasApplicantFilled] = useState<boolean>(false);
   const router = useRouter();
   // const socket = useSocket();
   const [reducerState, dispatch] = useReducer(useReducerHook, initialState);
@@ -111,7 +112,6 @@ const AddLoan = () => {
     return () => clearTimeout(timeout);
   }, [state?.response?.message, router]); // Depend on state.message to run when it changes
 
-
   const onClick = () => {
     router.push("/manage-loan");
   };
@@ -126,7 +126,7 @@ const AddLoan = () => {
       const clients = await makeRequest(`/api/clients?search=${search}`, {
         method: "GET",
       });
-      console.log({ clients });
+      // console.log({ clients });
       // setClients(clients.data);
       dispatch({ type: "SET_CLIENTS", payload: clients.data });
     }
@@ -184,7 +184,7 @@ const AddLoan = () => {
     Object.keys(reducerState).forEach((key: any) => {
       const value = reducerState[key];
       if (value !== undefined && value !== null) {
-        console.log(`${key}: ${value}`);
+        // console.log(`${key}: ${value}`);
         formData.append(key, value); // Append each form field from state
       }
     });
@@ -244,9 +244,11 @@ const AddLoan = () => {
                   reducerState.activeTab === index
                     ? "bg-violet-900 text-white rounded-md"
                     : "bg-gray-200 hover:bg-gray-300"
-                } ${tab === "Guarantor" && !hasApplicantFilled ? "tooltip" : ""}`}
+                } ${
+                  tab === "Guarantor" && !hasApplicantFilled ? "tooltip" : ""
+                }`}
                 type="button"
-                disabled={ index == 1 && !hasApplicantFilled}
+                disabled={index == 1 && !hasApplicantFilled}
                 data-tip="Please fill the applicant form first!"
               >
                 {tab}
@@ -279,8 +281,8 @@ const AddLoan = () => {
                         }
                         className=" w-full px-5 py-2 flex justify-between text-sm border border-gray-200 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                       >
-                        {reducerState.selectedClient.first_name ?
-                           `${reducerState.selectedClient.first_name} ${reducerState.selectedClient.last_name}`
+                        {reducerState.selectedClient.first_name
+                          ? `${reducerState.selectedClient.first_name} ${reducerState.selectedClient.last_name}`
                           : "Select client"}
                         <MdOutlineKeyboardArrowDown size={20} />
                       </button>
@@ -855,173 +857,12 @@ const AddLoan = () => {
           {reducerState.activeTab === 1 && (
             <div role="tabpanel" className="tab-content block p-10">
               <div className="w-full h-full">
-                <div className="flex flex-row my-5 relative tablet:flex-col desktop:flex-row laptop:flex-row phone:flex-col">
-                  <div className="flex flex-row w-32 gap-0 items-center">
-                    <Label
-                      className="font-sans font-semibold text-gray-500 phone:text-sm laptop:text-base desktop:text-base tablet:text-sm"
-                      labelName="Full Name:"
-                    />
-                    <span className="text-red-500 ml-1">*</span>
-                  </div>
-                  <input
-                    type="text"
-                    className="block w-96 text-sm px-5 py-2 border-2 border-gray-200 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm tablet:w-96 desktop:w-96 laptop:w-96 phone:w-64"
-                    name="guarantorFullName"
-                    placeholder="Enter Full Name"
-                    value={reducerState.guarantorFullName}
-                    onChange={(e) =>
-                      dispatch({
-                        type: "SET_GUARANTOR_FULL_NAME",
-                        payload: e.target.value,
-                      })
-                    }
-                  />
-                </div>
-                {state?.errors?.guarantorFullName && (
-                  <p className=" text-red-500 p-1 text-sm font-semibold">
-                    {state.errors.guarantorFullName}
-                  </p>
-                )}
-                <div className="flex flex-row  my-5 relative tablet:flex-col desktop:flex-row laptop:flex-row phone:flex-col">
-                  <div className="flex flex-row w-32 gap-0 items-center">
-                    <Label
-                      className="font-sans font-semibold text-gray-500 phone:text-sm laptop:text-base desktop:text-base tablet:text-sm"
-                      labelName="Occupation"
-                    />
-                    <span className="text-red-500 ml-1">*</span>
-                  </div>
-                  <input
-                    type="text"
-                    className="block w-96 text-sm px-5 py-2 border-2 border-gray-200 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm tablet:w-96 desktop:w-96 laptop:w-96 phone:w-64"
-                    name="guarantorOccupation"
-                    placeholder="Enter Occupation"
-                    value={reducerState.guarantorOccupation}
-                    onChange={(e) =>
-                      dispatch({
-                        type: "SET_GUARANTOR_OCCUPATION",
-                        payload: e.target.value,
-                      })
-                    }
-                  />
-                </div>
-                {state?.errors?.guarantorOccupation && (
-                  <p className=" text-red-500 p-1 text-sm font-semibold">
-                    {state.errors.guarantorOccupation}
-                  </p>
-                )}
-                <div className="flex flex-row my-5 tablet:flex-col desktop:flex-row laptop:flex-row phone:flex-col">
-                  <div className="flex flex-row w-32 gap-0 items-center">
-                    <Label
-                      className="font-sans font-medium text-gray-500 phone:text-sm laptop:text-base desktop:text-base tablet:text-sm"
-                      labelName="Union Name:"
-                    />
-                    <span className="text-red-500 ml-1">*</span>
-                  </div>
-                  <input
-                    type="text"
-                    className="block w-96 text-sm px-5 py-2 border-2 border-gray-200 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm tablet:w-96 desktop:w-96 laptop:w-96 phone:w-64 phone:text-sm laptop:text-base desktop:text-base tablet:text-sm"
-                    placeholder={"Enter Union Name"}
-                    name="guarantorUnionName"
-                    value={reducerState.guarantorUnionName}
-                    onChange={(e) =>
-                      dispatch({
-                        type: "SET_GUARANTOR_UNION_NAME",
-                        payload: e.target.value,
-                      })
-                    }
-                  />
-                </div>
-                {state?.errors?.guarantorUnionName && (
-                  <p className=" text-red-500 p-1 text-sm font-semibold">
-                    {state.errors.guarantorUnionName}
-                  </p>
-                )}
-                <div className="flex flex-row  my-5 relative tablet:flex-col desktop:flex-row laptop:flex-row phone:flex-col">
-                  <div className="flex flex-row w-32 gap-0 items-center">
-                    <Label
-                      className="font-sans font-medium text-gray-500  phone:text-sm laptop:text-base desktop:text-base tablet:text-sm"
-                      labelName="Residence:"
-                    />
-                    <span className="text-red-500 ml-1">*</span>
-                  </div>
-                  <input
-                    type="text"
-                    className="block text-sm w-96 px-5 py-2 border-2 border-gray-200 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm tablet:w-96 desktop:w-96 laptop:w-96 phone:w-64 phone:text-sm laptop:text-base desktop:text-base tablet:text-sm"
-                    name="guarantorResidence"
-                    placeholder={"Enter Residence"}
-                    value={reducerState.guarantorResidence}
-                    onChange={(e) =>
-                      dispatch({
-                        type: "SET_GUARANTOR_RESIDENCE",
-                        payload: e.target.value,
-                      })
-                    }
-                  />
-                </div>
-                {state?.errors?.guarantorResidence && (
-                  <p className=" text-red-500 p-1 text-sm font-medium">
-                    {state.errors.guarantorResidence}
-                  </p>
-                )}
-                <div className="flex flex-row  my-5 relative tablet:flex-col desktop:flex-row laptop:flex-row phone:flex-col">
-                  <div className="flex flex-row w-32 gap-0 items-center">
-                    <Label
-                      className="font-sans font-medium text-gray-500 phone:text-sm laptop:text-base desktop:text-base tablet:text-sm"
-                      labelName="Mobile:"
-                    />
-                    <span className="text-red-500 ml-1">*</span>
-                  </div>
-                  <input
-                    type="text"
-                    className="block text-sm w-96 px-5 py-2 border-2 border-gray-200 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm tablet:w-96 desktop:w-96 laptop:w-96 phone:w-64 phone:text-sm laptop:text-base desktop:text-base tablet:text-sm"
-                    name="guarantorMobile"
-                    placeholder={"Enter Mobile"}
-                    value={reducerState.guarantorMobile}
-                    onChange={(e) =>
-                      dispatch({
-                        type: "SET_GUARANTOR_MOBILE",
-                        payload: e.target.value,
-                      })
-                    }
-                  />
-                </div>
-                {state?.errors?.guarantorMobile && (
-                  <p className=" text-red-500 p-1 text-sm font-medium">
-                    {state.errors.guarantorMobile}
-                  </p>
-                )}
-                <div className="w-full flex flex-col mb-10">
-                  <div className="flex flex-row   relative tablet:flex-col desktop:flex-row laptop:flex-row phone:flex-col">
-                    <div className="flex flex-row w-32 items-center ">
-                      <Label
-                        className="font-sans font-medium text-gray-500 phone:text-sm laptop:text-base desktop:text-base tablet:text-sm"
-                        labelName="Photo:"
-                      />
-                      <span className="text-red-500 ml-1">*</span>
-                    </div>
-                    <input
-                      type="file"
-                      className="file-input text-sm font-sans block w-96 px-5 py-2 border border-gray-200 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm tablet:w-96 desktop:w-96 laptop:w-96 phone:w-64 phone:text-sm laptop:text-base desktop:text-base tablet:text-sm"
-                      name="guarantorPassport"
-                      onChange={handleFileChange}
-                    />
-                  </div>
-                  {reducerState.passport && (
-                    <div className="relative left-0 top-5">
-                      <Image
-                        src={reducerState.passport}
-                        alt="passport"
-                        width={200}
-                        height={200}
-                      />
-                    </div>
-                  )}
-                </div>
-                {state?.errors?.guarantorPassport && (
-                  <p className=" text-red-500 p-3 text-sm font-medium">
-                    {state.errors.guarantorPassport}
-                  </p>
-                )}
+                <GuarantorFormSection
+                  reducerState={reducerState}
+                  dispatch={dispatch}
+                  state={state!}
+                  handleFileChange={handleFileChange}
+                />
                 <button
                   className={`btn w-24 flex items-center font-sans rounded-md justify-center gap-3 ${"bg-gradient-to-r from-violet-500 to-violet-700 hover:from-violet-700 hover:to-violet-900"} text-white py-2 rounded-md focus:outline-none font-bold font-mono transition`}
                   type="submit"

@@ -36,11 +36,11 @@ const Report = () => {
   }
 
   const reportGenerationRef = useRef<HTMLDivElement>(null!);
-  useEffect(() => {
-    if (state?.response) {
-      console.log(state.response.data);
-    }
-  }, [state?.response]);
+  // useEffect(() => {
+  //   if (state?.response) {
+  //     console.log(state.response.data);
+  //   }
+  // }, [state?.response]);
 
   const generatePDF = async () => {
     useGenerateDocument(reportGenerationRef, "pdf", setLoading);

@@ -39,7 +39,7 @@ export default function Navbar({
   // const [isSidebarOpen, setIsSidebarOpen] = useState<boolean>(true);
   const logginIdentity = useLogginIdentity();
   const router = useRouter()
-  console.log(logginIdentity);
+  // console.log(logginIdentity);
   // Navbar links configuration
   const navbarLinks: NavbarLink[] = [
     { name: "Home", href: "/", icon: FiHome },

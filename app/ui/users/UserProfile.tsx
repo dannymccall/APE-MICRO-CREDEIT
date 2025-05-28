@@ -70,7 +70,7 @@ const UserProfile = () => {
       const fileUrl: CustomFile | any = URL.createObjectURL(file);
       setProfileImage(fileUrl);
       setModalOpen(true);
-      console.log(fileUrl);
+      // console.log(fileUrl);
       // reader.onloadend = () => {
       //   // You can also upload the file to the server here
       // };
@@ -109,7 +109,7 @@ const UserProfile = () => {
       method: "PUT",
       body: formData,
     });
-    console.log(response);
+    // console.log(response);
     if (!response.success) {
       setPending(false);
       setMessage({

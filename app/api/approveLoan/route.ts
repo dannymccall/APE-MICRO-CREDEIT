@@ -31,9 +31,9 @@ export async function GET(req: NextRequest) {
     const clientId = searchParams.get("clientId");
     const search = searchParams.get("search");
 
-    console.log(clientId);
+    // console.log(clientId);
     if (clientId) {
-      console.log(mongoose.modelNames()); // Should include "LoanApplication", "Client", etc.
+      // console.log(mongoose.modelNames()); // Should include "LoanApplication", "Client", etc.
 
       const client = await Client.findOne({ systemId: clientId })
         .populate({
@@ -50,7 +50,7 @@ export async function GET(req: NextRequest) {
         .populate("loans");
       // .exec();
 
-      console.log(client);
+      // console.log(client);
       return NextResponse.json(
         { success: true, message: "Generated", data: client },
         {
@@ -137,7 +137,7 @@ export async function GET(req: NextRequest) {
       }
     );
   } catch (e: any) {
-    console.log(e.message);
+    // console.log(e.message);
     return NextResponse.json(
       { error: "An error occurred while processing the request." },
       { status: 500 }
@@ -149,7 +149,7 @@ export async function POST(req: NextRequest) {
   try {
     const formData: any = await req.json();
     let formDataLength = 0;
-    console.log(Array.isArray(formData));
+    // console.log(Array.isArray(formData));
     if (Array.isArray(formData)) {
       formData.forEach(async (item) => {
         formDataLength += 1;
@@ -185,12 +185,15 @@ export async function POST(req: NextRequest) {
           { nextPaymentStatus: "Pending" }
         ),
 
-        makeRequest(`${process.env.NEXT_PUBLIC_SOCKET_URL}/sockets/notify-admin`, {
-          method: "POST",
-          body: JSON.stringify({
-            message: `Loan Payment of ${typedValue.amount} has been made by ${client?.first_name} ${client?.last_name} for loan ${loan?.systemId}`,
-          }),
-        }),
+        makeRequest(
+          `${process.env.NEXT_PUBLIC_SOCKET_URL}/sockets/notify-admin`,
+          {
+            method: "POST",
+            body: JSON.stringify({
+              message: `Loan Payment of ${typedValue.amount} has been made by ${client?.first_name} ${client?.last_name} for loan ${loan?.systemId}`,
+            }),
+          }
+        ),
       ]);
     }
 

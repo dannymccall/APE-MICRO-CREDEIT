@@ -49,7 +49,7 @@ export default function Sidebar({
   const pathName = usePathname();
   const [openMenus, setOpenMenus] = useState<Record<string, boolean>>({});
   const { profilePicture } = useProfile();
-  console.log(profilePicture)
+  // console.log(profilePicture)
   // const [isSidebarOpen, setIsSidebarOpen] = useState(false); // New state for toggling sidebar
 
   const pathname = usePathname(); // To get current route path
@@ -60,7 +60,7 @@ export default function Sidebar({
     useState<boolean>(false);
   // const [isSidebarOpen, setIsSidebarOpen] = useState<boolean>(true);
   const logginIdentity = useLogginIdentity();
-  console.log(logginIdentity);
+  // console.log(logginIdentity);
   // Navbar links configuration
 
   useEffect(() => {

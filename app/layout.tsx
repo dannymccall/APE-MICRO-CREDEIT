@@ -45,16 +45,16 @@ export default function RootLayout({
     setIsSidebarOpen(false);
   }, []);
   useEffect(() => {
-    console.log(window.innerWidth);
+    // console.log(window.innerWidth);
     if (window.innerWidth >= 1024) {
-      console.log("width >= 1024");
+      // console.log("width >= 1024");
       setIsSidebarOpen(false);
     }
     document.documentElement.classList.remove("dark");
     document.documentElement.classList.add("light");
   }, []);
   return (
-    <html lang="en">
+    <html lang="en" data-theme="light">
       <head>
         <link rel="icon" href="/vercel.svg" sizes="32x32" type="image/x-icon" />
         <link rel="apple-touch-icon" href="/vercel.svg" />

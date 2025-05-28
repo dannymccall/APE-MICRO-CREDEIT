@@ -35,7 +35,7 @@ export async function GET(req: NextRequest) {
         | { user: { username: string } }
         | undefined;
 
-        console.log(payload)
+        // console.log(payload)
       if (!payload) {
         return NextResponse.json({ error: "Invalid session" }, { status: 401 });
       }
@@ -43,7 +43,7 @@ export async function GET(req: NextRequest) {
       const user = await User.findOne({
         username: payload.user.username,
       }).select("first_name last_name other_names username roles dob sex online_status avarta email");
-      console.log(user)
+      // console.log(user)
       return NextResponse.json(user);
     }
     // if(username){
@@ -168,7 +168,7 @@ export async function PUT(req: NextRequest) {
         body["current_password"],
         user.password
       );
-      console.log({ isPasswordMatch });
+      // console.log({ isPasswordMatch });
 
       if (!isPasswordMatch)
         return createResponse(false, "001", "Current Password is Invalid", {});

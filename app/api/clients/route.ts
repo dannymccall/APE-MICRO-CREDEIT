@@ -91,12 +91,12 @@ export async function GET(req: NextRequest) {
           { status: 200, headers: { "Cache-Control": "no-store" } }
         );
       } catch (error) {
-        console.error("Error searching loans:", error);
+        // console.error("Error searching loans:", error);
         return createResponse(false, "500", "Error searching loans", {});
       }
     }
     if (clientId) {
-      console.log(mongoose.modelNames()); // Should include "LoanApplication", "Client", etc.
+      // console.log(mongoose.modelNames()); // Should include "LoanApplication", "Client", etc.
 
       const client = await Client.findOne({ systemId: clientId })
         .populate({
@@ -113,7 +113,7 @@ export async function GET(req: NextRequest) {
         .populate("loans");
       // .exec();
 
-      console.log(client);
+      // console.log(client);
       return NextResponse.json(
         { success: true, message: "Generated", data: client },
         {
@@ -154,7 +154,7 @@ export async function GET(req: NextRequest) {
       );
     }
 
-    console.log(pageParam, limitParam)
+    // console.log(pageParam, limitParam)
 
     const page = parseInt(pageParam || "1", 10);
     const limit = parseInt(limitParam || "10", 10);
@@ -186,7 +186,7 @@ export async function GET(req: NextRequest) {
       }
     );
   } catch (e: any) {
-    console.log(e.message);
+    // console.log(e.message);
     return NextResponse.json(
       { error: "An error occurred while processing the request." },
       { status: 500 }
@@ -278,7 +278,7 @@ export async function POST(req: NextRequest) {
     );
     return createResponse(true, "001", "Client added successfully", newClient);
   } catch (error) {
-    console.log(error);
+    // console.log(error);
     return NextResponse.json(
       { error: "An error occurred while processing the request." },
       { status: 500 }

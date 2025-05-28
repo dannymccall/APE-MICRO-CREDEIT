@@ -76,7 +76,7 @@ const getPaymentScheduleData = async (
     
   };
   const staffMatch: any = {};
-  console.log({ matchFilter });
+  // console.log({ matchFilter });
   if (startDate && endDate) {
     const start = new Date(startDate).setHours(0, 0, 0, 0);
     const end = new Date(endDate).setHours(23, 59, 59, 999);
@@ -95,9 +95,9 @@ const getPaymentScheduleData = async (
     matchFilter["schedule.nextPayment"] = {
       $lte: new Date(end),
     };
-    console.log({ staff });
+    // console.log({ staff });
   } else if (staff) {
-    console.log(staff);
+    // console.log(staff);
     staffMatch["staff"] = new mongoose.Types.ObjectId(staff);
   }
 
@@ -204,9 +204,9 @@ export async function POST(req: NextRequest) {
 
     const results: Record<string, any[]> = {};
     const body = await req.json();
-    console.log({ body });
+    // console.log({ body });
     const { startDate, endDate, filters, staff } = body;
-    console.log({ staff });
+    // console.log({ staff });
     const filterArray = filters.split(",");
     let data: any[] = [];
 
@@ -221,19 +221,19 @@ export async function POST(req: NextRequest) {
 
       // Construct query object
       const query: any = {};
-      console.log("Start:", start);
-      console.log("End:", end);
+      // console.log("Start:", start);
+      // console.log("End:", end);
       if (start) query.createdAt = { $gte: start };
       if (end)
         query.createdAt = { ...(query.createdAt || {}), $lte: new Date(end) };
       if (staff) {
-        console.log("Staff:", staff);
+        // console.log("Staff:", staff);
         query["loanOfficer"] = new mongoose.Types.ObjectId(staff);
       }
       // console.log("Query:", query);
 
       query["loanApprovalStatus"] =  "Approved"
-      console.log({query})
+      // console.log({query})
       data = await LoanApplication.find(query)
         .populate("client")
         .populate("loanOfficer")
@@ -242,7 +242,7 @@ export async function POST(req: NextRequest) {
 
       results["report"] = data;
 
-      console.log(data);
+      // console.log(data);
       return NextResponse.json(results);
     }
 
@@ -259,14 +259,14 @@ export async function POST(req: NextRequest) {
         if (endDate) matchStage["createdAt"].$lte = end;
       }
       if (staff) {
-        console.log("Staff:", staff);
+        // console.log("Staff:", staff);
         matchStage["loanOfficer"] = new mongoose.Types.ObjectId(staff);
       }
 
-      console.log(matchStage);
+      // console.log(matchStage);
 
       matchStage["loanApprovalStatus"] = "Approved";
-      console.log({matchStage})
+      // console.log({matchStage})
       switch (filter) {
         case "disbursement":
           data = await LoanApplication.find(matchStage)
@@ -326,7 +326,7 @@ export async function POST(req: NextRequest) {
     );
     return NextResponse.json(results);
   } catch (error) {
-    console.error("Error handling POST request:", error);
+    // console.error("Error handling POST request:", error);
     return NextResponse.json(
       { error: "An error occurred while processing the request." },
       { status: 500 }

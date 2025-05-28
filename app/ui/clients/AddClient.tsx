@@ -38,8 +38,9 @@ const AddUser = () => {
         ]);
         setBranches(branchesResponse.data); // Update state with the fetched data
         setUsers(usersResponse.data);
-      } catch (error) {
-        console.error("Error fetching branches:", error);
+      } catch (error: any) {
+        // console.error("Error fetching branches:", error);
+        throw new Error(error.message)
       }
     };
 
@@ -54,7 +55,7 @@ const AddUser = () => {
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]; // Get the selected file
-    console.log(file);
+    // console.log(file);
     if (file) {
       // Create a URL for the file and update the stat
       const fileUrl = URL.createObjectURL(file);

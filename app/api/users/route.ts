@@ -82,7 +82,7 @@ export async function GET(req: NextRequest) {
       }
     );
   } catch (e) {
-    console.log(e);
+    // console.log(e);
     return NextResponse.json(
       { error: "An error occurred while processing the request." },
       { status: 500 }
@@ -93,7 +93,7 @@ export async function GET(req: NextRequest) {
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
-    console.log(body);
+    // console.log(body);
 
     const excludedKeys = new Set(["dob", "roles", "email", "id", "service"]);
 
@@ -241,7 +241,7 @@ export async function PUT(req: NextRequest) {
     const userId = await getUserId();
 
     if (contentType?.includes("multipart/form-data")) {
-      console.log("hello");
+      // console.log("hello");
       body = await req.formData();
       const passport = body.get("profile-picture");
       if (!passport.name)
@@ -255,12 +255,12 @@ export async function PUT(req: NextRequest) {
         const result = await generateFileName(passport);
         newFileName = result.newFileName;
         await saveFile(newFileName, result.buffer);
-        console.log(newFileName);
+        // console.log(newFileName);
       } else {
         const buffer = await getArrayBuffer(passport);
         const result = await uploadToCloudinary(buffer, "uploads");
         newFileName = (result as { secure_url: string }).secure_url;
-        console.log(newFileName);
+        // console.log(newFileName);
       }
       const updatedProfilePicture = await userService.update(id, {
         avarta: newFileName,
@@ -284,7 +284,7 @@ export async function PUT(req: NextRequest) {
       body = await req.json();
     }
 
-    console.log(body);
+    // console.log(body);
 
     const updateUser = {
       first_name: body.firstName,
@@ -316,7 +316,7 @@ export async function PUT(req: NextRequest) {
       updatedUser
     );
   } catch (error: any) {
-    console.log(error.message);
+    // console.log(error.message);
     return NextResponse.json(
       { error: "An error occurred while processing the request." },
       { status: 500 }
