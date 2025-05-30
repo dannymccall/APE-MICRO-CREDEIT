@@ -85,7 +85,7 @@ const Loan: React.FC<LoanProps> = ({ loan }) => {
         <td className="p-2 text-sm">{loan.systemId}</td>
         <td className="p-2 text-sm">{loan.loanProduct}</td>
         <td className="p-2 text-sm">GHS {Number(loan.principal).toFixed(2)}</td>
-        <td className="p-2 text-sm">{`${loan.client.first_name}  ${loan.client.last_name}`}</td>
+        <td className="p-2 text-sm">{`${loan.client ? loan.client.first_name : "N/A"}  ${loan.client ? loan.client.last_name : "N/A"}`}</td>
         <td className="p-2 text-sm">{`${loan.loanOfficer.first_name}  ${loan.loanOfficer.other_names} ${loan.loanOfficer.last_name}`}</td>
         <td className="p-2 text-sm"> {loan.monthlyInterest}</td>
         <td className="p-2 text-sm">
