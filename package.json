@@ -10,6 +10,7 @@
         "postinstall": "npx puppeteer browsers install chrome"
     },
     "dependencies": {
+        "@emailjs/browser": "^4.4.1",
         "@sparticuz/chromium": "^132.0.0",
         "@types/crypto-js": "^4.2.2",
         "@types/js-cookie": "^3.0.6",
