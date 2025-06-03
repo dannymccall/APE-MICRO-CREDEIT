@@ -9,7 +9,7 @@ import SearchInput from "@/app/component/Search/SearchInput";
 
 // const LoanList = lazy(() => import("./loanList"));
 const LoanList = dynamic(() => import("./loanList"), { ssr: false });
-import { LoadingDivs } from "@/app/component/Loading";
+import { LoadingDivs } from "@/app/api/Loaders/Loading";
 import InfoHeaderComponent from "@/app/component/Info-header/Info-Header";
 import {  useSearch } from "@/app/lib/customHooks";
 const AllLoans = () => {

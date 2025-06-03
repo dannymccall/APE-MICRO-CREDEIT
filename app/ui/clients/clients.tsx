@@ -4,7 +4,7 @@ import { IClient } from "@/app/lib/backend/models/client.model";
 import { useRouter } from "next/navigation";
 import SearchInput from "@/app/component/Search/SearchInput";
 const ClientList = lazy(() => import("./clientList"));
-import { LoadingDivs } from "@/app/component/Loading";
+import { LoadingDivs } from "@/app/api/Loaders/Loading";
 import InfoHeaderComponent from "@/app/component/Info-header/Info-Header";
 import {  useSearch } from "@/app/lib/customHooks";
 

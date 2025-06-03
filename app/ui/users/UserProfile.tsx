@@ -11,7 +11,7 @@ import Image, { StaticImageData } from "next/image";
 import { makeRequest } from "@/app/lib/helperFunctions";
 import { ChangePasswordTemplate } from "@/app/component/users/ProfileInfomation";
 import { useSearchParams } from "next/navigation";
-import { LoadingDivs } from "@/app/component/Loading";
+import { LoadingDivs } from "@/app/api/Loaders/Loading";
 import { IoIosCamera } from "react-icons/io";
 import Modal from "@/app/component/Modal";
 import { CustomFile } from "@/app/lib/customHooks";

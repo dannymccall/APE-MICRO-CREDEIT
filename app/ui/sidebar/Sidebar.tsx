@@ -21,7 +21,7 @@ import { NavbarLink } from "../navbar/Navbar";
 import { IoIosInformationCircle } from "react-icons/io";
 import NavbarLinks from "@/app/component/navbar/NavbarLinks";
 import { IoLogOut, IoLogOutOutline } from "react-icons/io5";
-import { LoadingSpinner } from "@/app/component/Loading";
+import { LoadingSpinner } from "@/app/api/Loaders/Loading";
 import { useProfile } from "@/app/context/ProfileContext";
 import { useRouter } from "next/navigation";
 import Image from "next/image";

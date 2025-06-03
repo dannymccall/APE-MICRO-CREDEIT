@@ -1,6 +1,6 @@
 "use client";
 import { processReport } from "@/app/actions/reportAuth";
-import { LoadingDivs } from "@/app/component/Loading";
+import { LoadingDivs } from "@/app/api/Loaders/Loading";
 import { Label } from "@/app/lib/MyFormInput/FormTemplates";
 // import html2pdf from "html2pdf.js"
 import React, { useEffect, useState, useRef } from "react";

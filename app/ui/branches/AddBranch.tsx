@@ -6,7 +6,7 @@ import { Label } from "@/app/lib/MyFormInput/FormTemplates";
 import { addBranch } from "@/app/actions/addBranchAuth";
 import { FaCircleCheck } from "react-icons/fa6";
 import Toast from "@/app/component/toast/Toast";
-import { LoadingSpinner } from "@/app/component/Loading";
+import { LoadingSpinner } from "@/app/api/Loaders/Loading";
 
 const AddBranch = () => {
   const breadcrumbsLinks = [

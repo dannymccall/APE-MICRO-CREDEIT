@@ -4,7 +4,7 @@ import React, { useActionState, useEffect, useState, useRef, startTransition } f
 import { MyTextInput, Label } from "@/app/lib/MyFormInput/FormTemplates";
 import Toast from "@/app/component/toast/Toast";
 import { FaCircleCheck } from "react-icons/fa6";
-import { LoadingSpinner } from "@/app/component/Loading";
+import { LoadingSpinner } from "@/app/api/Loaders/Loading";
 import { useRouter } from "next/navigation";
 import { FiEdit } from "react-icons/fi";
 import { IUser } from "@/app/lib/backend/models/user.model";

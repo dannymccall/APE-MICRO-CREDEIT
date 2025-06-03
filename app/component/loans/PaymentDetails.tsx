@@ -9,7 +9,7 @@ import {
   processFormSubmissions,
 } from "@/app/lib/helperFunctions";
 import { useRouter } from "next/navigation";
-import { LoadingSpinner } from "../Loading";
+import { LoadingSpinner } from "../../api/Loaders/Loading";
 import { useLogginIdentity } from "@/app/lib/customHooks";
 
 export interface PaymentClientDetails {

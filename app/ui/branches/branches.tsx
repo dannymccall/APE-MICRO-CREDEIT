@@ -7,7 +7,7 @@ import { useRouter } from "next/navigation";
 
 const BranchList = lazy(() => import("./branchList"));
 
-import { LoadingDivs } from "@/app/component/Loading";
+import { LoadingDivs } from "@/app/api/Loaders/Loading";
 import InfoHeaderComponent from "@/app/component/Info-header/Info-Header";
 import { IBranch } from "@/app/lib/backend/models/branch.model";
 

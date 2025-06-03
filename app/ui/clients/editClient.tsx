@@ -4,7 +4,7 @@ import { Label } from "@/app/lib/MyFormInput/FormTemplates";
 import { addClient } from "@/app/actions/addClientAuth";
 import Toast from "@/app/component/toast/Toast";
 import { FaCircleCheck } from "react-icons/fa6";
-import { LoadingSpinner } from "@/app/component/Loading";
+import { LoadingSpinner } from "@/app/api/Loaders/Loading";
 import {
   formatDate,
   makeRequest,

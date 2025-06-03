@@ -7,7 +7,7 @@ import { useRouter } from "next/navigation";
 
 const LoanApprovalList = lazy(() => import("./LoanApprovalList"));
 
-import { LoadingDivs } from "@/app/component/Loading";
+import { LoadingDivs } from "@/app/api/Loaders/Loading";
 import InfoHeaderComponent from "@/app/component/Info-header/Info-Header";
 import { LoanApprovalProps } from "./LoanApproval";
 

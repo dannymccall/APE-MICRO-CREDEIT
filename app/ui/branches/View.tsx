@@ -5,7 +5,7 @@ import { MyTextInput, Label } from "@/app/lib/MyFormInput/FormTemplates";
 import {  updateBranch } from "@/app/actions/addBranchAuth";
 import Toast from "@/app/component/toast/Toast";
 import { FaCircleCheck } from "react-icons/fa6";
-import { LoadingSpinner } from "@/app/component/Loading";
+import { LoadingSpinner } from "@/app/api/Loaders/Loading";
 import { useRouter } from "next/navigation";
 import { FiEdit } from "react-icons/fi";
 import { IBranch } from "@/app/lib/backend/models/branch.model";
