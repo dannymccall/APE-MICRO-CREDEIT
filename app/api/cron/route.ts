@@ -35,7 +35,7 @@ export async function GET() {
   try {
     console.log("Cron ran at ", new Date());
 
-    const loans = await LoanApplication.find({ paymentStatus: "not completed" }).populate({
+    const loans: any = await LoanApplication.find({ paymentStatus: "not completed" }).populate({
       path: "paymentSchedule",
       populate: { path: "schedule" },
       select: "schedule",
@@ -45,7 +45,7 @@ export async function GET() {
     const today = new Date();
   
     await Promise.all(
-      loans.map(async (loan) => {
+      loans.map(async (loan:any) => {
         if (!loan.paymentSchedule) return;
 
         let isUpdated = false;
@@ -74,6 +74,7 @@ export async function GET() {
         if (isUpdated) {
           loan.markModified("paymentSchedule"); // Ensures changes are tracked
           await loan.save();
+          await loan.paymentSchedule.save()
         }
       })
     );
