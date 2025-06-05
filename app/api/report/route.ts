@@ -75,9 +75,12 @@ const getPaymentScheduleData = async (
     "schedule.status": status,
     
   };
+
+  // console.log({matchFilter})
   const staffMatch: any = {};
   // console.log({ matchFilter });
   if (startDate && endDate) {
+    // console.log("there is start and end")
     const start = new Date(startDate).setHours(0, 0, 0, 0);
     const end = new Date(endDate).setHours(23, 59, 59, 999);
 
@@ -85,6 +88,9 @@ const getPaymentScheduleData = async (
       $gte: new Date(start),
       $lte: new Date(end),
     };
+
+      // console.log({matchFilter})
+
   } else if (startDate) {
     const start = new Date(startDate).setHours(0, 0, 0, 0); // Ensure full day inclusion
     matchFilter["schedule.nextPayment"] = {
@@ -111,7 +117,7 @@ const getPaymentScheduleData = async (
   // ✅ Unwind schedules
 
   // ✅ Apply the general match filters
-  pipeline.push({ $match: matchFilter });
+  // pipeline.push({ $match: matchFilter });
 
   // ✅ Lookup for loan details
   pipeline.push(
@@ -147,6 +153,9 @@ const getPaymentScheduleData = async (
     }
   );
   pipeline.push({ $unwind: "$schedule" });
+
+    pipeline.push({ $match: matchFilter });
+
   // ✅ Group the data
   pipeline.push({
     $group: {
@@ -263,7 +272,7 @@ export async function POST(req: NextRequest) {
         matchStage["loanOfficer"] = new mongoose.Types.ObjectId(staff);
       }
 
-      // console.log(matchStage);
+      console.log(matchStage);
 
       matchStage["loanApprovalStatus"] = "Approved";
       // console.log({matchStage})

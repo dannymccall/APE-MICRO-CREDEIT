@@ -404,6 +404,7 @@ export function GeneralReport({ reports }: { reports: any[] }) {
     getSumValues(repayments);
 
   const arrears: any[] = getPaymentSchedule(paymentSchedule, "arrears");
+  console.log({arrears})
   const arrearsSumValues: {
     totalAmountToPay: number;
     totalAmountPaid: number;
@@ -634,10 +635,10 @@ export function Arrears({
               {formatCurrency(report.schedules.amountToPay)}
             </td>
             <td className="text-sm font-sans font-normal text-gray-700 p-1 border">
-              {formatCurrency(report.schedules.outStandingBalance)}
+              {formatCurrency(report.schedules.amountPaid)}
             </td>
             <td className="text-sm font-sans font-normal text-gray-700 p-1 border">
-              {formatCurrency(report.schedules.amountPaid)}
+              {formatCurrency(report.schedules.outStandingBalance)}
             </td>
           </tr>
         ))}
@@ -678,10 +679,10 @@ export function Arrears({
           {formatCurrency(totalAmountToPay)}
         </td>
         <td className="font-semibold font-sans text-sm text-gray-900 p-1">
-          {formatCurrency(totalOutstandingBalance)}
+          {formatCurrency(totalAmountPaid)}
         </td>
         <td className="font-semibold font-sans text-sm text-gray-900 p-1">
-          {formatCurrency(totalAmountPaid)}
+          {formatCurrency(totalOutstandingBalance)}
         </td>
         <td className="p-1">....</td> {/* Empty cell for consistent layout */}
       </tr>
