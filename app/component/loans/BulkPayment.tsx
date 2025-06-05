@@ -87,12 +87,12 @@ const BulkPayment: React.FC<PaymentClientDetails> = ({ loans }) => {
             successMessage.messageType === "errMessage"
               ? "background: bg-red-200 text-red-600 border-red-700"
               : "background: bg-green-200 text-green-600 border-green-700"
-          }   border-2 p-3 my-5 max-w-xl rounded-md`}
+          }   border-2 p-3 my-5 max-w-xl rounded-md text-center m-auto`}
         >
           {successMessage.message}
         </h1>
       )}
-      <div className="w-full flex gap-10">
+      <div className="w-full flex gap-10 flex-wrap item-center justify-center">
         {loans && Array.isArray(loans) && loans.length > 0 ? loans.map((loan, index: number) => (
           <div
             className="max-w-80 gap-5 flex flex-col bg-[url('../public/checkout.jpg')] bg-cover bg-center rounded-md"
@@ -168,7 +168,7 @@ const BulkPayment: React.FC<PaymentClientDetails> = ({ loans }) => {
         loans && Array.isArray(loans) && loans.length > 0 && 
       <button
         type="button"
-        className="btn w-28 h-10 mt-5 flex items-center rounded-md justify-center gap-3 bg-slate-200 hover:bg-gradient-to-r from-violet-700 to-violet-900 text-slate-600 hover:text-slate-400 font-bold font-sans transition ease-in-out"
+        className="btn w-40 h-10 mx-auto mt-5 flex items-center rounded-md justify-center gap-3 bg-slate-200 hover:bg-gradient-to-r from-violet-700 to-violet-900 text-slate-600 hover:text-slate-400 font-bold font-sans transition ease-in-out"
         onClick={handleSubmitAll}
         form="bulk-payment-form"
         disabled={pending}

@@ -323,7 +323,7 @@ export async function POST(req: NextRequest) {
           data = [];
           break;
       }
-      // console.log({ data });
+      console.log({ data });
       if (data.length) {
         results[filter ? filter : "allReport"] = data;
       }
