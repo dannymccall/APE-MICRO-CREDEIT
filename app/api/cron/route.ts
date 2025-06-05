@@ -63,9 +63,10 @@ export async function GET() {
 
         loan.paymentSchedule.schedule.forEach((schedule: Schedule) => {
           const nextPaymentDate = new Date(schedule.nextPayment);
-
           if (nextPaymentDate < startOfDayUTC && schedule.status !== "paid") {
-            schedule.status = "not paid";
+            schedule.status = "arrears";
+            console.log(nextPaymentDate)
+            console.log(true)
             isUpdated = true;
           }
 
