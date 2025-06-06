@@ -25,13 +25,13 @@ const NavbarLinks = ({
 
   return (
     <main className="flex justify-between w-full items-center">
-        <Link
-          href="/"
-          className="w-96 text-violet-500 font-mono font-semibold text-xl flex flex-row  items-center"
-        >
-        <Image src={Icon} alt="icon" width={35}/>
-          PE CREDIT
-        </Link>
+      <Link
+        href="/"
+        className="w-96 text-violet-500 font-mono phone:ml-5 tablet:ml-5 font-semibold text-xl flex flex-row  items-center"
+      >
+        <Image src={Icon} alt="icon" width={35} />
+        PE CREDIT
+      </Link>
 
       <ul
         className={`flex space-x-6 ${className} desktop:place-content-end laptop:place-content-end w-full`}

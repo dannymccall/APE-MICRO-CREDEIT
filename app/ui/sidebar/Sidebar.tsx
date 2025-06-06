@@ -11,6 +11,8 @@ import {
   FiChevronRight,
   FiUser,
 } from "react-icons/fi";
+import { MdKeyboardArrowLeft } from "react-icons/md";
+
 import { RxDashboard } from "react-icons/rx";
 import { PiUsersThreeBold } from "react-icons/pi";
 import { FaCodeBranch } from "react-icons/fa6";
@@ -243,7 +245,7 @@ export default function Sidebar({
           className="phone:block desktop:hidden laptop:hidden tablet:block font-sans text-2xl float-right relative bottom-2 cursor-pointer"
           onClick={() => setIsSidebarOpen(false)}
         >
-          &times;
+          <MdKeyboardArrowLeft />
         </span>
         <div className="flex flex-col gap-5 items-center justify-center relative">
           <h1 className="font-mono">APE CREDIT</h1>

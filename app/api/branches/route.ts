@@ -1,4 +1,4 @@
-import { NextResponse, type NextRequest } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { Db, Collection } from "mongodb";
 import { BranchService } from "@/app/lib/backend/services/branchService";
 import { connectDB } from "@/app/lib/mongodb";
