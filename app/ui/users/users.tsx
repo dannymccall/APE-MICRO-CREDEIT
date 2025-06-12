@@ -88,7 +88,7 @@ const AllUsers = () => {
        
         </>
       ) : (
-        <Suspense fallback={<LoadingDivs />}>
+        <Suspense fallback={<TableSkeletonLoader />}>
           <div className="p-10">
             {(users.length > 0 || query) && (
               <SearchInput

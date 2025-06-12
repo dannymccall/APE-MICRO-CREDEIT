@@ -134,7 +134,7 @@ const AllLoans = () => {
       {loading ? (
         <TableSkeletonLoader />
       ) : (
-        <Suspense fallback={<LoadingDivs />}>
+        <Suspense fallback={<TableSkeletonLoader />}>
           <div className="p-10 w-full">
             {(loans.length > 0 || query) && (
               <SearchInput

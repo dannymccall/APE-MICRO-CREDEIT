@@ -100,7 +100,7 @@ const AllClients = () => {
       {loading ? ( // Show loading state
         <TableSkeletonLoader />
       ) : (
-        <Suspense fallback={<LoadingDivs />}>
+        <Suspense fallback={<TableSkeletonLoader />}>
           <div className="p-10">
            {(clients.length > 0 || query) && (
               <SearchInput
