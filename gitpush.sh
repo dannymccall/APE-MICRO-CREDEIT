@@ -17,6 +17,7 @@ git commit -m "$message"
 #Ask for branch
 echo "Which branch are you commit to:"
 read branch
+git branch -M $branch
 git push origin $branch
 
 
