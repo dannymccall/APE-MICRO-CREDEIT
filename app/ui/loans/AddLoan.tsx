@@ -11,7 +11,7 @@ import { Label } from "@/app/lib/MyFormInput/FormTemplates";
 import Image from "next/image";
 import Toast from "@/app/component/toast/Toast";
 import { FaCircleCheck } from "react-icons/fa6";
-import { LoadingSpinner } from "@/app/api/Loaders/Loading";
+import { LoadingSpinner } from "@/app/component/Loaders/Loading";
 import { useRouter } from "next/navigation";
 import {
   makeRequest,

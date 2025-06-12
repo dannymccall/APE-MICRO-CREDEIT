@@ -8,7 +8,7 @@ import { useRouter } from "next/navigation";
 
 const TransactionList = lazy(() => import("./TransactionList"));
 
-import { LoadingDivs } from "@/app/api/Loaders/Loading";
+import { LoadingDivs } from "@/app/component/Loaders/Loading";
 import InfoHeaderComponent from "@/app/component/Info-header/Info-Header";
 import SearchInput from "@/app/component/Search/SearchInput";
 import { useSearch } from "@/app/lib/customHooks";

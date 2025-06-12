@@ -16,3 +16,7 @@
     transform: translateX(-10px);
     transition: transform 0.3s ease;
 }
+
+html, body{
+    font-family: Arial, Helvetica, sans-serif;
+}

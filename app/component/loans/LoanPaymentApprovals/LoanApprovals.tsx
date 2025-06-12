@@ -7,16 +7,17 @@ import { useRouter } from "next/navigation";
 
 const LoanApprovalList = lazy(() => import("./LoanApprovalList"));
 
-import { LoadingDivs } from "@/app/api/Loaders/Loading";
+import { LoadingDivs } from "@/app/component/Loaders/Loading";
 import InfoHeaderComponent from "@/app/component/Info-header/Info-Header";
 import { LoanApprovalProps } from "./LoanApproval";
-
+import TableSkeletonLoader from "../../TableSkeletonLoader";
 const LoanApprovals = () => {
   const [pendingLoans, setPendingLoans] = useState<LoanApprovalProps[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
-
+  const [loading, setLoading] = useState<boolean>(false);
   async function fetchPeningLoans() {
+    setLoading(true);
     try {
       const pendingLoans: any = await makeRequest(
         `api/approveLoan?page=${currentPage}&limit=${10}`,
@@ -28,7 +29,9 @@ const LoanApprovals = () => {
       console.log(pendingLoans);
       setPendingLoans(pendingLoans.data);
       setTotalPages(pendingLoans.pagination.totalPages);
+      setLoading(false);
     } catch (error) {
+      setLoading(false);
       console.error("Failed to fetch users:", error);
     }
   }
@@ -60,23 +63,27 @@ const LoanApprovals = () => {
         onClick={onClick}
       />
       <div className="text-center mg-5 flex flex-col gap-4 shadow-lg"></div>
-      <Suspense fallback={<LoadingDivs />}>
-        <div className="p-10">
-          {pendingLoans.length > 0 ? (
-            <LoanApprovalList
-              pendingLoans={pendingLoans}
-              currentPage={currentPage}
-              totalPages={totalPages}
-              setCurrentPage={setCurrentPage}
-              onApprove={onApprove}
-            />
-          ) : (
-            <div className="bg-white p-3 rounded-md border-t-2 border-t-violet-600">
-              <span>No Pending Loan Payments Approvals available</span>
-            </div>
-          )}
-        </div>
-      </Suspense>
+      {loading ? (
+        <TableSkeletonLoader />
+      ) : (
+        <Suspense fallback={<LoadingDivs />}>
+          <div className="p-10">
+            {pendingLoans.length > 0 ? (
+              <LoanApprovalList
+                pendingLoans={pendingLoans}
+                currentPage={currentPage}
+                totalPages={totalPages}
+                setCurrentPage={setCurrentPage}
+                onApprove={onApprove}
+              />
+            ) : (
+              <div className="bg-white p-3 rounded-md border-t-2 border-t-violet-600">
+                <span>No Payments Approvals available</span>
+              </div>
+            )}
+          </div>
+        </Suspense>
+      )}
     </main>
   );
 };

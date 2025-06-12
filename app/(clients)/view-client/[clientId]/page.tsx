@@ -2,7 +2,7 @@ import { lazy, Suspense } from "react";
 
 import { makeRequest } from "@/app/lib/helperFunctions";
 // import ClientDetails from "../ClientDetails";
-import { LoadingDivs } from "@/app/api/Loaders/Loading";
+import { LoadingDivs } from "@/app/component/Loaders/Loading";
 
 const ClientDetails = lazy(() => import("../ClientDetails"));
 

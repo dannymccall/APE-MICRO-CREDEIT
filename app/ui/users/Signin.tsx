@@ -5,7 +5,7 @@ import { FaUserCircle } from "react-icons/fa";
 import { FaLock } from "react-icons/fa6";
 import { BiSolidLogInCircle } from "react-icons/bi";
 import { signin } from "@/app/actions/loginAuth";
-import { LoadingSpinner } from "@/app/api/Loaders/Loading";
+import { LoadingSpinner } from "@/app/component/Loaders/Loading";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 const Signin = () => {

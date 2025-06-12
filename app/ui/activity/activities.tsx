@@ -7,9 +7,10 @@ import { useRouter } from "next/navigation";
 
 const ActivityList = lazy(() => import("./activityList"));
 
-import { LoadingDivs } from "@/app/api/Loaders/Loading";
+import { LoadingDivs } from "@/app/component/Loaders/Loading";
 import InfoHeaderComponent from "@/app/component/Info-header/Info-Header";
 import { IActivities } from "./activityList";
+import TableSkeletonLoader from "@/app/component/TableSkeletonLoader";
 const AllActivities = () => {
   const [activities, setActivities] = useState<IActivities[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
@@ -70,12 +71,10 @@ const AllActivities = () => {
       />
       <div className="w-full h-full text-center mg-5 flex flex-col gap-4 bg-white"></div>
       {loading ? <>
-        <LoadingDivs /> 
-        <LoadingDivs /> 
-        <LoadingDivs /> 
+        <TableSkeletonLoader /> 
       </>
       :   
-      <Suspense fallback={<LoadingDivs />}>
+      <Suspense fallback={<TableSkeletonLoader />}>
         <div className="p-10">
           {
             activities && activities.length > 0 ? 

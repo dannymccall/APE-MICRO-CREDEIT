@@ -2,7 +2,7 @@ import { useLogginIdentity } from "@/app/lib/customHooks";
 import Link from "next/link";
 import React from "react";
 import { FiChevronDown, FiChevronRight } from "react-icons/fi";
-import { LoadingSpinner } from "../../api/Loaders/Loading";
+import { LoadingSpinner } from "../Loaders/Loading";
 import Icon from "@/public/apc.png";
 import Image from "next/image";
 interface Props {

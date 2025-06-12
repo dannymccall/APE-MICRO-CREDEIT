@@ -12,7 +12,7 @@ import Toast from "@/app/component/toast/Toast";
 import { MdOutlineCancel } from "react-icons/md";
 import { FaCircleCheck } from "react-icons/fa6";
 import AllTransactions from "../Vaulttransaction/Transactions";
-import { LoadingDivs } from "@/app/api/Loaders/Loading";
+import { LoadingDivs } from "@/app/component/Loaders/Loading";
 import { VaultDetails } from "@/app/component/Vault/VaultDetails";
 import { TransactionForm } from "@/app/component/Vault/TransactionForm";
 import { VaultHeader } from "@/app/component/Vault/VaultHeader";

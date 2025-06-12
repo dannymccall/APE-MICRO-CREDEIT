@@ -4,7 +4,7 @@ import { formatDate, toCapitalized } from "@/app/lib/helperFunctions";
 import { FiEdit } from "react-icons/fi";
 import { Label } from "@/app/lib/MyFormInput/FormTemplates";
 import { changePassword } from "@/app/actions/changePasswordAuth";
-import { LoadingSpinner } from "../../api/Loaders/Loading";
+import { LoadingSpinner } from "../Loaders/Loading";
 import Modal from "../Modal";
 import ViewUser from "@/app/ui/users/View";
 

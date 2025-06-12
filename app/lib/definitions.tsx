@@ -172,8 +172,8 @@ export const loanSchema = z.object({
   principal: z
     .string()
     .refine(
-      (number) => parseFloat(number) >= 1000,
-      "Principal should not be less than GHS 1000.00"
+      (number) => parseFloat(number) >= 500,
+      "Principal should not be less than GHS 500.00"
     )
     .refine((number) => {
       return number.trim() !== "";

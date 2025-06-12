@@ -8,10 +8,11 @@ import { useRouter } from "next/navigation";
 
 const UsersList = lazy(() => import("./usersList"));
 
-import { LoadingDivs } from "@/app/api/Loaders/Loading";
+import { LoadingDivs } from "@/app/component/Loaders/Loading";
 import InfoHeaderComponent from "@/app/component/Info-header/Info-Header";
 import SearchInput from "@/app/component/Search/SearchInput";
 import { useSearch } from "@/app/lib/customHooks";
+import TableSkeletonLoader from "@/app/component/TableSkeletonLoader";
 const AllUsers = () => {
   // const [users, setUsers] = useState<IUser[]>([]);
   // const [currentPage, setCurrentPage] = useState(1);
@@ -83,9 +84,8 @@ const AllUsers = () => {
       <div className="w-full h-full text-center mg-5 flex flex-col gap-4 bg-white"></div>
       {loading ? (
         <>
-          <LoadingDivs />
-          <LoadingDivs />
-          <LoadingDivs />
+          <TableSkeletonLoader />
+       
         </>
       ) : (
         <Suspense fallback={<LoadingDivs />}>

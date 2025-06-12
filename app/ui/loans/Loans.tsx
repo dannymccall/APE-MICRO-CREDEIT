@@ -9,9 +9,10 @@ import SearchInput from "@/app/component/Search/SearchInput";
 
 // const LoanList = lazy(() => import("./loanList"));
 const LoanList = dynamic(() => import("./loanList"), { ssr: false });
-import { LoadingDivs } from "@/app/api/Loaders/Loading";
+import { LoadingDivs } from "@/app/component/Loaders/Loading";
 import InfoHeaderComponent from "@/app/component/Info-header/Info-Header";
 import {  useSearch } from "@/app/lib/customHooks";
+import TableSkeletonLoader from "@/app/component/TableSkeletonLoader";
 const AllLoans = () => {
   // const [loans, setLoans] = useState<ILoanApplication[]>([]);
   // const [currentPage, setCurrentPage] = useState(1);
@@ -131,7 +132,7 @@ const AllLoans = () => {
       />
       <div className="w-full h-full text-center mg-5 flex flex-col gap-4"></div>
       {loading ? (
-        <LoadingDivs />
+        <TableSkeletonLoader />
       ) : (
         <Suspense fallback={<LoadingDivs />}>
           <div className="p-10 w-full">

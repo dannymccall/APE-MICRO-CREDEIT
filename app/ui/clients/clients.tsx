@@ -4,10 +4,10 @@ import { IClient } from "@/app/lib/backend/models/client.model";
 import { useRouter } from "next/navigation";
 import SearchInput from "@/app/component/Search/SearchInput";
 const ClientList = lazy(() => import("./clientList"));
-import { LoadingDivs } from "@/app/api/Loaders/Loading";
+import { LoadingDivs } from "@/app/component/Loaders/Loading";
 import InfoHeaderComponent from "@/app/component/Info-header/Info-Header";
 import {  useSearch } from "@/app/lib/customHooks";
-
+import TableSkeletonLoader from "@/app/component/TableSkeletonLoader";
 const AllClients = () => {
   // const [clients, setClients] = useState<IClient[]>([]);
   // const [currentPage, setCurrentPage] = useState(1);
@@ -98,7 +98,7 @@ const AllClients = () => {
         </div>
       )} */}
       {loading ? ( // Show loading state
-        <LoadingDivs />
+        <TableSkeletonLoader />
       ) : (
         <Suspense fallback={<LoadingDivs />}>
           <div className="p-10">
