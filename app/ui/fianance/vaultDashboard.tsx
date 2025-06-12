@@ -17,6 +17,7 @@ import { VaultDetails } from "@/app/component/Vault/VaultDetails";
 import { TransactionForm } from "@/app/component/Vault/TransactionForm";
 import { VaultHeader } from "@/app/component/Vault/VaultHeader";
 import { ActionButtons } from "@/app/component/Vault/VaultActionButtons";
+import VaultDashboardSkeleton from "@/app/component/Loaders/VaultDashboardSkeleton";
 interface IVault {
   _id: string;
   balance: number;
@@ -187,7 +188,7 @@ const VaultDashboard = () => {
           </Modal>
         </React.Fragment>
       ) : (
-        <LoadingDivs />
+        <VaultDashboardSkeleton />
       )}
     </div>
   );
