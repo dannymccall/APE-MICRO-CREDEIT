@@ -30,7 +30,7 @@ const NavbarLinks = ({
         className="w-96 text-violet-500 font-mono phone:ml-5 tablet:ml-5 font-semibold text-xl flex flex-row  items-center"
       >
         <Image src={Icon} alt="icon" width={35} />
-        PE CREDIT
+        PE 
       </Link>
 
       <ul
