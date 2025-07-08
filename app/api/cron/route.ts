@@ -65,9 +65,9 @@ export async function GET() {
           const nextPaymentDate = new Date(schedule.nextPayment);
           if (nextPaymentDate < startOfDayUTC && schedule.status !== "paid") {
             schedule.status = "arrears";
-            console.log(nextPaymentDate)
-            console.log(true)
             isUpdated = true;
+          }else{
+            schedule.status = "not paid";
           }
 
           if (nextPaymentDate < startOfDayUTC && startOfDayUTC > maturityDate && schedule.status !== "paid") {
