@@ -37,7 +37,6 @@ export const getArrayBuffer = async (file: File): Promise<Buffer> => {
   return Buffer.from(arrayBuffer);
 };
 
-
 export const saveFile = async (fileName: string, buffer: Buffer) => {
   try {
     // Define the directory and file path
@@ -57,7 +56,6 @@ export const saveFile = async (fileName: string, buffer: Buffer) => {
     throw error;
   }
 };
-
 
 export interface EmailPayload {
   from: string;
@@ -87,11 +85,6 @@ export async function sendEmail(mailOptions: EmailPayload) {
     throw new Error(`Failed to send email: ${error.message}`);
   }
 }
-
-
-
-
-
 
 export async function getDashboardData() {
   await connectDB();
@@ -235,12 +228,12 @@ export async function getDashboardData() {
     _id: string;
     totalDisbursement: number;
   }
-  
+
   interface Outstanding {
     _id: string;
     outStandingBalance: number;
   }
-  
+
   interface Repayment {
     _id: string;
     monthlyRepayment: number;

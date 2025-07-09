@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { ILoanApplication } from "@/app/lib/backend/models/loans.model";
 import Image from "next/image";
 import LoanClientDetails from "@/app/component/loans/LoanClientDetails";
@@ -34,11 +34,13 @@ const LoanDetails: React.FC<LoanDetailsProps> = ({ loan, loanId }) => {
   const env = process.env.NEXT_PUBLIC_NODE_ENV;
 
 
+  useEffect(() => {
+    if (env === "development") {
+      setClientAvarta(`/uploads/${loan.client.avarta}`);
+    setGuarantor(`/uploads/${loan.guarantor.avarta}`);
+    }
+  },[])
 
-  if (env === "development") {
-    setClientAvarta(`/uploads/${loan.client.avarta}`);
-  setGuarantor(`/uploads/${loan.guarantor.avarta}`);
-  }
 
   // const today: Date = new Date("2025-01-25");
   const arreas = loan.paymentSchedule.schedule.filter(

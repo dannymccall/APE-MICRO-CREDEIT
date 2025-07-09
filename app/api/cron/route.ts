@@ -66,10 +66,13 @@ export async function GET() {
           if (nextPaymentDate < startOfDayUTC && schedule.status !== "paid") {
             schedule.status = "arrears";
             isUpdated = true;
-          }else{
-            schedule.status = "not paid";
           }
 
+          if (nextPaymentDate < startOfDayUTC && schedule.status === "paid" && schedule.amountPaid! <= 0) {
+            schedule.status = "arrears";
+            isUpdated = true;
+          }
+          
           if (nextPaymentDate < startOfDayUTC && startOfDayUTC > maturityDate && schedule.status !== "paid") {
             schedule.status = "default";
             loan.paymentStatus = "default";

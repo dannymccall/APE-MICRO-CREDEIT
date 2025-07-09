@@ -47,13 +47,14 @@ const ReportGenerationForm = ({
     fetchUsers();
   }, [fetchUsers]);
 
-  const availableFilters = [
-    "disbursement",
-    "repayments",
-    "arrears",
-    "outstanding",
-    "default",
-    "payments",
+  const availableFilters:Array<{value:string, key:string}> = [
+    {value:"disbursement", key:"disbursement"},
+    {value:"repayments", key:"repayments"},
+    {value:"arrears", key:"arrears"},
+    {value:"outstanding", key:"outstanding"},
+    {value:"default", key:"default"},
+    {value:"payments",key:"payments"},
+    {value:"matured loans",key:"matured_loans"}
   ];
   return (
     <div className=" flex flex-col bg-white m-4 p-5 gap-2 rounded-md">
@@ -106,15 +107,15 @@ const ReportGenerationForm = ({
                 <button
                   key={index}
                   type="button"
-                  onClick={() => toggleFilter(filter)}
+                  onClick={() => toggleFilter(filter.key)}
                   className={`btn btn-sm ${
-                    selectedFilters.includes(filter)
+                    selectedFilters.includes(filter.key)
                       ? "bg-violet-600 text-white"
                       : "bg-white text-violet-600"
                   } flex flex-row justify-between  border-2 border-violet-600 m-1 px-2 py-1 rounded-md font-medium hover:bg-violet-700 hover:text-white focus:outline-none focus:ring-2 focus:ring-violet-600 focus:ring-opacity-50`}
                   disabled={pending}
                 >
-                  {filter}
+                  {filter.value}
                 </button>
               ))}
             </div>

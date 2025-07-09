@@ -6,7 +6,6 @@ import { Label } from "@/app/lib/MyFormInput/FormTemplates";
 import React, { useEffect, useState, useRef } from "react";
 import {
   Arrears,
-  Default,
   Disbursement,
   GeneralReport,
   Outstanding,
@@ -15,14 +14,11 @@ import {
 import { useActionState } from "react";
 
 import ReportTemplate from "@/app/component/report/ReportTemplate";
-import { TransactionReportTableHeader } from "@/app/component/report/Report";
 import { useGenerateDocument } from "@/app/lib/customHooks";
 import GenerateDocumentButtons from "@/app/component/report/GenerateDocumentButtons";
 import ReportGenerationForm from "@/app/component/report/ReportGenerationForm";
 
-
 const Report = () => {
-
   const [selectedFilters, setSelectedFilters] = useState<string[]>([]);
   const [state, action, pending] = useActionState(processReport, undefined);
   const [startDate, setStartDate] = useState<string>("");
@@ -81,14 +77,10 @@ const Report = () => {
                 />
               )}
               {state?.response.data?.disbursement?.length > 0 && (
-                <TransactionReportTableHeader
-                  reportType="disbursement"
-                  reportHeading="Disbursement Reports"
-                >
-                  <Disbursement
-                    disbursements={state?.response.data.disbursement}
-                  />
-                </TransactionReportTableHeader>
+                <Disbursement
+                  disbursements={state?.response.data.disbursement}
+                  header="Disbursement Report"
+                />
               )}
               {state?.response.data.report &&
                 Object.keys(state.response.data.report).length > 0 && (
@@ -96,85 +88,70 @@ const Report = () => {
                 )}
 
               {state?.response.data?.repayments && (
-                <TransactionReportTableHeader
-                  reportType="repayments"
-                  reportHeading="Repayments Report"
-                >
-                  <Repayments
-                    reports={state?.response.data.repayments[0].paymentSchedule}
-                    totalAmountToPay={
-                      state?.response.data.repayments[0].totalAmountToPay
-                    }
-                  />
-                </TransactionReportTableHeader>
+                <Repayments
+                  reports={state?.response.data.repayments[0].paymentSchedule}
+                  totalAmountToPay={
+                    state?.response.data.repayments[0].totalAmountToPay
+                  }
+                />
               )}
               {state?.response.data?.arrears && (
-                <TransactionReportTableHeader
-                  reportType="arrears"
-                  reportHeading="Arrears Report"
-                >
-                  <Arrears
-                    reports={state?.response.data.arrears[0].paymentSchedule}
-                    totalAmountToPay={
-                      state?.response.data.arrears[0].totalAmountToPay
-                    }
-                    totalAmountPaid={
-                      state?.response.data.arrears[0].totalAmountPaid
-                    }
-                    totalOutstandingBalance={
-                      state?.response.data.arrears[0].totalOutStandingBalance
-                    }
-                  />
-                </TransactionReportTableHeader>
+                <Arrears
+                  reports={state?.response.data.arrears[0].paymentSchedule}
+                  totalAmountToPay={
+                    state?.response.data.arrears[0].totalAmountToPay
+                  }
+                  totalAmountPaid={
+                    state?.response.data.arrears[0].totalAmountPaid
+                  }
+                  totalOutstandingBalance={
+                    state?.response.data.arrears[0].totalOutStandingBalance
+                  }
+                  header="Arrears Report"
+                />
               )}
               {state?.response.data?.outstanding && (
-                <TransactionReportTableHeader
-                  reportType="outstanding"
-                  reportHeading="Outstanding Balances Report"
-                >
-                  <Outstanding
-                    data={state?.response.data.outstanding}
-                    page="report"
-                  />
-                </TransactionReportTableHeader>
+                <Outstanding
+                  data={state?.response.data.outstanding}
+                  page="report"
+                />
               )}
               {state?.response.data?.default && (
-                <TransactionReportTableHeader
-                  reportType="default"
-                  reportHeading="Defaulters Report"
-                >
-                  <Default
-                    reports={state?.response.data.default[0].paymentSchedule}
-                    totalAmountLeft={
-                      state?.response.data.default[0].grandTotalOutStanding
-                    }
-                    totalAmountPaid={
-                      state?.response.data.default[0].totalAmountPaid
-                    }
-                    totalWeeklyAmount={
-                      state?.response.data.default[0].totalAmountToPay
-                    }
-                  />
-                </TransactionReportTableHeader>
+               <Arrears
+                  reports={state?.response.data.default[0].paymentSchedule}
+                  totalAmountToPay={
+                    state?.response.data.default[0].totalAmountToPay
+                  }
+                  totalAmountPaid={
+                    state?.response.data.default[0].totalAmountPaid
+                  }
+                  totalOutstandingBalance={
+                    state?.response.data.default[0].totalOutStandingBalance
+                  }
+                  header="Default Report"
+                />
               )}
               {state?.response.data?.payments && (
-                <TransactionReportTableHeader
-                  reportType="payments"
-                  reportHeading="Payments Report"
-                >
-                  <Arrears
-                    reports={state?.response.data.payments[0].paymentSchedule}
-                    totalAmountToPay={
-                      state?.response.data.payments[0].totalAmountToPay
-                    }
-                    totalAmountPaid={
-                      state?.response.data.payments[0].totalAmountPaid
-                    }
-                    totalOutstandingBalance={
-                      state?.response.data.payments[0].totalOutStandingBalance
-                    }
-                  />
-                </TransactionReportTableHeader>
+                <Arrears
+                  reports={state?.response.data.payments[0].paymentSchedule}
+                  totalAmountToPay={
+                    state?.response.data.payments[0].totalAmountToPay
+                  }
+                  totalAmountPaid={
+                    state?.response.data.payments[0].totalAmountPaid
+                  }
+                  totalOutstandingBalance={
+                    state?.response.data.payments[0].totalOutStandingBalance
+                  }
+                  header="Payments Report"
+                />
+              )}
+
+               {state?.response.data?.matured_loans?.length > 0 && (
+                <Disbursement
+                  disbursements={state?.response.data.matured_loans}
+                  header="Matured Loans Report"
+                />
               )}
             </div>
           </ReportTemplate>

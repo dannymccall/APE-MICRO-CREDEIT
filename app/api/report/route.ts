@@ -73,7 +73,6 @@ const getPaymentScheduleData = async (
 
   const matchFilter: any = {
     "schedule.status": status,
-    
   };
 
   // console.log({matchFilter})
@@ -89,8 +88,7 @@ const getPaymentScheduleData = async (
       $lte: new Date(end),
     };
 
-      // console.log({matchFilter})
-
+    // console.log({matchFilter})
   } else if (startDate) {
     const start = new Date(startDate).setHours(0, 0, 0, 0); // Ensure full day inclusion
     matchFilter["schedule.nextPayment"] = {
@@ -154,7 +152,7 @@ const getPaymentScheduleData = async (
   );
   pipeline.push({ $unwind: "$schedule" });
 
-    pipeline.push({ $match: matchFilter });
+  pipeline.push({ $match: matchFilter });
 
   // ✅ Group the data
   pipeline.push({
@@ -241,7 +239,7 @@ export async function POST(req: NextRequest) {
       }
       // console.log("Query:", query);
 
-      query["loanApprovalStatus"] =  "Approved"
+      query["loanApprovalStatus"] = "Approved";
       // console.log({query})
       data = await LoanApplication.find(query)
         .populate("client")
@@ -278,6 +276,14 @@ export async function POST(req: NextRequest) {
       // console.log({matchStage})
       switch (filter) {
         case "disbursement":
+          data = await LoanApplication.find(matchStage)
+            .populate("client")
+            .populate("guarantor")
+            .populate("loanOfficer")
+            .populate("paymentSchedule");
+          break;
+        case "matured_loans":
+          matchStage["paymentStatus"] = "completed";
           data = await LoanApplication.find(matchStage)
             .populate("client")
             .populate("guarantor")

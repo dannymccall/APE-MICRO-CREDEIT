@@ -42,7 +42,7 @@ export default function Navbar({
   // console.log(logginIdentity);
   // Navbar links configuration
   const navbarLinks: NavbarLink[] = [
-    { name: "Home", href: "/", icon: FiHome },
+    { name: "Home", href: "/dashboard", icon: FiHome },
     {
       name: `${logginIdentity ? logginIdentity.userName : "Guest"}`,
       href: "#",
