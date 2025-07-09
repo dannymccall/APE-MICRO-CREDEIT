@@ -54,6 +54,10 @@ export default function Navbar({
     },
   ];
 
+  useEffect(() => {
+    setOpenDropdown("")
+  },[pathname])
+
   // Toggle Dropdown
   const toggleDropdown = (name: string) => {
     setOpenDropdown(openDropdown === name ? null : name);
