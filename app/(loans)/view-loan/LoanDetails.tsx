@@ -41,7 +41,7 @@ const LoanDetails: React.FC<LoanDetailsProps> = ({ loan, loanId }) => {
     }
   },[])
 
-
+  // console.log({loan})
   // const today: Date = new Date("2025-01-25");
   const arreas = loan.paymentSchedule.schedule.filter(
     (schedule: any) => schedule.status === "arrears"
@@ -51,6 +51,7 @@ const LoanDetails: React.FC<LoanDetailsProps> = ({ loan, loanId }) => {
     (schedule: any) => schedule.outStandingBalance > 0
   ) as any[];
 
+  // console.log({outStandingLoans})
   async function handleArrearsPayment(
     amount: number,
     loanId: string,
@@ -85,6 +86,7 @@ const LoanDetails: React.FC<LoanDetailsProps> = ({ loan, loanId }) => {
     }
   }
   const data = getOutstandingBalances(loan);
+  console.log({})
   const tabs = [
     {
       label: "Loan Application Details",

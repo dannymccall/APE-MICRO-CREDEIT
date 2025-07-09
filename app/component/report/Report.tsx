@@ -53,7 +53,11 @@ export function Disbursement({
       label: "Total Principal Payment",
       align: "right",
     },
-    { key: "total_interest_payment", label: "Total Interest Payment", align: "right" },
+    {
+      key: "total_interest_payment",
+      label: "Total Interest Payment",
+      align: "right",
+    },
     { key: "total_repayment", label: " Total Repayment", align: "right" },
     { key: "guarantor_name", label: "Guarantor Name", align: "right" },
     { key: "guarantor_number", label: "Guarantor Number", align: "right" },
@@ -101,7 +105,7 @@ export function Disbursement({
     {
       header: "Total (x12)",
       accessor: (d: any) =>
-        formatCurrency(Math.floor(d.principalPayment +  d.interestPayment) * 12),
+        formatCurrency(Math.floor(d.principalPayment + d.interestPayment) * 12),
     },
     {
       header: "Guarantor Name",
@@ -302,7 +306,7 @@ export function GeneralReport({ reports }: { reports: any[] }) {
       )}
 
       {defaults.length > 0 && (
-          <Arrears
+        <Arrears
           reports={payments}
           totalAmountToPay={paymentSumValues.totalAmountToPay}
           totalAmountPaid={paymentSumValues.totalAmountPaid}
@@ -381,8 +385,7 @@ export function Repayments({
       header: "Total (x12)",
       accessor: (d: any) => d.guarantorDetails.mobile,
     },
-   
-   
+
     {
       header: "Union",
       accessor: (d: any) => d.clientDetails.union,
@@ -505,8 +508,7 @@ export function Arrears({
       header: "Total (x12)",
       accessor: (d: any) => d.guarantorDetails.mobile,
     },
-   
-   
+
     {
       header: "Union",
       accessor: (d: any) => d.clientDetails.union,
@@ -536,7 +538,7 @@ export function Arrears({
       </h1>
       <table className="table-xs">
         <TableHeader columns={columns} />
-         <TableBody
+        <TableBody
           columns={rows}
           data={reports}
           footerRow={
@@ -545,11 +547,11 @@ export function Arrears({
                 label="Total"
                 className="text-neutral-800"
                 values={[
-              formatCurrency(totalAmountToPay),
-              formatCurrency(totalAmountPaid),
-              formatCurrency(totalOutstandingBalance),
-            ]}
-            FillEmptySpaces={<FillEmptySpaces length={9} />}
+                  formatCurrency(totalAmountToPay),
+                  formatCurrency(totalAmountPaid),
+                  formatCurrency(totalOutstandingBalance),
+                ]}
+                FillEmptySpaces={<FillEmptySpaces length={9} />}
               />
               {/* <td className="p-1">{"  "}</td>{" "} */}
             </>
@@ -559,7 +561,6 @@ export function Arrears({
     </main>
   );
 }
-
 
 export function Outstanding({ data, page }: { data: any[]; page: string }) {
   const totalPrincipal = formatCurrency(
@@ -625,6 +626,73 @@ export function Outstanding({ data, page }: { data: any[]; page: string }) {
     { key: "union_name", label: "Union Name", align: "right" },
     { key: "union_location", label: "Union Location", align: "right" },
   ];
+
+  const rows = [
+    {
+      header: "Client Name",
+      accessor: (loan: any) => loan.clientName,
+    },
+    {
+      header: "Client Mobile",
+      accessor: (loan: any) => loan.clientMobile,
+    },
+    {
+      header: "Loan Product",
+      accessor: (loan: any) => loan.loanProduct,
+    },
+    {
+      header: "Disbursement Date",
+      accessor: (loan: any) =>
+        new Date(loan.loanDisbursementDate).toLocaleDateString(),
+    },
+    {
+      header: "Maturity Date",
+      accessor: (loan: any) =>
+        new Date(loan.loanMaturityDate).toLocaleDateString(),
+    },
+    {
+      header: "Total Principal",
+      accessor: (loan: any) => formatCurrency(loan.totalPrincipal),
+    },
+    {
+      header: "Total Weekly Amount",
+      accessor: (loan: any) => formatCurrency(loan.totalWeeklyAmount),
+    },
+    {
+      header: "Total Interest",
+      accessor: (loan: any) => formatCurrency(loan.totalInterest),
+    },
+    {
+      header: "Outstanding Balance",
+      accessor: (loan: any) => formatCurrency(loan.totalOutstandingBalance),
+    },
+    {
+      header: "Amount Paid",
+      accessor: (loan: any) => formatCurrency(loan.totalAmountPaid),
+    },
+    {
+      header: "Balance Remaining",
+      accessor: (loan: any) =>
+        formatCurrency(loan.totalOutstandingBalance - loan.totalAmountPaid),
+    },
+    {
+      header: "Guarantor Name",
+      accessor: (loan: any) => loan.guarantorName,
+    },
+    {
+      header: "Guarantor Mobile",
+      accessor: (loan: any) => loan.guarantorMobile,
+    },
+    {
+      header: "Union",
+      accessor: (loan: any) => loan.clientUnion,
+    },
+    {
+      header: "Union Location",
+      accessor: (loan: any) => loan.clientUnionLocation,
+    },
+  ];
+
   return (
     <main className="overflow-x-auto">
       <h1 className="font-mono font-semibold text-lg m-5 underline text-center">
@@ -632,83 +700,27 @@ export function Outstanding({ data, page }: { data: any[]; page: string }) {
       </h1>
       <table className="table-xs">
         <TableHeader columns={columns} />
-        <tbody>
-          {data.map((loan) => (
-            <tr key={loan.loanId.toString()}>
-              {page === "report" && (
-                <React.Fragment>
-                  <td className="text-sm font-sans font-medium text-gray-700 p-1 border text-left">
-                    {loan.clientName}
-                  </td>
-                  <td className="text-sm font-sans font-medium text-gray-700 p-1 border text-left">
-                    {loan.clientMobile}
-                  </td>
-                  <td className="text-sm font-sans font-medium text-gray-700 p-1 border text-left">
-                    {loan.loanProduct}
-                  </td>
-                  <td className="text-sm font-sans font-medium text-gray-700 p-1 border text-left">
-                    {new Date(loan.loanDisbursementDate).toLocaleDateString()}
-                  </td>
-                  <td className="text-sm font-sans font-medium text-gray-700 p-1 border text-left">
-                    {new Date(loan.loanMaturityDate).toLocaleDateString()}
-                  </td>
-                </React.Fragment>
-              )}
-
-              <td className="text-sm font-sans font-medium text-gray-700 p-1 border text-left">
-                {formatCurrency(loan.totalPrincipal)}
-              </td>
-              <td className="text-sm font-sans font-medium text-gray-700 p-1 border text-left">
-                {formatCurrency(loan.totalWeeklyAmount)}
-              </td>
-              <td className="text-sm font-sans font-medium text-gray-700 p-1 border text-left">
-                {formatCurrency(loan.totalInterest)}
-              </td>
-              <td className="text-sm font-sans font-medium text-gray-700 p-1 border text-left">
-                {formatCurrency(loan.totalOutstandingBalance)}
-              </td>
-              <td className="text-sm font-sans font-medium text-gray-700 p-1 border text-left">
-                {formatCurrency(loan.totalAmountPaid)}
-              </td>
-              <td className="text-sm font-sans font-medium text-gray-700 p-1 border text-left">
-                {formatCurrency(
-                  loan.totalOutstandingBalance - loan.totalAmountPaid
-                )}
-              </td>
-              {page === "report" && (
-                <React.Fragment>
-                  <td className="text-sm font-sans font-medium text-gray-700 p-1 border text-left">
-                    {loan.guarantorName}
-                  </td>
-                  <td className="text-sm font-sans font-medium text-gray-700 p-1 border text-left">
-                    {loan.guarantorMobile}
-                  </td>
-                  <td className="text-sm font-sans font-medium text-gray-700 p-1 border text-left">
-                    {loan.clientUnion}
-                  </td>
-                  <td className="text-sm font-sans font-medium text-gray-700 p-1 border text-left">
-                    {loan.clientUnionLocation}
-                  </td>
-                </React.Fragment>
-              )}
-            </tr>
-          ))}
-          <DataRow
-            label="Total"
-            className="text-neutral-800"
-            values={[
-              totalPrincipal,
-              totalWeeklyAmount,
-              totalInterest,
-              totalOutstandingBalance,
-              totalAmountPaid,
-              totalSum,
-            ]}
-            FillEmptySpaces={
-              page === "report" ? <FillEmptySpaces length={4} /> : <h1></h1>
-            }
-          />
-        </tbody>
+        <TableBody
+          columns={rows}
+          data={data}
+          footerRow={
+            <DataRow
+              label="Total"
+              className="text-neutral-800"
+              values={[
+                totalPrincipal,
+                totalWeeklyAmount,
+                totalInterest,
+                totalOutstandingBalance,
+                totalAmountPaid,
+                totalSum,
+              ]}
+              FillEmptySpaces={
+                page === "report" ? <FillEmptySpaces length={4} /> : <h1></h1>
+              }
+            />
+          }
+        />
       </table>
     </main>
   );
