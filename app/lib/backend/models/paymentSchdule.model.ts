@@ -12,7 +12,8 @@ export interface IPaymentSchedule extends Document {
     principalPayment: number,
     interestPayment: number,
     outStandingBalance: number,
-    amountPaid: number
+    amountPaid: number,
+    datePaid?: Date;
   }>;
 }
 
@@ -65,6 +66,10 @@ export const PaymentScheduleSchema: Schema = new Schema<IPaymentSchedule>({
       amountPaid:{
         type:Number,
         default: 0
+      },
+      datePaid: {
+        type: Date,
+        required:false
       }
     },
   ],

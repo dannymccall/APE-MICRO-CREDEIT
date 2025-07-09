@@ -150,7 +150,7 @@ export default function Sidebar({
           roles: ["Admin", "Loan officer"],
         },
         {
-          name: "Approval Repayments",
+          name: "Approve Repayments",
           href: "/approve-loan-payment",
           icon: FiChevronRight,
           roles: ["Admin"],

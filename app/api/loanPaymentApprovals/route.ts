@@ -70,6 +70,7 @@ export async function POST(req: NextRequest) {
           schedule.amountPaid += outstanding;
           schedule.outStandingBalance = 0;
           schedule.status = "paid";
+          schedule.datePaid = new Date()
         } else {
           schedule.outStandingBalance = outstanding - balance;
           schedule.status = "arrears";
@@ -88,6 +89,8 @@ export async function POST(req: NextRequest) {
             schedule.outStandingBalance = 0;
             schedule.status = "paid";
             balance -= schedule.amountToPay;
+            schedule.datePaid = new Date()
+
           } else {
             schedule.outStandingBalance = schedule.amountToPay - balance;
             schedule.status = "arrears";
