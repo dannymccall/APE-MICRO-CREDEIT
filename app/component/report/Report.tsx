@@ -199,6 +199,8 @@ export function GeneralReport({ reports }: { reports: any[] }) {
     };
   }
 
+  console.log({ reports });
+
   reports.forEach((report: Report) => {
     report.paymentSchedule.schedule.forEach((schedule: Schedule) => {
       paymentSchedule.push({
@@ -216,7 +218,10 @@ export function GeneralReport({ reports }: { reports: any[] }) {
   });
 
   const data: any = getOutstandingBalances(reports);
-
+  const maturedLoans: any[] = reports.filter(
+    (report) => report.paymentStatus === "completed"
+  );
+  console.log({ maturedLoans });
   const getPaymentSchedule = (data: any[], status: string): any[] =>
     data.filter((schedule) => schedule.schedules.status === status);
   const getSumValues = (
@@ -279,7 +284,12 @@ export function GeneralReport({ reports }: { reports: any[] }) {
       </h1>
 
       <Disbursement disbursements={reports} header="Disbursement" />
-      <Disbursement disbursements={reports} header="Matured Loans Report" />
+      {maturedLoans.length > 0 && (
+        <Disbursement
+          disbursements={maturedLoans}
+          header="Matured Loans Report"
+        />
+      )}
       <Repayments
         reports={repayments}
         totalAmountToPay={repaymentsSumValues.totalAmountToPay}

@@ -34,7 +34,8 @@ export async function POST(req: Request) {
     await sendEmail(mailOptions);
 
     return NextResponse.json({success: true, message: "Reset link sent to email" });
-  } catch (error) {
+  } catch (error: any) {
+    console.log(error.message)
     return NextResponse.json({ error: "Server error" }, { status: 500 });
   }
 }
