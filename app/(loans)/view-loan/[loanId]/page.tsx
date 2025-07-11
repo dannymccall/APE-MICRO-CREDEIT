@@ -22,8 +22,6 @@ export default async function Page({
       const loan = await response.json();
       console.log(loan);
      
-
-    console.log(loan);
     if (!loan?.data) {
       return (
         <main>

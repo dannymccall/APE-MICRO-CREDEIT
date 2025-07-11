@@ -22,6 +22,7 @@ interface schedule {
   interestPayment: number;
   outStandingBalance: number;
   amountPaid: number;
+  datePaid: string;
 }
 
 interface IPaymentSchedule {
@@ -71,6 +72,13 @@ const PaymentSchedule: React.FC<IPaymentSchedule> = ({
           ? "Due Date"
           : ""}
       </th>
+
+      {activeTab === 1 && (
+        <th className="text-sm font-sans font-medium text-gray-700 p-2 border text-left">
+          Payment Date
+        </th>
+      )}
+
       <th className="text-sm font-sans font-medium text-gray-700 p-2 border text-left">
         Principal
       </th>
@@ -110,6 +118,15 @@ const PaymentSchedule: React.FC<IPaymentSchedule> = ({
         <td className="text-sm font-sans text-gray-700 p-2 border">
           {formatDate(schedule.nextPayment)}
         </td>
+        {activeTab === 1 && (
+          <td>
+            {schedule.status === "paid" && schedule.datePaid
+              ? formatDate(schedule.datePaid)
+              : schedule.status === "paid" && !schedule.datePaid
+              ? "N/A"
+              : "Not Yet"}
+          </td>
+        )}
         <td className="text-sm font-sans text-gray-700 p-2 border">
           {formatCurrency(schedule.principalPayment)}
         </td>
@@ -230,6 +247,8 @@ const PaymentSchedule: React.FC<IPaymentSchedule> = ({
       <td colSpan={2} className="font-semibold text-sm text-gray-900 p-2">
         Total
       </td>
+      {activeTab === 1 &&       <td></td>}
+
       <td className="font-semibold text-sm text-gray-900 p-2">
         {formatCurrency(totalPrincipalPayment)}
       </td>

@@ -173,10 +173,10 @@ const LoanDetails: React.FC<LoanDetailsProps> = ({ loan, loanId }) => {
             <div className="flex w-full gap-3 items-center">
               <div className="h-full flex flex-row items-center gap-10">
                 {env !== "development" ? (
-                  <ImageComponent src={loan.client.avarta} className="rounded-md"/>
+                  <ImageComponent src={loan.client.avarta && loan.client.avarta} className="rounded-md"/>
                 ) : (
                   <Image
-                    src={clientAvarta}
+                    src={clientAvarta && clientAvarta}
                     width={100}
                     height={100}
                     alt="Profile image"
@@ -203,10 +203,10 @@ const LoanDetails: React.FC<LoanDetailsProps> = ({ loan, loanId }) => {
             <div className="flex w-full gap-3 items-center">
               <div className="h-full flex flex-row items-center gap-10">
               {env !== "development" ? (
-                  <ImageComponent src={loan.guarantor.avarta} className="rounded-md"/>
+                  <ImageComponent src={loan.guarantor.avarta && loan.guarantor.avarta} className="rounded-md"/>
                 ) : (
                   <Image
-                    src={guarantorAvarta}
+                    src={guarantorAvarta && guarantorAvarta}
                     width={100}
                     height={100}
                     alt="Profile image"
