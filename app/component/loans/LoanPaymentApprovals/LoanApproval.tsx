@@ -74,7 +74,7 @@ const LoanApproval: React.FC<LoanApprovalProps> = ({ pendingLoan, onApprove }) =
           {pendingLoan.client.first_name} {pendingLoan.client.last_name}
         </td>
         <td className="p-2 text-sm">
-          {formatDate(pendingLoan.loan.nextPayment)}
+          {pendingLoan && pendingLoan.loan.nextPayment ? formatDate(pendingLoan.loan.nextPayment):"N/A"}
         </td>
         <td className="p-2">
           GHS {Number(pendingLoan.weeklyAmountExpected).toFixed(2)}
