@@ -24,26 +24,26 @@ const InfoHeader = ({
   const isActive = (href: string) => pathName === href;
 
   return (
-    <div className="flex justify-between items-center bg-violet-100 shadow-md p-1">
+    <div className="flex justify-between items-center bg-violet-800 shadow-md p-1">
       <div className="flex w-full flex-row gap-5  items-center phone:justify-between desktop:justify-start laptop:justify-start tablet:justify-start">
-        <h1 className="font-sans font-semibold text-lg text-slate-700">
+        <h1 className="font-sans font-semibold text-lg text-slate-50">
           {route}
         </h1>
         {pathName !== "/dashboard" && (
           <QuickAccess title={title} onClick={onClick} />
         )}
       </div>
-      <div className="breadcrumbs w-full relative text-sm phone:hidden desktop:block laptop:block tablet:hidden">
+      <div className="breadcrumbs text-slate-50 w-full relative text-sm phone:hidden desktop:block laptop:block tablet:hidden">
         <ul className="float-right mr-3">
           {links.map((link) => {
             return (
               <li key={link.name}>
                 <Link
                   href={link.href}
-                  className={
-                    isActive(link.href)
-                      ? " text-violet-700 font-semibold"
-                      : "hover:text-violet-500 no-underline"
+                  className={`text-slate-50
+                    ${isActive(link.href)
+                      ? " text-slate-50 font-semibold"
+                      : "hover:text-violet-300 no-underline text-violet-200"}`
                   }
                 >
                   {link.name}

@@ -42,32 +42,32 @@ const LoanList: React.FC<LoanListProps> = ({
         <table className="table grow">
           {/* head */}
           <thead className="relative overflow-hidden">
-            <tr className="relative bg-violet-200">
-              <th className="text-sm font-sans font-medium text-gray-700 text-left p-2">
+            <tr className="relative bg-violet-800">
+              <th className="text-sm font-sans font-medium text-slate-50 text-left p-2">
                 System ID
               </th>
-              <th className="text-sm font-sans font-medium text-gray-700 p-2">
+              <th className="text-sm font-sans font-medium text-slate-50 p-2">
                 Loan Product
               </th>
-              <th className="text-sm font-sans font-medium text-gray-700 p-2">
+              <th className="text-sm font-sans font-medium text-slate-50 p-2">
                 Principal
               </th>
-              <th className="text-sm font-sans font-medium text-gray-700 p-2">
+              <th className="text-sm font-sans font-medium text-slate-50 p-2">
                 Client Full Name
               </th>
-              <th className="text-sm font-sans font-medium text-gray-700 p-2">
+              <th className="text-sm font-sans font-medium text-slate-50 p-2">
                 Loan Officer
               </th>
-              <th className="text-sm font-sans font-medium text-gray-700 p-2">
+              <th className="text-sm font-sans font-medium text-slate-50 p-2">
                 Interest Rate
               </th>
-              <th className="text-sm font-sans font-medium text-gray-700 p-2">
+              <th className="text-sm font-sans font-medium text-slate-50 p-2">
                 Loan Payment Status
               </th>
-              <th className="text-sm font-sans font-medium text-gray-700 p-2">
+              <th className="text-sm font-sans font-medium text-slate-50 p-2">
                 Loan Approval Status
               </th>
-              <th className="text-sm font-sans font-medium text-gray-700 p-2">
+              <th className="text-sm font-sans font-medium text-slate-50 p-2">
                 Actions{" "}
               </th>
             </tr>

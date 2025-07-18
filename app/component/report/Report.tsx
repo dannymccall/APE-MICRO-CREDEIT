@@ -469,15 +469,15 @@ export function Arrears({
       label: "Maturity Date",
       align: "right",
     },
+    { key: "arrears-date", label: "Arrears Date", align: "right" },
     { key: "guarantor_name", label: "Guarantor Name", align: "right" },
     { key: "guarantor_number", label: "Guarantor Number", align: "right" },
     { key: "union_name", label: "Union Name", align: "right" },
     { key: "union_location", label: "Union Location", align: "right" },
     { key: "weekly_payment", label: "Weekly Payment", align: "right" },
-    { key: "amount_paid", label: "Amount Paid", align: "right" },
     {
-      key: "outstanding_balance",
-      label: "Outstanding Balance",
+      key: "amount in arrears",
+      label: "Amount in arrears",
       align: "right",
     },
   ];
@@ -509,6 +509,10 @@ export function Arrears({
       accessor: (d: any) => formatDate(d.loanDetails.maturityDate),
     },
     {
+      accessor: (d: any) => formatDate(d.schedules.nextPayment),
+      header: "Union Location",
+    },
+    {
       header: "Monthly Interest (x12)",
       accessor: (d: any) => d.guarantorDetails.guarantorFullName,
     },
@@ -529,10 +533,6 @@ export function Arrears({
     {
       header: "Union Location",
       accessor: (d: any) => formatCurrency(d.schedules.amountToPay),
-    },
-    {
-      header: "Union Location",
-      accessor: (d: any) => formatCurrency(d.schedules.amountPaid),
     },
     {
       header: "Union Location",

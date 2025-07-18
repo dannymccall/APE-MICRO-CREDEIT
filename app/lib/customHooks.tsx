@@ -201,7 +201,6 @@ export function getLoanInfomation(type: string) {
   return interestRate;
 }
 
-
 export const usefetchBranches = async () => {
   try {
     const [clientResponse, usersResponse] = await Promise.all([
@@ -231,31 +230,27 @@ export function useDebounceValue(value: string, time = 250) {
   return debounceValue;
 }
 
-
 const SOCKET_URL = process.env.NEXT_PUBLIC_SOCKET_URL;
 
 interface ILogginIdentity {
-  fullName: string,
+  fullName: string;
   userRoles: string[];
-  userName: string
+  userName: string;
 }
-
-
 
 export const useSocket = (logginIdentity: ILogginIdentity) => {
   const [message, setMessage] = useState<string>("");
   const [showNotification, setShowNotification] = useState<boolean>(false);
 
-
   const clearToast = () => {
     let timeOut: NodeJS.Timeout;
     timeOut = setTimeout(() => {
       setMessage("");
-      setShowNotification(false)
+      setShowNotification(false);
     }, 5000);
 
-    return () => clearTimeout(timeOut)
-  }
+    return () => clearTimeout(timeOut);
+  };
   useEffect(() => {
     if (!logginIdentity) return; // Ensure logginIdentity exists before running
 
@@ -269,7 +264,7 @@ export const useSocket = (logginIdentity: ILogginIdentity) => {
         socket.on("notifyAdmin", (msg) => {
           setMessage(msg);
           setShowNotification(true);
-          clearToast()
+          clearToast();
         });
 
         // socket.on("loanApproved", (msg) => {
@@ -281,23 +276,22 @@ export const useSocket = (logginIdentity: ILogginIdentity) => {
         break;
 
       case userRoles.includes("Loan officer"):
-        console.log("connecting...")
+        console.log("connecting...");
         socket.on("connect", () => {
           console.log("Connected to WebSocket server");
           socket.emit("join", logginIdentity.userName);
         });
 
-        
         socket.on("notifyLoanofficer", (msg) => {
           setMessage(msg);
           setShowNotification(true);
-          clearToast()
+          clearToast();
         });
 
         socket.on("loanApproved", (msg) => {
           setMessage(msg);
           setShowNotification(true);
-          clearToast()
+          clearToast();
         });
         break;
 
@@ -305,17 +299,13 @@ export const useSocket = (logginIdentity: ILogginIdentity) => {
         console.warn("No matching role for WebSocket events.");
     }
 
-   
     return () => {
-     
       socket.disconnect(); // Cleanup on unmount
     };
   }, [logginIdentity]); // Only run when logginIdentity changes
 
   return { message, showNotification };
 };
-
-
 
 export const useGenerateDocument = async (
   reportGenerationRef: React.RefObject<HTMLDivElement>,
@@ -348,7 +338,6 @@ export const useGenerateDocument = async (
     document.body.appendChild(a);
     a.click();
     a.remove();
-
   } catch (error) {
     console.error(`Error generating ${type.toUpperCase()}:`, error);
   } finally {
@@ -371,72 +360,76 @@ interface SearchState<T> {
   response: string;
 }
 
-export function useSearch<T>({ endpoint, initialPage = 1, limit = 10 }: UseSearchProps<T>) {
+export function useSearch<T>({
+  endpoint,
+  initialPage = 1,
+  limit = 10,
+}: UseSearchProps<T>) {
   const [state, setState] = useState<SearchState<T>>({
     data: [],
     loading: true,
     error: null,
     totalPages: 1,
     currentPage: initialPage,
-    response: ''
+    response: "",
   });
-  const [query, setQuery] = useState<string>('');
+  const [query, setQuery] = useState<string>("");
   const debouncedQuery = useDebounceValue(query);
 
-  const fetchData = async (searchQuery = '', page = state.currentPage) => {
-    setState(prev => ({ ...prev, loading: true, error: null }));
+  const fetchData = async (searchQuery = "", page = state.currentPage) => {
+    setState((prev) => ({ ...prev, loading: true, error: null }));
     try {
       const url = searchQuery.trim()
-    ? `${endpoint}?query=${searchQuery}&page=${page}&limit=${limit}`
-    : `${endpoint}?page=${page}&limit=${limit}`;
+        ? `${endpoint}?query=${searchQuery}&page=${page}&limit=${limit}`
+        : `${endpoint}?page=${page}&limit=${limit}`;
       const response = await makeRequest(url, {
-        method: 'GET',
-        cache: 'no-store',
+        method: "GET",
+        cache: "no-store",
       });
 
       if (!response.success) {
-        setState(prev => ({
+        setState((prev) => ({
           ...prev,
           data: [],
-          response: 'No results found',
-          loading: false
+          response: "No results found",
+          loading: false,
         }));
         return;
       }
 
-      setState(prev => ({
+      setState((prev) => ({
         ...prev,
         data: response.data,
         totalPages: response.pagination?.totalPages || 0,
         loading: false,
-        response: ''
+        response: "",
       }));
     } catch (error) {
-      setState(prev => ({
+      setState((prev) => ({
         ...prev,
         data: [],
-        error: 'Error fetching data',
+        error: "Error fetching data",
         loading: false,
-        response: 'Error fetching data'
+        response: "Error fetching data",
       }));
     }
   };
 
   const handleSearch = (value: string) => {
-    setQuery(value);
+    if (value.trim().length > 0) setQuery(value);
   };
 
   const setCurrentPage = (page: number) => {
-    setState(prev => ({ ...prev, currentPage: page }));
+    setState((prev) => ({ ...prev, currentPage: page }));
   };
 
-useEffect(() => {
-  fetchData(debouncedQuery, state.currentPage);
-}, [debouncedQuery, state.currentPage]);
+  useEffect(() => {
+    fetchData(debouncedQuery, state.currentPage);
+  }, [debouncedQuery, state.currentPage]);
 
   useEffect(() => {
     if (state.currentPage === 1 && !query) {
-      fetchData('');
+      fetchData("");
     }
   }, [state.currentPage]);
 
@@ -445,10 +438,9 @@ useEffect(() => {
     query,
     handleSearch,
     setCurrentPage,
-    refresh: () => fetchData(query)
+    refresh: () => fetchData(query),
   };
 }
-
 
 interface Disbursement {
   _id: string;
@@ -465,10 +457,13 @@ interface Repayment {
   monthlyRepayment: number;
 }
 export const useDashboardData = async () => {
-  try{
+  try {
     // const response = await import("@/app/api/dashboard/route");
     // const data: any = await (await response.GET()).json();
-    const data = await makeRequest("/api/dashboard", {method: "GET", cache: "no-store"});
+    const data = await makeRequest("/api/dashboard", {
+      method: "GET",
+      cache: "no-store",
+    });
     const {
       monthlyDisbursement,
       monthlyOutstandingBalance,
@@ -483,28 +478,28 @@ export const useDashboardData = async () => {
       todayDisbursement,
       activities,
     } = data;
-  
+
     const disbursementMonths: string[] = monthlyDisbursement.map(
       (disbursement: Disbursement) => disbursement._id
     );
     const disbursementMonthValues: number[] = monthlyDisbursement.map(
       (disbursement: Disbursement) => disbursement.totalDisbursement
     );
-  
+
     const oustandingMonths: string[] = monthlyOutstandingBalance.map(
       (outstanding: Outstanding) => outstanding._id
     );
     const oustandingMonthValues: string[] = monthlyOutstandingBalance.map(
       (outstanding: Outstanding) => outstanding.outStandingBalance
     );
-  
+
     const repaymentMonths: string[] = monthlyRepayment.map(
       (repayment: Repayment) => repayment._id
     );
     const repaymentMonthValues: string[] = monthlyRepayment.map(
       (repayment: Repayment) => repayment.monthlyRepayment
     );
-  
+
     return {
       disbursementMonths,
       disbursementMonthValues,
@@ -522,7 +517,7 @@ export const useDashboardData = async () => {
       todayDisbursement,
       activities,
     };
-  }catch(error){
+  } catch (error) {
     console.error("Error fetching dashboard data:", error);
   }
-}
+};

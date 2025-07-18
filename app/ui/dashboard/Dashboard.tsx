@@ -160,7 +160,7 @@ const DashboardUI = () => {
     labels: repaymentMonths,
     datasets: [
       {
-        label: "Disbursements",
+        label: "Monthly Repayment",
         data: repaymentMonthValues,
         backgroundColor: [
           "rgba(255, 159, 64, 0.2)",
@@ -188,7 +188,7 @@ const DashboardUI = () => {
     labels: oustandingMonths,
     datasets: [
       {
-        label: "Disbursements",
+        label: "Monthly Outstanding Balance",
         data: oustandingMonthValues,
         backgroundColor: [
           "rgba(255, 159, 64, 0.2)",

@@ -45,14 +45,14 @@ const ActivityList: React.FC<ActiviyListProps> = ({
         <table className="table">
           {/* head */}
           <thead className="relative">
-            <tr className="relative bg-violet-200">
-              <th className="text-base font-sans font-medium text-gray-700 text-left p-2">
+            <tr className="relative bg-violet-800">
+              <th className="text-base font-sans font-medium text-slate-50 text-left p-2">
                 Created Date
               </th>
-              <th className="text-base font-sans font-medium text-gray-700 p-2">
+              <th className="text-base font-sans font-medium text-slate-50 p-2">
                 Action
               </th>
-              <th className="text-base font-sans font-medium text-gray-700 p-2">
+              <th className="text-base font-sans font-medium text-slate-50 p-2">
                 Action Taker
               </th>
             </tr>

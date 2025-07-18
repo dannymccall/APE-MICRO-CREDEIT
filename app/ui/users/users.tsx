@@ -92,8 +92,7 @@ const AllUsers = () => {
           <div className="p-10">
             {(users.length > 0 || query) && (
               <SearchInput
-                value={query}
-                onChange={handleSearch}
+                handleOnclickSearch={handleSearch}
                 placeholder="Search users..."
               />
             )}
