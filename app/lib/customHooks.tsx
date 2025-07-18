@@ -435,6 +435,7 @@ export function useSearch<T>({
 
   return {
     ...state,
+    setQuery,
     query,
     handleSearch,
     setCurrentPage,

@@ -31,7 +31,8 @@ const AllLoans = () => {
     currentPage,
     setCurrentPage,
     response,
-    refresh
+    refresh,
+    setQuery
   } = useSearch<ILoanApplication>({
     endpoint: 'api/loans',
     initialPage: 1,
@@ -111,6 +112,11 @@ const AllLoans = () => {
 
   const onClick = () => router.push("/add-loan");
 
+  function handleFetchAll(): void {
+    setQuery("")
+    refresh()
+  }
+
   // const editUser = (updatedUser: any, id: string) => {
   //   console.log({updatedUser, id})
   //   if(id === updatedUser._id)console.log("correct")
@@ -140,6 +146,8 @@ const AllLoans = () => {
               <SearchInput
                 handleOnclickSearch={handleSearch}
                 placeholder="Search loans..."
+                buttonLabel="Loans"
+                fetchAll={handleFetchAll}
               />
             )}
             {loans.length > 0 ? (

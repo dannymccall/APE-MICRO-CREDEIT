@@ -28,7 +28,7 @@ const AllBranches = () => {
       );
       setBranches(branches.data);
       setTotalPages(branches.pagination.totalPages);
-      setLoading(false)
+      setLoading(false);
     } catch (error) {
       console.error("Failed to fetch users:", error);
     }
@@ -61,7 +61,6 @@ const AllBranches = () => {
       )
     );
   };
-  
 
   return (
     <main className="min-w-full min-h-full mx-auto">
@@ -72,28 +71,30 @@ const AllBranches = () => {
         onClick={onClick}
       />
       <div className="w-full h-full text-center mg-5 flex flex-col gap-4 bg-white"></div>
-      {
-        loading ? <>
+      {loading ? (
+        <>
           <TableSkeletonLoader />
-        </>:
-      <Suspense fallback={<TableSkeletonLoader />}>
-        <div className="p-10">
-          {
-            branches.length > 0 ? 
-            <BranchList
-              branches={branches}
-              onDelete={handleDelete}
-              currentPage={currentPage}
-              totalPages={totalPages}
-              setCurrentPage={setCurrentPage}
-              editBranch={editBranch}
-            />: <div className="bg-white p-3 rounded-md border-t-2 border-t-violet-600">
-            <span>No Branches</span>
+        </>
+      ) : (
+        <Suspense fallback={<TableSkeletonLoader />}>
+          <div className="p-10">
+            {branches.length > 0 ? (
+              <BranchList
+                branches={branches}
+                onDelete={handleDelete}
+                currentPage={currentPage}
+                totalPages={totalPages}
+                setCurrentPage={setCurrentPage}
+                editBranch={editBranch}
+              />
+            ) : (
+              <div className="bg-white p-3 rounded-md border-t-2 border-t-violet-600">
+                <span>No Branches</span>
+              </div>
+            )}
           </div>
-          }
-        </div>
-      </Suspense>
-      }
+        </Suspense>
+      )}
     </main>
   );
 };

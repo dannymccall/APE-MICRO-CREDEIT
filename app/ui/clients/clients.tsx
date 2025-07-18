@@ -52,7 +52,8 @@ const AllClients = () => {
       currentPage,
       setCurrentPage,
       response,
-      refresh
+      refresh,
+      setQuery
     } = useSearch<IClient>({
       endpoint: 'api/clients',
       initialPage: 1,
@@ -83,6 +84,10 @@ const AllClients = () => {
     // console.log(users)
   };
 
+    function handleFetchAll(): void {
+    setQuery("")
+    refresh()
+  }
   return (
     <main className="min-w-full min-h-full mx-auto">
       <InfoHeaderComponent
@@ -106,6 +111,8 @@ const AllClients = () => {
               <SearchInput
                 handleOnclickSearch={handleSearch}
                 placeholder="Search loans..."
+                buttonLabel="Clients"
+                fetchAll={handleFetchAll}
               />
             )}
             {clients.length > 0 ? (

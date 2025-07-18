@@ -51,6 +51,7 @@ const AllUsers = () => {
     setCurrentPage,
     response,
     refresh,
+    setQuery
   } = useSearch<IUser>({
     endpoint: "api/users",
     initialPage: 1,
@@ -73,6 +74,11 @@ const AllUsers = () => {
   //   fetchUsers();
   // };
 
+    function handleFetchAll(): void {
+    setQuery("")
+    refresh()
+  }
+
   return (
     <main className="min-w-full min-h-full mx-auto">
       <InfoHeaderComponent
@@ -94,6 +100,8 @@ const AllUsers = () => {
               <SearchInput
                 handleOnclickSearch={handleSearch}
                 placeholder="Search users..."
+                fetchAll={handleFetchAll}
+                buttonLabel="Users"
               />
             )}
             {users.length > 0 ? (
