@@ -7,7 +7,7 @@ import { formatDate, makeRequest } from "@/app/lib/helperFunctions";
 import { useRouter } from "next/navigation";
 import { RiEditBoxLine } from "react-icons/ri";
 import { IoIosCheckmark } from "react-icons/io";
-import { useLogginIdentity } from "@/app/lib/customHooks";
+import { useLogginIdentity } from "@/app/lib/hooks/useLogginIdentity";
 
 export interface LoanApprovalProps {
   pendingLoan: {

@@ -27,6 +27,7 @@ export async function addClient(state: AddClientState, formData: FormData) {
     "passport",
     "service",
     "id",
+    "clientStatus"
   ];
 
   const body: any = extractFormFields(formData, expectedFields);
@@ -39,10 +40,12 @@ export async function addClient(state: AddClientState, formData: FormData) {
     schema = schema.omit({ passport: true });
   }
 
+  
   // Now validate the body using the dynamically adjusted schema
   const validatedClientFormDetails = schema.safeParse(body);
-
+  
   if (!validatedClientFormDetails.success) {
+    console.log(formatZodErrors(validatedClientFormDetails.error.flatten().fieldErrors))
     return {
       errors: formatZodErrors(
         validatedClientFormDetails.error.flatten().fieldErrors

@@ -1,7 +1,8 @@
 "use client";
 import React from "react";
 import Toast from "./toast/Toast";
-import { useLogginIdentity, useSocket } from "../lib/customHooks";
+import { useLogginIdentity } from "../lib/hooks/useLogginIdentity";
+import { useSocket } from "../lib/hooks/useSocket";
 import { FaCircleCheck } from "react-icons/fa6";
 export default function Notifications() {
   const logginIdentity = useLogginIdentity();

@@ -1,5 +1,5 @@
 import { createContext, useContext, useEffect, useState } from "react";
-import { useLogginIdentity } from "../lib/customHooks";
+import { useLogginIdentity } from "../lib/hooks/useLogginIdentity";
 import { makeRequest } from "../lib/helperFunctions";
 interface ProfileContextType {
   profilePicture: string;

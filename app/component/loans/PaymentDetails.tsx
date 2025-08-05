@@ -10,8 +10,7 @@ import {
 } from "@/app/lib/helperFunctions";
 import { useRouter } from "next/navigation";
 import { LoadingSpinner } from "../Loaders/Loading";
-import { useLogginIdentity } from "@/app/lib/customHooks";
-
+import { useLogginIdentity } from "@/app/lib/hooks/useLogginIdentity";
 export interface PaymentClientDetails {
   client: {
     first_name: string;

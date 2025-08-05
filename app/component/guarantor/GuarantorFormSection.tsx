@@ -99,7 +99,7 @@ const GuarantorFormSection: React.FC<Props> = ({
 
       {/* Photo Upload */}
       <div className="w-full flex flex-col mb-10">
-        <div className="flex flex-row relative tablet:flex-col desktop:flex-row laptop:flex-row phone:flex-col">
+        <div className="flex flex-row w-full relative tablet:flex-col desktop:flex-row laptop:flex-row phone:flex-col">
           <div className="flex flex-row w-32 items-center">
             <Label
               className="font-sans font-medium text-gray-500 phone:text-sm laptop:text-base desktop:text-base tablet:text-sm"
@@ -111,7 +111,7 @@ const GuarantorFormSection: React.FC<Props> = ({
             type="file"
             name="guarantorPassport"
             onChange={handleFileChange}
-            className="file-input text-sm font-sans block w-96 px-5 py-2 border border-gray-200 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm tablet:w-96 desktop:w-96 laptop:w-96 phone:w-64"
+            className="file-input text-sm font-sans block w-full px-5 py-2 border border-gray-200 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm tablet:w-96 desktop:w-96 laptop:w-96 phone:w-64"
           />
         </div>
         {reducerState.passport && (

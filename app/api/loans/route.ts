@@ -9,7 +9,7 @@ import {
   validateNumber,
   createResponse,
   generateSystemID,
-  calculateLoanInformaion,
+  calculateLoanInformation,
   generatePaymentSchedule,
   calculateNextPayment,
   makeRequest,
@@ -225,6 +225,8 @@ export async function POST(req: NextRequest) {
       return createResponse(false, "001", "Loan Officer does not exist", {});
     if (!client)
       return createResponse(false, "001", "Client does not exist", {});
+
+    
     const passport: File | null = body.get("file") as unknown as File;
     let newFileName: string = "";
 
@@ -244,7 +246,7 @@ export async function POST(req: NextRequest) {
 
     const guarantorSystemId: string = generateSystemID("GUA");
     const loanSystemId: string = generateSystemID("LOA");
-    const weeklyPayment = calculateLoanInformaion(
+    const weeklyPayment = calculateLoanInformation(
       Number(body.get("principal")),
       Number(body.get("loanTerms")),
       Number(body.get("interest"))

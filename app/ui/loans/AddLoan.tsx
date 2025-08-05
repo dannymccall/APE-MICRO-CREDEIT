@@ -24,19 +24,18 @@ import { processLoan } from "@/app/actions/loanAuth";
 import {
   initialState,
   useReducerHook,
-  getLoanInfomation,
   CustomFile,
-  useSocket,
-  usefetchBranches,
-  useLogginIdentity,
-} from "@/app/lib/customHooks";
+} from "@/app/lib/hooks/useReducer";
 import { startTransition } from "react";
 import { io } from "socket.io-client";
-
+import { useLogginIdentity } from "@/app/lib/hooks/useLogginIdentity";
 import { formatZodErrors, extractFormFields } from "@/app/lib/helperFunctions";
 import { loanSchema } from "@/app/lib/definitions";
 import GuarantorFormSection from "@/app/component/guarantor/GuarantorFormSection";
-
+import LoanForm from "@/app/component/loans/LoanForm";
+import { usefetchBranches } from "@/app/lib/hooks/useFetchBranches";
+import { useSocket } from "@/app/lib/hooks/useSocket";
+import { getLoanInfomation } from "@/app/lib/helperFunctions";
 const AddLoan = () => {
   const breadcrumbsLinks = [
     { name: "Dashboard", href: "/dashboard" },
@@ -93,7 +92,8 @@ const AddLoan = () => {
 
     if (state?.response?.success) {
       setShowMessage(true);
-      // dispatch({type: "SET_ACTIVE_TAB", payload: 0})
+      dispatch({ type: "SET_ACTIVE_TAB", payload: 0 });
+      setHasApplicantFilled(false);
       dispatch({ type: "RESET_STATE" });
       if (logginIdentity && logginIdentity.userRoles.includes("Loan officer")) {
         const socket = io(`${process.env.NEXT_PUBLIC_SOCKET_URL}`);
@@ -117,8 +117,8 @@ const AddLoan = () => {
   };
 
   const loanProduct = [
-    { name: "Business Loan (weekly repayment - 2.67%)" },
-    { name: "Vehicle Loan (weekly repayment - 2.67%)" },
+    "Business Loan",
+    "Vehicle Loan",
   ];
 
   async function fetchClients(search: string) {
@@ -258,602 +258,110 @@ const AddLoan = () => {
 
           {/* Tab Content */}
           {reducerState.activeTab === 0 && (
-            <div role="tabpanel" className="tab-content block p-10">
-              <div className="w-full h-full">
-                <div role="tabpanel" className="tab-content block">
-                  <div className="flex flex-col  my-5 relative">
-                    <div className="flex flex-row w-32 gap-0 items-center">
-                      <Label
-                        className="font-sans font-semibold text-gray-500 text-sm"
-                        labelName="Client"
-                      />
-                      <span className="text-red-500 ml-1">*</span>
-                    </div>
-
-                    <div className="relative w-full">
-                      <button
-                        type="button"
-                        onClick={() =>
-                          dispatch({
-                            type: "SET_IS_OPEN",
-                            payload: !reducerState.isOpen,
-                          })
-                        }
-                        className=" w-full px-5 py-2 flex justify-between text-sm border border-gray-200 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                      >
-                        {reducerState.selectedClient.first_name
-                          ? `${reducerState.selectedClient.first_name} ${reducerState.selectedClient.last_name}`
-                          : "Select client"}
-                        <MdOutlineKeyboardArrowDown size={20} />
-                      </button>
-                      {reducerState.isOpen && (
-                        <div className="absolute z-10 w-full mt-2 bg-white border border-gray-200 rounded-md shadow-lg">
-                          <input
-                            type="text"
-                            placeholder="Search..."
-                            value={reducerState.searchTerm}
-                            onChange={(e) => {
-                              dispatch({
-                                type: "SET_SEARCH_TERM",
-                                payload: e.target.value,
-                              });
-                              fetchClients(reducerState.searchTerm);
-                            }}
-                            className="block w-full px-5 py-2 text-sm border-b border-gray-200 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-                          />
-                          <ul className="max-h-40 overflow-y-auto">
-                            {reducerState.clients.length > 0 ? (
-                              reducerState.clients.map((client: any) => (
-                                <li
-                                  key={client.systemId}
-                                  onClick={() => {
-                                    handleClientSelect(client);
-                                    dispatch({
-                                      type: "SET_SELECTED_CLIENT",
-                                      payload: client,
-                                    });
-                                    dispatch({
-                                      type: "SET_CLIENT",
-                                      payload: client.systemId,
-                                    });
-                                    dispatch({
-                                      type: "SET_IS_OPEN",
-                                      payload: !reducerState.isOpen,
-                                    });
-                                  }}
-                                  className="px-5 py-2 cursor-pointer hover:bg-indigo-500 hover:text-white"
-                                >
-                                  {client.first_name} {client.last_name}
-                                </li>
-                              ))
-                            ) : (
-                              <li className="px-5 py-2 text-sm text-gray-500">
-                                No clients available
-                              </li>
-                            )}
-                          </ul>
-                        </div>
-                      )}
-                    </div>
-                    <input
-                      type="hidden"
-                      name="client"
-                      defaultValue={reducerState.selectedClient.systemId}
+            <LoanForm
+              reducerState={reducerState}
+              dispatch={dispatch}
+              handleClientSelect={handleClientSelect}
+              loanProduct={loanProduct}
+              calculateProcessingAndAdvanceFee={
+                calculateProcessingAndAdvanceFee
+              }
+              getLoanInfomation={getLoanInfomation}
+              calculateNextPayment={calculateNextPayment}
+              handleClick={handleClick}
+              fetchClients={fetchClients}
+            />
+          )}
+          {/* <div className="flex flex-col my-5 gap-3">
+            <div className="flex flex-row w-32 gap-0 items-center">
+              <Label
+                className="font-sans font-bold text-black"
+                labelName="Charges"
+              />
+            </div>
+            <div className="w-full"></div>
+            <div className="w-full">
+              <div className="flex flex-row gap-3 tablet:flex-col desktop:flex-row laptop:flex-row phone:flex-col">
+                <div className="w-full">
+                  <div className="flex flex-row w-32 gap-0 items-center">
+                    <Label
+                      className="font-sans font-semibold text-gray-500 text-sm"
+                      labelName="Processing Fee"
                     />
+                    <span className="text-red-500 ml-1">*</span>
                   </div>
-                  {reducerState?.errors?.client && (
-                    <p className=" text-red-500 text-sm p-1 font-semibold">
-                      {reducerState.errors.client}
+                  <input
+                    type="number"
+                    className="block text-sm  w-full px-5 py-2 border border-gray-200 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                    placeholder={"Enter Processing Fee"}
+                    name="processingFee"
+                    value={
+                      reducerState.processingFee
+                        ? reducerState.processingFee.toFixed(2)
+                        : reducerState.processingFee
+                    }
+                    readOnly
+                    onChange={(e) => {
+                      dispatch({
+                        type: "SET_PROCESSING_FEE",
+                        payload: Number(e.target.value),
+                      });
+                    }}
+                  />
+                </div>
+                <div className="w-full">
+                  <div className="flex flex-row w-56 gap-0 items-center">
+                    <Label
+                      className="font-sans font-semibold text-gray-500 text-sm"
+                      labelName="Advance Fee"
+                    />
+                    <span className="text-red-500 ml-1">*</span>
+                  </div>
+                  <input
+                    type="number"
+                    className="block text-sm  w-full px-5 py-2 border border-gray-200 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                    placeholder={"Enter Advance Fee"}
+                    name="advanceFee"
+                    value={
+                      reducerState.advanceFee
+                        ? reducerState.advanceFee.toFixed(2)
+                        : reducerState.advanceFee
+                    }
+                    readOnly
+                    onChange={() => {}}
+                  />
+                </div>
+                <div className="w-full">
+                  <div className="flex flex-row w-52 gap-0 items-center">
+                    <Label
+                      className="font-sans font-semibold text-gray-500 text-sm"
+                      labelName="Registration Fee"
+                    />
+                    <span className="text-red-500 ml-1">*</span>
+                  </div>
+                  <input
+                    type="number"
+                    className="block text-sm  w-full px-5 py-2 border border-gray-200 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                    placeholder={"Enter Registration Fee"}
+                    name="registrationFee"
+                    value={reducerState.registrationFee}
+                    onChange={(e) =>
+                      dispatch({
+                        type: "SET_REGISTRATION_FEE",
+                        payload: Number(e.target.value),
+                      })
+                    }
+                  />
+                  {reducerState?.errors?.registrationFee && (
+                    <p className=" text-red-500 text-sm p-3 font-semibold">
+                      {reducerState.errors.registrationFee}
                     </p>
                   )}
-                  <div className="flex flex-col my-5 relative">
-                    <div className="flex flex-row w-full gap-0 items-center">
-                      <Label
-                        className="font-sans font-semibold text-gray-500 text-sm"
-                        labelName="Loan Product"
-                      />
-                      <span className="text-red-500 ml-1">*</span>
-                    </div>
-                    <select
-                      name="loanProduct"
-                      value={reducerState.loanProduct}
-                      className="block text-sm font-sans w-full px-5 py-2 border border-gray-200 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm cursor-pointer"
-                      onChange={(e) =>
-                        dispatch({
-                          type: "SET_LOADING_PRODUCT",
-                          payload: e.target.value,
-                        })
-                      }
-                    >
-                      <option disabled value="">
-                        Select Loan Product
-                      </option>
-                      {loanProduct && loanProduct.length > 0 ? (
-                        loanProduct.map((loan) => (
-                          <option
-                            value={loan.name}
-                            key={loan.name}
-                            className="text-sm font-sans"
-                          >
-                            {loan.name}
-                          </option>
-                        ))
-                      ) : (
-                        <option disabled value="">
-                          No titles available
-                        </option>
-                      )}
-                    </select>
-                  </div>
-                  {reducerState?.errors?.loanProduct && (
-                    <p className=" text-red-500 text-sm p-1 font-semibold">
-                      {reducerState.errors.loanProduct}
-                    </p>
-                  )}
-                  <div className="flex flex-col my-5 gap-3">
-                    <div className="flex flex-row w-32 gap-0 items-center">
-                      <Label
-                        className="font-sans font-bold text-black"
-                        labelName="Terms"
-                      />
-                    </div>
-                    <div className="w-full">
-                      <div className="flex flex-row gap-3 tablet:flex-col desktop:flex-row laptop:flex-row phone:flex-col">
-                        <div className="w-full">
-                          <div className="flex flex-row w-32 gap-0 items-center">
-                            <Label
-                              className="font-sans font-semibold text-gray-500 text-sm"
-                              labelName="Principal"
-                            />
-                            <span className="text-red-500 ml-1">*</span>
-                          </div>
-                          <input
-                            type="text"
-                            className="block text-sm  w-full px-5 py-2 border border-gray-200 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                            placeholder={"Enter loan term"}
-                            name="principal"
-                            value={reducerState.principal}
-                            onChange={(e) => {
-                              dispatch({
-                                type: "SET_PRINCIPAL",
-                                payload: Number(e.target.value),
-                              });
-                              const [processingFee, advanceFee] =
-                                calculateProcessingAndAdvanceFee(
-                                  Number(e.target.value)
-                                );
-                              dispatch({
-                                type: "SET_PROCESSING_FEE",
-                                payload: Number(processingFee),
-                              });
-                              dispatch({
-                                type: "SET_ADVANCE_FEE",
-                                payload: Number(advanceFee),
-                              });
-                            }}
-                          />
-                          {reducerState?.errors?.principal && (
-                            <p className=" text-red-500 p-1 text-sm font-semibold">
-                              {reducerState.errors.principal}
-                            </p>
-                          )}
-                        </div>
-                        <div className="w-full">
-                          <div className="flex flex-row w-32 gap-0 items-center">
-                            <Label
-                              className="font-sans font-semibold text-gray-500 text-sm"
-                              labelName="Fund"
-                            />
-                            <span className="text-red-500 ml-1">*</span>
-                          </div>
-                          <select
-                            name="fund"
-                            className="block w-full text-sm font-sans px-5 py-2 border border-gray-200 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm cursor-pointer"
-                            value={reducerState.fund}
-                            onChange={(e) =>
-                              dispatch({
-                                type: "SET_FUND",
-                                payload: e.target.value,
-                              })
-                            }
-                          >
-                            <option
-                              disabled
-                              value=""
-                              className="text-sm font-sans"
-                            >
-                              Select Fund
-                            </option>
-                            {["Bank", "Cash"].map((fund: any) => (
-                              <option
-                                value={fund}
-                                key={fund}
-                                className="text-sm font-sans"
-                              >
-                                {fund}
-                              </option>
-                            ))}
-                          </select>
-                          {reducerState?.errors?.fund && (
-                            <p className=" text-red-500 p-1 text-sm font-semibold">
-                              {reducerState.errors.fund}
-                            </p>
-                          )}
-                        </div>
-                      </div>
-                    </div>
-                    <div className="w-full">
-                      <div className="flex flex-row gap-3 tablet:flex-col desktop:flex-row laptop:flex-row phone:flex-col">
-                        <div className="w-full">
-                          <div className="flex flex-row w-32 gap-0 items-center">
-                            <Label
-                              className="font-sans font-semibold text-gray-500 text-sm"
-                              labelName="Loan Term"
-                            />
-                            <span className="text-red-500 ml-1">*</span>
-                          </div>
-                          <input
-                            type="number"
-                            className="block text-sm  w-full px-5 py-2 border border-gray-200 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                            placeholder={"Enter Loan Terms"}
-                            name="loanTerms"
-                            value={reducerState.loanTerms}
-                            onChange={(e) =>
-                              dispatch({
-                                type: "SET_LOAN_TERMS",
-                                payload: Number(e.target.value),
-                              })
-                            }
-                          />
-                          {reducerState?.errors?.loanTerms && (
-                            <p className=" text-red-500 p-3 text-sm font-semibold">
-                              {reducerState.errors.loanTerms}
-                            </p>
-                          )}
-                        </div>
-                        <div className="w-full">
-                          <div className="flex flex-row w-56 gap-0 items-center">
-                            <Label
-                              className="font-sans font-semibold text-gray-500 text-sm"
-                              labelName="Repayment Frequency"
-                            />
-                            <span className="text-red-500 ml-1">*</span>
-                          </div>
-                          <input
-                            type="number"
-                            className="block text-sm  w-full px-5 py-2 border border-gray-200 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                            placeholder={"Enter Repayment Frequency"}
-                            name="repaymentFrequency"
-                            value={reducerState.repaymentFrequency}
-                            onChange={(e) =>
-                              dispatch({
-                                type: "SET_REPAYMENT_FREQUENCY",
-                                payload: Number(e.target.value),
-                              })
-                            }
-                          />
-                          {reducerState?.errors?.repaymentFrequency && (
-                            <p className=" text-red-500 p-3 text-sm font-semibold">
-                              {reducerState.errors.repaymentFrequency}
-                            </p>
-                          )}
-                        </div>
-                        <div className="w-full">
-                          <div className="flex flex-row w-32 gap-0 items-center">
-                            <Label
-                              className="font-sans font-semibold text-gray-500 text-sm"
-                              labelName="Type"
-                            />
-                            <span className="text-red-500 ml-1">*</span>
-                          </div>
-                          <select
-                            name="type"
-                            className="block w-full text-sm font-sans px-5 py-2 border border-gray-200 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm cursor-pointer"
-                            value={reducerState.type}
-                            onChange={(e) => {
-                              dispatch({
-                                type: "SET_INTEREST",
-                                payload: getLoanInfomation(e.target.value),
-                              });
-                              dispatch({
-                                type: "SET_TYPE",
-                                payload: e.target.value,
-                              });
-                            }}
-                          >
-                            <option
-                              disabled
-                              value=""
-                              className="text-sm font-sans"
-                            >
-                              Select type
-                            </option>
-                            {["Monthly"].map((frequency: any) => (
-                              <option
-                                value={frequency}
-                                key={frequency}
-                                className="text-sm font-sans"
-                              >
-                                {frequency}
-                              </option>
-                            ))}
-                          </select>
-                          {reducerState?.errors?.type && (
-                            <p className=" text-red-500 p-3 text-sm font-semibold">
-                              {reducerState.errors.type}
-                            </p>
-                          )}
-                        </div>
-                      </div>
-                    </div>
-                    <div className="w-full">
-                      <div className="flex flex-row gap-3 tablet:flex-col desktop:flex-row laptop:flex-row phone:flex-col">
-                        <div className="w-full">
-                          <div className="flex flex-row w-32 gap-0 items-center">
-                            <Label
-                              className="font-sans font-semibold text-gray-500 text-sm"
-                              labelName="Interest Rate"
-                            />
-                            <span className="text-red-500 ml-1">*</span>
-                          </div>
-                          <input
-                            type="number"
-                            className="block text-sm  w-full px-5 py-2 border border-gray-200 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                            placeholder={"Loan Interest"}
-                            name="interestRate"
-                            disabled
-                            value={reducerState.interest}
-                            onChange={(e) => {
-                              dispatch({
-                                type: "SET_INTEREST",
-                                payload: Number(e.target.value),
-                              });
-                            }}
-                          />
-                        </div>
-                        <div className="w-full">
-                          <div className="flex flex-row w-60 gap-0 items-center">
-                            <Label
-                              className="font-sans font-semibold text-gray-500 text-sm"
-                              labelName="Disbursement Date"
-                            />
-                            <span className="text-red-500 ml-1">*</span>
-                          </div>
-                          <input
-                            type="date"
-                            className="block text-sm  w-full px-5 py-2 border border-gray-200 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                            placeholder={"Enter Disbursment Date"}
-                            name="expectedDisbursementDate"
-                            value={reducerState.expectedDisbursementDate}
-                            onChange={(e) => {
-                              dispatch({
-                                type: "SET_EXPECTED_DISBURSMENT_DATE",
-                                payload: e.target.value,
-                              });
-                              const nextPaymentDate = calculateNextPayment(
-                                new Date(e.target.value)
-                              );
-                              dispatch({
-                                type: "SET_FIRST_REPAYMENT_DATE",
-                                payload: nextPaymentDate,
-                              });
-                            }}
-                          />
-                          {reducerState?.errors?.expectedDisbursementDate && (
-                            <p className=" text-red-500 p-3 text-sm font-semibold">
-                              {reducerState.errors.expectedDisbursementDate}
-                            </p>
-                          )}
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="flex flex-col my-5 gap-3">
-                    <div className="flex flex-row w-32 gap-0 items-center">
-                      <Label
-                        className="font-sans font-bold text-black"
-                        labelName="Settings"
-                      />
-                    </div>
-                    <div className="w-full"></div>
-                    <div className="w-full">
-                      <div className="flex flex-row gap-3 tablet:flex-col desktop:flex-row laptop:flex-row phone:flex-col">
-                        <div className="w-full">
-                          <div className="flex flex-row w-32 gap-0 items-center">
-                            <Label
-                              className="font-sans font-semibold text-gray-500 text-sm"
-                              labelName="Loan Officer"
-                            />
-                            <span className="text-red-500 ml-1">*</span>
-                          </div>
-                          <select
-                            name="loanOfficer"
-                            className="block w-full text-sm font-sans px-5 py-2 border border-gray-200 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm cursor-pointer"
-                            value={reducerState.loanOfficer}
-                            onChange={(e) =>
-                              dispatch({
-                                type: "SET_LOAN_OFFICER",
-                                payload: e.target.value,
-                              })
-                            }
-                          >
-                            <option
-                              disabled
-                              value=""
-                              className="text-sm font-sans"
-                            >
-                              Select Loan Officer
-                            </option>
-                            {reducerState.users.map((user: any) => (
-                              <option
-                                value={user.username}
-                                key={user.username}
-                                className="text-sm font-sans"
-                              >
-                                {user.first_name} {user.other_names}{" "}
-                                {user.last_name}
-                              </option>
-                            ))}
-                          </select>
-                          {reducerState?.errors?.loanOfficer && (
-                            <p className=" text-red-500 text-sm p-3 font-semibold">
-                              {reducerState.errors.loanOfficer}
-                            </p>
-                          )}
-                        </div>
-                        <div className="w-full">
-                          <div className="flex flex-row w-56 gap-0 items-center">
-                            <Label
-                              className="font-sans font-semibold text-gray-500 text-sm"
-                              labelName="Loan Purpose"
-                            />
-                            <span className="text-red-500 ml-1">*</span>
-                          </div>
-                          <input
-                            type="text"
-                            className="block text-sm  w-full px-5 py-2 border border-gray-200 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                            placeholder={"Enter Loan Purpose"}
-                            name="loanPurpose"
-                            value={reducerState.loanPurpose}
-                            onChange={(e) =>
-                              dispatch({
-                                type: "SET_LOAN_PURPOSE",
-                                payload: e.target.value,
-                              })
-                            }
-                          />
-                          {reducerState?.errors?.loanPurpose && (
-                            <p className=" text-red-500 text-sm p-3 font-semibold">
-                              {reducerState.errors.loanPurpose}
-                            </p>
-                          )}
-                        </div>
-                        <div className="w-full">
-                          <div className="flex flex-row w-52 gap-0 items-center">
-                            <Label
-                              className="font-sans font-semibold text-gray-500 text-sm phone:text-xs"
-                              labelName="First Repayment date"
-                            />
-                            <span className="text-red-500 ml-1">*</span>
-                          </div>
-                          <input
-                            type="text"
-                            className="block text-sm  w-full px-5 py-2 border border-gray-200 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                            placeholder={"First Disbursement Date"}
-                            name="expectedFirstRepaymentDate"
-                            readOnly
-                            value={reducerState.expectedFirstRepayment}
-                            onChange={(e) => {
-                              dispatch({
-                                type: "SET_FIRST_REPAYMENT_DATE",
-                                payload: e.target.value,
-                              });
-                            }}
-                          />
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  {/* <div className="flex flex-col my-5 gap-3">
-                    <div className="flex flex-row w-32 gap-0 items-center">
-                      <Label
-                        className="font-sans font-bold text-black"
-                        labelName="Charges"
-                      />
-                    </div>
-                    <div className="w-full"></div>
-                    <div className="w-full">
-                      <div className="flex flex-row gap-3 tablet:flex-col desktop:flex-row laptop:flex-row phone:flex-col">
-                        <div className="w-full">
-                          <div className="flex flex-row w-32 gap-0 items-center">
-                            <Label
-                              className="font-sans font-semibold text-gray-500 text-sm"
-                              labelName="Processing Fee"
-                            />
-                            <span className="text-red-500 ml-1">*</span>
-                          </div>
-                          <input
-                            type="number"
-                            className="block text-sm  w-full px-5 py-2 border border-gray-200 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                            placeholder={"Enter Processing Fee"}
-                            name="processingFee"
-                            value={
-                              reducerState.processingFee
-                                ? reducerState.processingFee.toFixed(2)
-                                : reducerState.processingFee
-                            }
-                            readOnly
-                            onChange={(e) => {
-                              dispatch({
-                                type: "SET_PROCESSING_FEE",
-                                payload: Number(e.target.value),
-                              });
-                            }}
-                          />
-                        </div>
-                        <div className="w-full">
-                          <div className="flex flex-row w-56 gap-0 items-center">
-                            <Label
-                              className="font-sans font-semibold text-gray-500 text-sm"
-                              labelName="Advance Fee"
-                            />
-                            <span className="text-red-500 ml-1">*</span>
-                          </div>
-                          <input
-                            type="number"
-                            className="block text-sm  w-full px-5 py-2 border border-gray-200 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                            placeholder={"Enter Advance Fee"}
-                            name="advanceFee"
-                            value={
-                              reducerState.advanceFee
-                                ? reducerState.advanceFee.toFixed(2)
-                                : reducerState.advanceFee
-                            }
-                            readOnly
-                            onChange={() => {}}
-                          />
-                        </div>
-                        <div className="w-full">
-                          <div className="flex flex-row w-52 gap-0 items-center">
-                            <Label
-                              className="font-sans font-semibold text-gray-500 text-sm"
-                              labelName="Registration Fee"
-                            />
-                            <span className="text-red-500 ml-1">*</span>
-                          </div>
-                          <input
-                            type="number"
-                            className="block text-sm  w-full px-5 py-2 border border-gray-200 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                            placeholder={"Enter Registration Fee"}
-                            name="registrationFee"
-                            value={reducerState.registrationFee}
-                            onChange={(e) =>
-                              dispatch({
-                                type: "SET_REGISTRATION_FEE",
-                                payload: Number(e.target.value),
-                              })
-                            }
-                          />
-                          {reducerState?.errors?.registrationFee && (
-                            <p className=" text-red-500 text-sm p-3 font-semibold">
-                              {reducerState.errors.registrationFee}
-                            </p>
-                          )}
-                        </div>
-                      </div>
-                    </div>
-                  </div> */}
-                  <button
-                    className={`btn w-24 flex items-center font-sans rounded-md justify-center gap-3 ${"bg-gradient-to-r from-violet-500 to-violet-700 hover:from-violet-700 hover:to-violet-900"} text-white py-2 rounded-md focus:outline-none font-bold font-mono transition`}
-                    type="button"
-                    onClick={handleClick}
-                  >
-                    NEXT
-                  </button>
                 </div>
               </div>
             </div>
-          )}
+          </div> */}
+
           {reducerState.activeTab === 1 && (
             <div role="tabpanel" className="tab-content block p-10">
               <div className="w-full h-full">

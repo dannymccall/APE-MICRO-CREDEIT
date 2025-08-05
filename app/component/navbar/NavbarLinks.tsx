@@ -1,4 +1,4 @@
-import { useLogginIdentity } from "@/app/lib/customHooks";
+import { useLogginIdentity } from "@/app/lib/hooks/useLogginIdentity";
 import Link from "next/link";
 import React from "react";
 import { FiChevronDown, FiChevronRight } from "react-icons/fi";

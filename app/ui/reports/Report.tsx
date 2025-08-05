@@ -14,7 +14,7 @@ import {
 import { useActionState } from "react";
 
 import ReportTemplate from "@/app/component/report/ReportTemplate";
-import { useGenerateDocument } from "@/app/lib/customHooks";
+import { useGenerateDocument } from "@/app/lib/hooks/useGenerateDocument";
 import GenerateDocumentButtons from "@/app/component/report/GenerateDocumentButtons";
 import ReportGenerationForm from "@/app/component/report/ReportGenerationForm";
 
@@ -101,9 +101,7 @@ const Report = () => {
                   totalAmountToPay={
                     state?.response.data.arrears[0].totalAmountToPay
                   }
-                  totalAmountPaid={
-                    state?.response.data.arrears[0].totalAmountPaid
-                  }
+                
                   totalOutstandingBalance={
                     state?.response.data.arrears[0].totalOutStandingBalance
                   }
@@ -122,9 +120,7 @@ const Report = () => {
                   totalAmountToPay={
                     state?.response.data.default[0].totalAmountToPay
                   }
-                  totalAmountPaid={
-                    state?.response.data.default[0].totalAmountPaid
-                  }
+                  
                   totalOutstandingBalance={
                     state?.response.data.default[0].totalOutStandingBalance
                   }
@@ -137,9 +133,7 @@ const Report = () => {
                   totalAmountToPay={
                     state?.response.data.payments[0].totalAmountToPay
                   }
-                  totalAmountPaid={
-                    state?.response.data.payments[0].totalAmountPaid
-                  }
+                
                   totalOutstandingBalance={
                     state?.response.data.payments[0].totalOutStandingBalance
                   }

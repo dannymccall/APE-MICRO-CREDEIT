@@ -8,7 +8,7 @@ import { makeRequest, toCapitalized } from "@/app/lib/helperFunctions";
 import { useRouter } from "next/navigation";
 import { ILoanApplication } from "@/app/lib/backend/models/loans.model";
 import { FcApprove } from "react-icons/fc";
-import { useLogginIdentity } from "@/app/lib/customHooks";
+import { useLogginIdentity } from "@/app/lib/hooks/useLogginIdentity";
 import Link from "next/link";
 import {
   RiArrowDropDownFill,

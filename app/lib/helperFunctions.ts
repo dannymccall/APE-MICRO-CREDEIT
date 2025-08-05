@@ -2,7 +2,7 @@ import { mkdir, writeFile } from "fs/promises";
 import { Jimp } from "jimp";
 import { NextResponse } from "next/server";
 import { join } from "path";
-import { useLogginIdentity } from "./customHooks";
+import { useLogginIdentity } from "./hooks/useLogginIdentity";
 import { io } from "socket.io-client";
 export async function makeRequest(url: string, options: RequestInit) {
   try {
@@ -182,25 +182,27 @@ export function toCapitalized(str: string): string {
 }
 
 
-function getTotalWeeks(months: number): number {
+export function getTotalWeeks(months: number): number {
   const weeksPerMonth = 4;
   return months * weeksPerMonth;
 }
-export function calculateLoanInformaion(
+
+export function calculateLoanInformation(
   principal: number,
-  duration: number,
-  interstPerMonth: any
+  durationInMonths: number,
+  interestPerMonth: number
 ) {
-  const numberOfWeeks = getTotalWeeks(duration);
-  const monthlyInterest = (parseFloat(interstPerMonth) / 100) * principal;
-  const interstForTerm = monthlyInterest * duration;
-  const weeklyInterest = interstForTerm / numberOfWeeks;
-  const weeklyPayment = principal / numberOfWeeks;
+  const numberOfWeeks = getTotalWeeks(durationInMonths);
+  
+  // Flat interest calculation
+  const totalInterest = (interestPerMonth / 100) * principal * durationInMonths;
+  const totalPayment = principal + totalInterest;
 
-  const expectedWeeklyPayment = weeklyPayment + weeklyInterest;
+  const expectedWeeklyPayment = totalPayment / numberOfWeeks;
 
-  return Math.floor(expectedWeeklyPayment);
+  return parseFloat(expectedWeeklyPayment.toFixed(2));
 }
+
 
 // console.log(calculateLoanInformaion(1000, 3, 2.67)); // Example usage
 
@@ -616,3 +618,18 @@ export const generateDocument = async (
   }
 };
 
+export function getLoanInfomation(type: string) {
+  let interestRate: number = 0;
+  switch (type.toLowerCase()) {
+    case "monthly":
+      interestRate = 10.67;
+      break;
+    case "weekly":
+      interestRate = 2.67;
+      break;
+    default:
+      return "invalid type";
+  }
+
+  return interestRate;
+}

@@ -11,7 +11,7 @@ const UsersList = lazy(() => import("./usersList"));
 import { LoadingDivs } from "@/app/component/Loaders/Loading";
 import InfoHeaderComponent from "@/app/component/Info-header/Info-Header";
 import SearchInput from "@/app/component/Search/SearchInput";
-import { useSearch } from "@/app/lib/customHooks";
+import { useSearch } from "@/app/lib/hooks/useSearch";
 import TableSkeletonLoader from "@/app/component/TableSkeletonLoader";
 const AllUsers = () => {
   // const [users, setUsers] = useState<IUser[]>([]);

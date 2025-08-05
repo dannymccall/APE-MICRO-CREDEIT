@@ -26,7 +26,7 @@ const TableHeader: React.FC<TableHeaderProps> = ({
         {columns.map((col) => (
           <th
             key={col.key}
-            className={`text-sm sm:text-base font-semibold text-left 
+            className={`text-sm sm:text-base p-2 font-semibold text-left 
             `}
           >
             <div className="flex items-center gap-2 justify-start">

@@ -6,7 +6,7 @@ import SearchInput from "@/app/component/Search/SearchInput";
 const ClientList = lazy(() => import("./clientList"));
 import { LoadingDivs } from "@/app/component/Loaders/Loading";
 import InfoHeaderComponent from "@/app/component/Info-header/Info-Header";
-import {  useSearch } from "@/app/lib/customHooks";
+import { useSearch } from "@/app/lib/hooks/useSearch";
 import TableSkeletonLoader from "@/app/component/TableSkeletonLoader";
 const AllClients = () => {
   // const [clients, setClients] = useState<IClient[]>([]);
@@ -57,7 +57,7 @@ const AllClients = () => {
     } = useSearch<IClient>({
       endpoint: 'api/clients',
       initialPage: 1,
-      limit: 10
+      limit: 15
     });
   
     // console.log(clients)

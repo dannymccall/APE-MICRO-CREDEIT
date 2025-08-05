@@ -7,7 +7,7 @@ import {
   makeRequest,
   processFormSubmissions,
 } from "@/app/lib/helperFunctions";
-import { useLogginIdentity } from "@/app/lib/customHooks";
+import { useLogginIdentity } from "@/app/lib/hooks/useLogginIdentity";
 
 export interface PaymentClientDetails {
   loans: Array<{

@@ -10,14 +10,13 @@ import React, {
 import { makeRequest } from "@/app/lib/helperFunctions";
 import { ChangePasswordTemplate } from "@/app/component/users/ProfileInfomation";
 
-import { CustomFile } from "@/app/lib/customHooks";
 import { blobToFile } from "@/app/lib/helperFunctions";
 import Toast from "@/app/component/toast/Toast";
 import { FaCircleCheck } from "react-icons/fa6";
 import ProfileImage from "@/public/profile.jpg";
 import { useProfile } from "@/app/context/ProfileContext";
 import ProfileSkeleton from "@/app/component/Loaders/ProfileSkeleton";
-
+import { CustomFile } from "@/app/lib/hooks/useReducer";
 import UserProfileSection from "@/app/component/userProfile/UserProfileSection";
 const ContactInformation = lazy(
   () => import("@/app/component/users/ProfileInfomation")

@@ -388,6 +388,7 @@ export async function PUT(req: NextRequest) {
     updatedFields["staff"] = staff._id as mongoose.Types.ObjectId;
     updatedFields["branch"] = branch._id as mongoose.Types.ObjectId;
     updatedFields["client_status"] = body.get("clientStatus") as string;
+    updatedFields["idNumber"] = body.get("idNumber") as string
 
     const updatedClient = await clientService.update(body.get('id') as string, updatedFields);
     const userId = await getUserId();

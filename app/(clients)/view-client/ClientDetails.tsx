@@ -19,6 +19,45 @@ import Loan from "@/app/component/loans/Loan";
 import { useRouter } from "next/navigation";
 import InfoHeaderComponent from "@/app/component/Info-header/Info-Header";
 import ImageComponent from "@/app/component/Image";
+import TableHeader, { TableColumn } from "@/app/component/TableHeader";
+
+const columns: TableColumn[] = [
+      {
+        key: "system-id",
+        label: "System ID",
+        align: "right",
+      },
+      {
+        key: "loan_product",
+        label: "Loan Product",
+        align: "right",
+      },
+      {
+        key: "principal",
+        label: "Principal",
+        align: "right",
+      },
+      {
+        key: "loan_officer",
+        label: "Loan Officer",
+        align: "right",
+      },
+      {
+        key: "interest_rate",
+        label: "Interest Rate",
+        align: "right",
+      },
+      {
+        key: "loan_payment_status",
+        label: "Loan Payment Status",
+        align: "right",
+      },
+      {
+        key: "actions",
+        label: "Actions",
+        align: "right",
+      },
+    ];
 export default function ClientDetails({
   client,
   clientId,
@@ -213,7 +252,7 @@ export default function ClientDetails({
               </div>
               <div className="w-full">
                 <p className="text-sm font-sans font-semibold">Client Status</p>
-                <span>{toCapitalized(client.client_status)}</span>
+                <span>{ client.client_status && toCapitalized(client.client_status)}</span>
               </div>
             </div>
           </div>
@@ -231,35 +270,11 @@ export default function ClientDetails({
             </h1>
             <table className="table  w-full">
               {/* head */}
-              <thead className="relative">
-                <tr className="relative bg-violet-100 rounded">
-                  <th className="text-sm font-sans font-medium text-gray-700 p-2">
-                    System ID
-                  </th>
-                  <th className="text-sm font-sans font-medium text-gray-700 text-left p-2">
-                    Loan Product
-                  </th>
-                  <th className="text-sm font-sans font-medium text-gray-700 p-2">
-                    Principal
-                  </th>
-                  <th className="text-sm font-sans font-medium text-gray-700 p-2">
-                    Loan Officer
-                  </th>
-                  <th className="text-sm font-sans font-medium text-gray-700 p-2">
-                    Interest Rate
-                  </th>
-                  <th className="text-sm font-sans font-medium text-gray-700 p-2">
-                    Loan Payment Status
-                  </th>
-                  <th className="text-sm font-sans font-medium text-gray-700 p-2">
-                    Actions{" "}
-                  </th>
-                </tr>
-              </thead>
+             <TableHeader columns={columns}/>
               <tbody className="relative">
-                {client.loans.map((loan: any | any) => (
+                {client.loans.map((loan: any | any, index:any) => (
                   <Loan
-                    key={client._id}
+                    key={loan._id}
                     loan={loan}
                     loanOfficer={`${client.staff.first_name} ${client.staff.other_names} ${client.staff.last_name}`}
                   />

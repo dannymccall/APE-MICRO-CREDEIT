@@ -40,7 +40,7 @@ export async function POST(req: NextRequest) {
 
     const amountPaid = pendingLoan.amountPaid;
     // console.log(vault[0])
-    if (amountPaid && !(isNaN(amountPaid)) && amountPaid > 0) {
+    if (amountPaid && !isNaN(amountPaid) && amountPaid > 0) {
       // console.log({amountPaid})
 
       if (!vault[0])
@@ -49,9 +49,15 @@ export async function POST(req: NextRequest) {
           "400",
           "Something went wrong, please try again"
         );
-      vault[0].balance += parseFloat(amountPaid)
-      vault[0].transactions.push({type: "Deposit", amount:parseFloat(amountPaid), createdAt: new Date(), staff: userId, purpose: "Loan Payment"});
-      await vault[0].save()
+      vault[0].balance += parseFloat(amountPaid);
+      vault[0].transactions.push({
+        type: "Deposit",
+        amount: parseFloat(amountPaid),
+        createdAt: new Date(),
+        staff: userId,
+        purpose: "Loan Payment",
+      });
+      await vault[0].save();
     }
     const paymentSchedule = loanPaymentSchedule.schedule;
     let balance = amountPaid;
@@ -70,7 +76,7 @@ export async function POST(req: NextRequest) {
           schedule.amountPaid += outstanding;
           schedule.outStandingBalance = 0;
           schedule.status = "paid";
-          schedule.datePaid = new Date(pendingLoan.createdAt)
+          schedule.datePaid = new Date(pendingLoan.createdAt);
         } else {
           schedule.outStandingBalance = outstanding - balance;
           schedule.status = "arrears";
@@ -89,8 +95,7 @@ export async function POST(req: NextRequest) {
             schedule.outStandingBalance = 0;
             schedule.status = "paid";
             balance -= schedule.amountToPay;
-          schedule.datePaid = new Date(pendingLoan.createdAt)
-
+            schedule.datePaid = new Date(pendingLoan.createdAt);
           } else {
             schedule.outStandingBalance = schedule.amountToPay - balance;
             schedule.status = "arrears";
@@ -118,7 +123,7 @@ export async function POST(req: NextRequest) {
       ),
       TemporalPayment.findByIdAndDelete(pendingLoanId),
     ]);
-    const response = await makeRequest(
+    await makeRequest(
       `${process.env.NEXT_PUBLIC_SOCKET_URL}/sockets/notify-loan-officer`,
       {
         method: "POST",

@@ -13,6 +13,12 @@ import {
 import Image from "next/image";
 import { IClient } from "@/app/lib/backend/models/client.model";
 import { useRouter } from "next/navigation";
+import {
+  FormField,
+  InputField,
+  SelectField,
+  RadioField,
+} from "@/app/component/FormElements";
 
 export interface IEditClient {
   client: IClient | any;
@@ -78,23 +84,20 @@ const EditClient: React.FC<IEditClient> = ({ client, setOpenModalEdit }) => {
       }, 3000);
     }
     if (state?.message === "success") {
+      router.refresh();
       formRef.current?.reset();
     }
     // Cleanup the timeout when the component unmounts or when state changes
     return () => clearTimeout(timeout);
   }, [state?.message]); // Depend on state.message to run when it changes
 
-  const title = [
-    { name: "Mr", value: "Mr" },
-    { name: "Mrs", value: "Mrs" },
-    { name: "Dr", value: "Dr" },
-  ];
+  const title = ["Mr", "Mrs", "Dr"];
 
   const idType = [
-    { name: "Ghana card", value: "gh-card" },
-    { name: "Voters ID card", value: "voter-id-card" },
-    { name: "Passport", value: "passport" },
-    { name: "Driver's license", value: "driver-license" },
+    "Ghana card",
+    "Voters ID card",
+    "Passport",
+    "Driver's license",
   ];
 
   // const handleSubmit = async (e: React.FormEvent) => {
@@ -125,361 +128,194 @@ const EditClient: React.FC<IEditClient> = ({ client, setOpenModalEdit }) => {
             {!state?.errors && state?.message}
           </p>
           <input type="hidden" name="service" value="updateClient" />
-          <div className="flex flex-col  my-5 relative">
-            <div className="flex flex-row w-32 gap-0 items-center">
-              <Label
-                className="font-sans font-semibold text-gray-500"
-                labelName="First name"
-              />
-              <span className="text-red-500 ml-1">*</span>
-            </div>
-            <input
-              type="text"
-              className="block text-sm  w-full px-5 py-2 border border-gray-200 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm tablet:w-96 desktop:w-full laptop:w-full phone:w-64"
-              name="firstName"
-              placeholder="Enter First name"
-              defaultValue={client.first_name}
-            />
-          </div>
-          {state?.errors?.firstName && (
-            <p className=" text-red-500 p-3 font-semibold">
-              {state.errors.firstName}
-            </p>
-          )}
-          <div className="flex flex-col my-5 relative">
-            <div className="flex flex-row w-full gap-0 items-center">
-              <Label
-                className="font-sans font-semibold text-gray-500"
-                labelName="Last name"
-              />
-              <span className="text-red-500 ml-1">*</span>
-            </div>
-            <input
-              type="text"
-              className="block text-sm  w-full px-5 py-2 border border-gray-200 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm tablet:w-96 desktop:w-full laptop:w-full phone:w-64"
-              name="lastName"
-              placeholder="Enter Last name"
-              defaultValue={client.last_name}
-            />
-          </div>
-          {state?.errors?.lastName && (
-            <p className=" text-red-500 p-3 font-semibold">
-              {state.errors.lastName}
-            </p>
-          )}
-          <div className="flex flex-col my-5">
-            <div className="flex flex-row w-32 gap-0 items-center">
-              <Label
-                className="font-sans font-semibold text-gray-500"
-                labelName="Nick name"
-              />
-              <span className="text-red-500 ml-1">*</span>
-            </div>
-            <input
-              type="text"
-              className="block text-sm  w-full px-5 py-2 border border-gray-200 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm tablet:w-96 desktop:w-full laptop:w-full phone:w-64"
-              placeholder={"Enter nick name"}
-              name="nickName"
-              defaultValue={client.nick_name}
-            />
-          </div>
-          {state?.errors?.nickName && (
-            <p className=" text-red-500 p-3 font-semibold">
-              {state.errors.nickName}
-            </p>
-          )}
-          <div className="flex flex-col my-5">
-            <div className="flex flex-row w-32 gap-0 items-center">
-              <Label
-                className="font-sans font-semibold text-gray-500"
-                labelName="Title"
-              />
-              <span className="text-red-500 ml-1">*</span>
-            </div>
-
-            <select
+          <FormField label="Title" required>
+            <SelectField
               name="title"
               defaultValue=""
-              className="block text-sm font-sans w-full px-5 py-2 border border-gray-200 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm cursor-pointer tablet:w-96 desktop:w-full laptop:w-full phone:w-64"
-            >
-              <option  value={client.title}>
-                {client.title}
-              </option>
-              {title && title.length > 0 ? (
-                title.map((titleValue) => (
-                  <option
-                    value={titleValue.value}
-                    key={titleValue.value}
-                    className="text-sm font-sans"
-                  >
-                    {titleValue.name}
-                  </option>
-                ))
-              ) : (
-                <option disabled value="">
-                  No titles available
-                </option>
-              )}
-            </select>
-          </div>
-          {state?.errors?.title && (
-            <p className=" text-red-500 p-3 font-semibold">
-              {state.errors.title}
-            </p>
-          )}
-          <div className="flex flex-col my-5">
-            <div className="flex flex-row w-32 gap-0 items-center">
-              <Label
-                className="font-sans font-semibold text-gray-500"
-                labelName="Branch"
-              />
-              <span className="text-red-500 ml-1">*</span>
-            </div>
-            <select
-              name="branch"
-              className="block text-sm font-sans w-full px-5 py-2 border border-gray-200 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm cursor-pointer tablet:w-96 desktop:w-full laptop:w-full phone:w-64"
-              defaultValue=""
-            >
-              <option  value={client.branch.branchName}>
-                {client.branch.branchName || "No Branch"}
-              </option>
-              {branches.map((branch: any) => (
-                <option
-                  value={branch.branchName}
-                  key={branch.branchName}
-                  className="text-sm font-sans"
-                >
-                  {branch.branchName}
-                </option>
-              ))}
-            </select>
-          </div>
-          {state?.errors?.branch && (
-            <p className=" text-red-500 p-3 font-semibold">
-              {state.errors.branch}
-            </p>
-          )}
-          <div className="flex flex-col my-5">
-            <div className="flex flex-row w-32 gap-0 items-center">
-              <Label
-                className="font-sans font-semibold text-gray-500"
-                labelName="Client status"
-              />
-              <span className="text-red-500 ml-1">*</span>
-            </div>
-            <select
-              name="clientStatus"
-              className="block text-sm font-sans w-full px-5 py-2 border border-gray-200 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm cursor-pointer tablet:w-96 desktop:w-full laptop:w-full phone:w-64"
-              defaultValue=""
-            >
-              <option  value={client.client_status.toLowerCase()}>
-                {toCapitalized(client.client_status)}
-              </option>
-              {["Active", "Dormant", "In Active"].map((status: any) => (
-                <option
-                  value={status.toLowerCase()}
-                  key={status.toLowerCase()}
-                  className="text-sm font-sans"
-                >
-                  {status}
-                </option>
-              ))}
-            </select>
-          </div>
-          {state?.errors?.branch && (
-            <p className=" text-red-500 p-3 font-semibold">
-              {state.errors.branch}
-            </p>
-          )}
-          <div className="flex flex-col my-5">
-            <div className="flex flex-row w-32 gap-0 items-center">
-              <Label
-                className="font-sans font-semibold text-gray-500"
-                labelName="Union"
-              />
-              <span className="text-red-500 ml-1">*</span>
-            </div>
-            <input
+              options={[...title, client.title]}
+            />
+            {state?.errors?.title && (
+              <p className=" text-red-500 p-3 font-semibold">
+                {state.errors.title}
+              </p>
+            )}
+          </FormField>
+          <FormField label="First Name" required>
+            <InputField
+              name="firstName"
+              placeholder="Enter First Name"
               type="text"
-              className="block text-sm font-sans w-full px-5 py-2 border border-gray-200 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm tablet:w-96 desktop:w-full laptop:w-full phone:w-64"
-              placeholder={"Enter union"}
+              defaultValue={client.first_name}
+            />
+            {state?.errors?.firstName && (
+              <p className=" text-red-500 p-3 font-semibold">
+                {state.errors.firstName}
+              </p>
+            )}
+          </FormField>
+          <FormField label="Last Name" required>
+            <InputField
+              name="lastName"
+              placeholder="Enter Last Name"
+              type="text"
+              defaultValue={client.last_name}
+            />
+            {state?.errors?.lastName && (
+              <p className=" text-red-500 p-3 font-semibold">
+                {state.errors.lastName}
+              </p>
+            )}
+          </FormField>
+          <FormField label="Nick Name" required>
+            <InputField
+              name="nickName"
+              placeholder="Enter Nick Name"
+              type="text"
+              defaultValue={client.nick_name}
+            />
+            {state?.errors?.nickName && (
+              <p className=" text-red-500 p-3 font-semibold">
+                {state.errors.nickName}
+              </p>
+            )}
+          </FormField>
+          <FormField label="Branch" required>
+            <SelectField
+              name="branch"
+              defaultValue=""
+              options={[
+                client.branch.branchName,
+                ...branches.map((branch: any) => branch.branchName),
+              ]}
+            />
+            {state?.errors?.branch && (
+              <p className=" text-red-500 p-3 font-semibold">
+                {state.errors.branch}
+              </p>
+            )}
+          </FormField>
+          <FormField label="Client Status" required>
+            <SelectField
+              name="clientStatus"
+              defaultValue=""
+              options={[
+                toCapitalized(client.client_status),
+                "Active",
+                "Dormant",
+                "In Active",
+              ]}
+            />
+          </FormField>
+
+          <FormField label="Union" required>
+            <InputField
               name="union"
               defaultValue={client.union}
-            />
-          </div>
-          {state?.errors?.union && (
-            <p className=" text-red-500 p-3 font-semibold">
-              {state.errors.union}
-            </p>
-          )}
-          <div className="flex flex-col my-5">
-            <div className="flex flex-row w-36 gap-0 items-center">
-              <Label
-                className="font-sans font-semibold text-gray-500"
-                labelName="Location of union"
-              />
-              <span className="text-red-500 ml-1">*</span>
-            </div>
-            <input
+              placeholder="Enter Union"
               type="text"
-              className="block text-sm font-sans  w-full px-5 py-2 border border-gray-200 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm tablet:w-96 desktop:w-full laptop:w-full phone:w-64"
-              placeholder={"Enter union location"}
+            />
+            {state?.errors?.union && (
+              <p className=" text-red-500 p-3 font-semibold">
+                {state.errors.union}
+              </p>
+            )}
+          </FormField>
+          <FormField label="Union Location" required>
+            <InputField
               name="unionLocation"
+              placeholder="Enter Union Location"
+              type="text"
               defaultValue={client.unionLocation}
             />
-          </div>
-          {state?.errors?.unionLocation && (
-            <p className=" text-red-500 p-3 font-semibold">
-              {state.errors.unionLocation}
-            </p>
-          )}
-          <div className="flex flex-col my-5">
-            <div className="flex flex-row w-32 gap-0 items-center">
-              <Label
-                className="font-sans font-semibold text-gray-500"
-                labelName="Mibile"
-              />
-              <span className="text-red-500 ml-1">*</span>
-            </div>
-            <input
-              type="text"
-              className="block text-sm font-sans w-full px-5 py-2 border border-gray-200 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm tablet:w-96 desktop:w-full laptop:w-full phone:w-64"
-              placeholder={"Enter mobile"}
+            {state?.errors?.unionLocation && (
+              <p className=" text-red-500 p-3 font-semibold">
+                {state.errors.unionLocation}
+              </p>
+            )}
+          </FormField>
+          <FormField label="Mobile" required>
+            <InputField
               name="mobile"
+              placeholder="Enter Mobile"
               defaultValue={client.mobile}
-            />
-          </div>
-          {state?.errors?.mobile && (
-            <p className=" text-red-500 p-3 font-semibold">
-              {state.errors.mobile}
-            </p>
-          )}
-          <div className="flex flex-col my-5">
-            <div className="flex flex-row w-32 gap-0 items-center">
-              <Label
-                className="font-sans font-semibold text-gray-500"
-                labelName="Residence"
-              />
-              <span className="text-red-500 ml-1">*</span>
-            </div>
-            <input
               type="text"
-              className="block text-sm font-sans w-full px-5 py-2 border border-gray-200 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm tablet:w-96 desktop:w-full laptop:w-full phone:w-64"
-              placeholder={"Enter residence"}
+            />
+            {state?.errors?.mobile && (
+              <p className=" text-red-500 p-3 font-semibold">
+                {state.errors.mobile}
+              </p>
+            )}
+          </FormField>
+          <FormField label="Residence" required>
+            <InputField
               name="residence"
+              placeholder="Enter Residence"
+              type="text"
               defaultValue={client.residence}
             />
-          </div>
-          {state?.errors?.residence && (
-            <p className=" text-red-500 p-3 font-semibold">
-              {state.errors.residence}
-            </p>
-          )}
-          <div className="flex flex-col my-5 relative">
-            <div className="flex flex-row w-32 gap-0 items-center">
-              <Label
-                className="font-sans font-semibold text-gray-500"
-                labelName="Date of Birth:"
-              />
-              <span className="text-red-500 ml-1">*</span>
-            </div>
-            <input
-              type="date"
-              className="block w-full text-sm font-sans px-5 py-2 border border-gray-200 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm tablet:w-96 desktop:w-full laptop:w-full phone:w-64"
+            {state?.errors?.residence && (
+              <p className=" text-red-500 p-3 font-semibold">
+                {state.errors.residence}
+              </p>
+            )}
+          </FormField>
+          <FormField label="Date of Birth" required>
+            <InputField
               name="dob"
+              placeholder="Enter Mobile"
               defaultValue={formatDate(client.dob)}
+              type="date"
             />
-          </div>
-          {state?.errors?.dob && (
-            <p className=" text-red-500 p-3 font-semibold">
-              {state.errors.dob}
-            </p>
-          )}
-          <div className="flex flex-col my-5">
-            <div className="flex flex-row w-32 gap-0 items-center">
-              <Label
-                className="font-sans font-semibold text-gray-500"
-                labelName="ID type"
-              />
-              <span className="text-red-500 ml-1">*</span>
-            </div>
-            <select
+            {state?.errors?.dob && (
+              <p className=" text-red-500 p-3 font-semibold">
+                {state.errors.dob}
+              </p>
+            )}
+          </FormField>
+          <FormField label="ID Type" required>
+            <SelectField
               name="idType"
-              className="block text-sm font-sans  w-full px-5 py-2 border border-gray-200 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm cursor-pointer tablet:w-96 desktop:w-full laptop:w-full phone:w-64"
               defaultValue=""
-            >
-              <option
+              options={[client.idType, ...idType]}
+            />
+            {state?.errors?.idType && (
+              <p className=" text-red-500 p-3 font-semibold">
+                {state.errors.idType}
+              </p>
+            )}
+          </FormField>
 
-                value={client.idType}
-                className="text-sm font-sans"
-              >
-                {client.idType}
-              </option>
-              {idType.map((id: any) => (
-                <option
-                  value={id.name}
-                  key={id.name}
-                  className="text-sm font-sans"
-                >
-                  {id.name}
-                </option>
-              ))}
-            </select>
-          </div>
-          {state?.errors?.idType && (
-            <p className=" text-red-500 p-3 font-semibold">
-              {state.errors.idType}
-            </p>
-          )}
-
-          <div className="flex flex-col my-5">
-            <div className="flex flex-row w-32 gap-0 items-center">
-              <Label
-                className="font-sans font-semibold text-gray-500"
-                labelName="ID Number"
-              />
-              <span className="text-red-500 ml-1">*</span>
-            </div>
-            <input
-              type="text"
-              className="block text-sm font-sans w-full px-5 py-2 border border-gray-200 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm tablet:w-96 desktop:w-full laptop:w-full phone:w-64"
-              placeholder={"Enter ID Number"}
+          <FormField label="ID Number" required>
+            <InputField
               name="idNumber"
+              placeholder="Enter ID Number"
+              type="text"
               defaultValue={client.idNumber}
             />
-          </div>
-          {state?.errors?.idNumber && (
-            <p className=" text-red-500 p-3 font-semibold">
-              {state.errors.idNumber}
-            </p>
-          )}
-          <div className="flex flex-row my-5 w-full gap-8">
-            <div className="w-full">
-              <div className="flex flex-row w-32 gap-0 items-center">
-                <Label
-                  className="font-sans font-semibold text-gray-500"
-                  labelName="Passport"
-                />
-                <span className="text-red-500 ml-1">*</span>
-              </div>
-              <input
-                type="file"
-                className="file-input text-sm font-sans block w-full px-5 py-2 border border-gray-200 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm tablet:w-96 desktop:w-full laptop:w-full phone:w-64"
-                name="passport"
-                onChange={handleFileChange}
-              />
-            </div>
+            {state?.errors?.idNumber && (
+              <p className=" text-red-500 p-3 font-semibold">
+                {state.errors.idNumber}
+              </p>
+            )}
+          </FormField>
+          <FormField label="Photo" required>
+            <InputField
+              name="passport"
+              placeholder="Enter Mobile"
+              type="file"
+              onChange={handleFileChange}
+            />
+            {state?.errors?.passport && (
+              <p className=" text-red-500 p-3 font-semibold">
+                {state.errors.passport}
+              </p>
+            )}
             {passport && !state?.errors?.passport && !state?.errors && (
-              <div>
+              <div className="mt-5">
                 <Image src={passport} alt="passport" width={200} height={200} />
               </div>
             )}
-          </div>
-          {state?.errors?.passport && (
-            <p className=" text-red-500 p-3 font-semibold">
-              {state.errors.passport}
-            </p>
-          )}
+          </FormField>
           <div className="flex flex-col my-5">
             <div className="flex flex-row w-32 gap-0 items-center">
               <Label
@@ -494,7 +330,6 @@ const EditClient: React.FC<IEditClient> = ({ client, setOpenModalEdit }) => {
               defaultValue=""
             >
               <option
-                
                 value={client.staff.username}
                 className="text-sm font-sans"
               >
@@ -519,71 +354,35 @@ const EditClient: React.FC<IEditClient> = ({ client, setOpenModalEdit }) => {
             </p>
           )}
           <input type="hidden" name="id" value={client._id} />
-          <div className="flex flex-col my-2 relative">
-            <div className="flex flex-row w-32 items-center my-5">
-              <Label
-                className="font-sans font-semibold text-gray-500"
-                labelName="Marital status:"
-              />
-              <span className="text-red-500 ml-1">*</span>
-            </div>
-            <div className="w-full flex flex-row tablet:w-96 desktop:flex-row laptop:flex-row phone:flex-col">
-              {["Single", "Married", "Divorced", "Widowed"].map(
-                (maritalStatus, index) => (
-                  <div
-                    className="flex flex-row items-center mr-10 gap-3"
-                    key={maritalStatus}
-                  >
-                    <Label
-                      className="w-16 font-sans font-semibold text-gray-500"
-                      labelName={maritalStatus}
-                    />
-                    <input
-                      type="radio"
-                      name="maritalStatus"
-                      className="radio radio-primary text-sm w-4 h-4"
-                      defaultChecked={index === 0}
-                      value={maritalStatus}
-                    />
-                  </div>
-                )
+          <div className="space-y-2 my-5">
+            <RadioField
+              options={["Single", "Married", "Divorced", "Widowed"]}
+              name="maritalStatus"
+              label="Marital Status"
+              required
+            >
+              {state?.errors?.sex && (
+                <p className=" text-red-500 p-3 font-semibold">
+                  {state.errors.sex}
+                </p>
               )}
-            </div>
+            </RadioField>
           </div>
-          {state?.errors?.sex && (
-            <p className=" text-red-500 p-3 font-semibold">
-              {state.errors.sex}
-            </p>
-          )}
-          <div className="flex flex-row my-2 relative tablet:w-96 desktop:flex-row laptop:flex-row phone:flex-col">
-            <div className="flex flex-row w-32 items-center my-5">
-              <Label
-                className="font-sans font-semibold text-gray-500"
-                labelName="Gender:"
-              />
-              <span className="text-red-500 ml-1">*</span>
-            </div>
-            {["Male", "Female"].map((gender, index) => (
-              <div className="flex flex-row items-center mr-10" key={gender}>
-                <Label
-                  className="w-16 font-sans font-semibold text-gray-500"
-                  labelName={gender}
-                />
-                <input
-                  type="radio"
-                  name="gender"
-                  className="radio radio-primary text-sm w-4 h-4"
-                  defaultChecked={index === 0}
-                  value={gender}
-                />
-              </div>
-            ))}
+
+          <div className="space-y-2 my-5">
+            <RadioField
+              options={["Male", "Female"]}
+              name="gender"
+              label="Gender"
+              required
+            >
+              {state?.errors?.gender && (
+                <p className=" text-red-500 p-3 font-semibold">
+                  {state.errors.gender}
+                </p>
+              )}
+            </RadioField>
           </div>
-          {state?.errors?.gender && (
-            <p className=" text-red-500 p-3 font-semibold">
-              {state.errors.gender}
-            </p>
-          )}
 
           <button
             className={`btn w-24 flex items-center font-sans rounded-md justify-center gap-3 ${"bg-gradient-to-r from-violet-500 to-violet-700 hover:from-violet-700 hover:to-violet-900"} text-white py-2 rounded-md focus:outline-none font-bold font-mono transition`}

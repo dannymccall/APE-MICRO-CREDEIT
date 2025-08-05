@@ -1,8 +1,8 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, {  useState } from "react";
 import { ILoanApplication } from "@/app/lib/backend/models/loans.model";
-import Image from "next/image";
+
 import LoanClientDetails from "@/app/component/loans/LoanClientDetails";
 import LoanGuarantorDetails from "@/app/component/loans/LoanGuarantorDetails";
 import PaymentSchedule, {
@@ -18,7 +18,7 @@ import { useRouter } from "next/navigation";
 import { getOutstandingBalances, makeRequest } from "@/app/lib/helperFunctions";
 import Toast from "@/app/component/toast/Toast";
 import { FaCircleCheck } from "react-icons/fa6";
-import ImageComponent from "@/app/component/Image";
+
 export type LoanDetailsProps = {
   loan: ILoanApplication | any;
   loanId: string;
@@ -28,21 +28,7 @@ const LoanDetails: React.FC<LoanDetailsProps> = ({ loan, loanId }) => {
 
   const [showToast, setShowToast] = useState<boolean>(false);
   const [modalOpen, setModalOpen] = React.useState<boolean>(false);
-  const [clientAvarta, setClientAvarta] = useState<any>(null);
-  const [guarantorAvarta, setGuarantor] = useState<any>(null);
 
-  const env = process.env.NEXT_PUBLIC_NODE_ENV;
-
-
-  useEffect(() => {
-    if (env === "development") {
-      setClientAvarta(`/uploads/${loan.client.avarta}`);
-    setGuarantor(`/uploads/${loan.guarantor.avarta}`);
-    }
-  },[])
-
-  // console.log({loan})
-  // const today: Date = new Date("2025-01-25");
   const arreas = loan.paymentSchedule.schedule.filter(
     (schedule: any) => schedule.status === "arrears"
   ) as any[];
@@ -58,7 +44,6 @@ const LoanDetails: React.FC<LoanDetailsProps> = ({ loan, loanId }) => {
     clientId: string,
     nextPayment: string
   ) {
-    console.log(amount, loanId, nextPayment, clientId);
     const body = {
       0: {
         amount,
@@ -86,7 +71,6 @@ const LoanDetails: React.FC<LoanDetailsProps> = ({ loan, loanId }) => {
     }
   }
   const data = getOutstandingBalances(loan);
-  console.log({})
   const tabs = [
     {
       label: "Loan Application Details",
@@ -147,7 +131,7 @@ const LoanDetails: React.FC<LoanDetailsProps> = ({ loan, loanId }) => {
         <Toast Icon={FaCircleCheck} message="Payment Successfu" title="" />
       )}
       <InfoHeaderComponent
-        route={"Manage Loan"}
+        route={"View Loan"}
         links={breadcrumbsLinks}
         title="Manage loan"
         onClick={onClick}
@@ -171,20 +155,7 @@ const LoanDetails: React.FC<LoanDetailsProps> = ({ loan, loanId }) => {
               </Link>
             </div>
             <div className="flex w-full gap-3 items-center">
-              <div className="h-full flex flex-row items-center gap-10">
-                {env !== "development" ? (
-                  <ImageComponent src={loan.client.avarta && loan.client.avarta} className="rounded-md"/>
-                ) : (
-                  <Image
-                    src={clientAvarta && clientAvarta}
-                    width={100}
-                    height={100}
-                    alt="Profile image"
-                    className=" rounded-md"
-                  />
-                )}
-              </div>
-              <LoanClientDetails client={loan.client} />
+              <LoanClientDetails client={loan.client} loan={loan} />
             </div>
           </div>
           <div className="divider"></div>
@@ -201,20 +172,7 @@ const LoanDetails: React.FC<LoanDetailsProps> = ({ loan, loanId }) => {
               />
             </div>
             <div className="flex w-full gap-3 items-center">
-              <div className="h-full flex flex-row items-center gap-10">
-              {env !== "development" ? (
-                  <ImageComponent src={loan.guarantor.avarta && loan.guarantor.avarta} className="rounded-md"/>
-                ) : (
-                  <Image
-                    src={guarantorAvarta && guarantorAvarta}
-                    width={100}
-                    height={100}
-                    alt="Profile image"
-                    className=" rounded-md"
-                  />
-                )}
-              </div>
-              <LoanGuarantorDetails guarantor={loan.guarantor} />
+              <LoanGuarantorDetails guarantor={loan.guarantor} loan={loan} />
             </div>
           </div>
           <div className="divider"></div>

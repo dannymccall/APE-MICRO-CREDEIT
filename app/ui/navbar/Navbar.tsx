@@ -11,7 +11,7 @@ import {
   FiUser,
 } from "react-icons/fi";
 import { CgMenuGridO } from "react-icons/cg";
-import { useLogginIdentity } from "@/app/lib/customHooks";
+import { useLogginIdentity } from "@/app/lib/hooks/useLogginIdentity";
 import NavbarLinks from "@/app/component/navbar/NavbarLinks";
 import { makeRequest, clearLocalStorage } from "@/app/lib/helperFunctions";
 import { useRouter } from "next/navigation";

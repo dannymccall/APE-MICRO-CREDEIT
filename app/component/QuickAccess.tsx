@@ -9,7 +9,7 @@ const QuickAccess = ({
 }) => {
   return (
     <div>
-      <button className="btn btn-sm glass bg-violet-800 text-white" onClick={onClick}>
+      <button className="btn btn-sm rounded-md shadow-xl border border-slate-500 hover:bg-violet-500 transition-all duration-300 active:scale-105 bg-violet-800 text-white" onClick={onClick}>
         {title}
       </button>
     </div>

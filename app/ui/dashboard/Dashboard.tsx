@@ -13,12 +13,10 @@ import { AiOutlineUserAdd, AiOutlineFileSearch } from "react-icons/ai"; // Ant D
 import { MdOutlineApproval } from "react-icons/md"; // Material Icons
 import Link from "next/link";
 import { GiCash } from "react-icons/gi";
-import { getDashboardData } from "@/app/lib/serverFunctions";
 import { formatCurrency, makeRequest } from "@/app/lib/helperFunctions";
 import { LoadingDivs } from "@/app/component/Loaders/Loading";
 import { IoIosArrowRoundForward } from "react-icons/io";
 import Notifications from "@/app/component/Notification";
-// import { useDashboardValues } from "@/app/lib/serverhooks";
 import { Activities } from "@/app/component/Dashboard/Activities";
 import DashboardLoader from "@/app/component/Loaders/DashboardLoader";
 const DynamicChart = lazy(() => import("@/app/component/DynamicChart"));

@@ -18,8 +18,7 @@ const SearchInput: React.FC<SearchInputProps> = ({
   const [query, setQuery] = useState("");
 
   function handleOnKeyUp(e: React.KeyboardEvent<HTMLInputElement>): void {
-    if (e.key === "Enter") {
-      console.log("Enter pressed. Value:", e.currentTarget.value);
+    if (e.key === "Enter" && query.trim().length === 0) {
       // Your logic here, e.g., submit form or search
       handleOnclickSearch(e.currentTarget.value);
     }
@@ -27,8 +26,8 @@ const SearchInput: React.FC<SearchInputProps> = ({
 
   return (
     <div className="flex justify-center gap-4 items-center mb-10">
-      <button className="bg-violet-600 px-5 py-2 text-slate-50 rounded-md shadow-md active:scale-105 transition-all duration-300" onClick={fetchAll}>
-        All {buttonLabel}
+      <button className="bg-violet-600 flex gap-1 phone:px-2 phone:py-2 tablet:px-4 tablet:py-2 laptop:px-4 laptop:py-2 desktop:px-4 desktop:py-2 text-slate-50 rounded-md shadow-md active:scale-105 transition-all duration-300" onClick={fetchAll}>
+        All <span className="phone:hidden tablet:block desktop:block laptop:block">{buttonLabel}</span> 
       </button>
       <label className={`input flex items-center gap-2  ${className}`}>
         <svg
@@ -51,8 +50,9 @@ const SearchInput: React.FC<SearchInputProps> = ({
           onKeyUp={handleOnKeyUp}
         />
         <button
-          className="bg-violet-600 text-slate-50 px-4 py-1 rounded-md shadow-md active:scale-105 transition-all duration-300"
+          className="bg-violet-600 text-slate-50 px-4 py-1 disabled:opacity-70 rounded-md shadow-md active:scale-105 transition-all duration-300"
           onClick={() => handleOnclickSearch(query)}
+          disabled={query.trim().length === 0}
         >
           Search
         </button>

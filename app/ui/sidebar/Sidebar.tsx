@@ -17,7 +17,7 @@ import { RxDashboard } from "react-icons/rx";
 import { PiUsersThreeBold } from "react-icons/pi";
 import { FaCodeBranch } from "react-icons/fa6";
 import { GiCash } from "react-icons/gi";
-import { useLogginIdentity } from "@/app/lib/customHooks";
+import { useLogginIdentity } from "@/app/lib/hooks/useLogginIdentity";
 import { TbReportSearch } from "react-icons/tb";
 import { NavbarLink } from "../navbar/Navbar";
 import { IoIosInformationCircle } from "react-icons/io";
@@ -132,7 +132,7 @@ export default function Sidebar({
       roles: ["Admin", "Loan officer"],
       subLinks: [
         {
-          name: "Apply Loans",
+          name: "Apply Loan",
           href: "/add-loan",
           icon: FiChevronRight,
           roles: ["Admin", "Loan officer"],
@@ -320,7 +320,6 @@ export default function Sidebar({
                         <button
                           onClick={() => {
                             toggleMenu(link.name);
-                            console.log({ openMenus });
                           }}
                           className="w-full flex items-center justify-between p-2 mb-2 rounded-md hover:bg-violet-300 transition-all"
                         >

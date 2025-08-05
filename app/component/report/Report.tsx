@@ -11,6 +11,7 @@ import FillEmptySpaces from "../FillEmptySpaces";
 import DataRow from "../DataRow";
 import TableHeader, { TableColumn } from "../TableHeader";
 import TableBody from "../TableBody";
+import { getTotalWeeks } from "@/app/lib/helperFunctions";
 
 export function Disbursement({
   disbursements,
@@ -24,16 +25,24 @@ export function Disbursement({
     0
   );
   const totalPrincipalPayment = disbursements.reduce(
-    (sum, loan) => sum + Math.floor((loan.principalPayment || 0) * 12),
+    (sum, loan) =>
+      sum +
+      Math.floor(
+        (loan.principalPayment || 0) * getTotalWeeks(parseInt(loan.loanTerms))
+      ),
     0
   );
   const interestPayment = disbursements.reduce(
-    (sum, loan) => sum + (loan.interestPayment || 0) * 12,
+    (sum, loan) =>
+      sum +
+      (loan.interestPayment || 0) * getTotalWeeks(parseInt(loan.loanTerms)),
     0
   );
   const totalPayment = disbursements.reduce(
     (sum, loan) =>
-      sum + (loan.interestPayment + loan.principalPayment || 0) * 12,
+      sum +
+      (loan.interestPayment + loan.principalPayment || 0) *
+        getTotalWeeks(parseInt(loan.loanTerms)),
     0
   );
 
@@ -96,16 +105,25 @@ export function Disbursement({
     },
     {
       header: "Monthly Principal (x12)",
-      accessor: (d: any) => formatCurrency(Math.floor(d.principalPayment * 12)),
+      accessor: (d: any) =>
+        formatCurrency(
+          Math.floor(d.principalPayment * getTotalWeeks(parseInt(d.loanTerms)))
+        ),
     },
     {
       header: "Monthly Interest (x12)",
-      accessor: (d: any) => formatCurrency(Math.floor(d.interestPayment * 12)),
+      accessor: (d: any) =>
+        formatCurrency(
+          Math.floor(d.interestPayment * getTotalWeeks(parseInt(d.loanTerms)))
+        ),
     },
     {
       header: "Total (x12)",
       accessor: (d: any) =>
-        formatCurrency(Math.floor(d.principalPayment + d.interestPayment) * 12),
+        formatCurrency(
+          Math.floor(d.principalPayment + d.interestPayment) *
+            getTotalWeeks(parseInt(d.loanTerms))
+        ),
     },
     {
       header: "Guarantor Name",
@@ -126,9 +144,12 @@ export function Disbursement({
   ];
   return (
     <main className="overflow-x-auto">
-      <h1 className="font-mono font-semibold text-lg m-5 underline text-center">
+      {/* <h1 className="font-mono font-semibold text-lg m-5 underline text-center">
         {header}
-      </h1>
+      </h1> */}
+      <tr className="w-full flex justify-center my-5">
+        <th>{header}</th>
+      </tr>
       <table className="table-xs">
         <TableHeader columns={columns} />
         <TableBody
@@ -198,7 +219,6 @@ export function GeneralReport({ reports }: { reports: any[] }) {
       schedule: Schedule[];
     };
   }
-
 
   reports.forEach((report: Report) => {
     report.paymentSchedule.schedule.forEach((schedule: Schedule) => {
@@ -277,9 +297,9 @@ export function GeneralReport({ reports }: { reports: any[] }) {
 
   return (
     <React.Fragment>
-      <h1 className="font-mono font-semibold text-lg text-center m-5 underline">
-        General Report
-      </h1>
+      <tr className="w-full flex justify-center my-5">
+        <th>General Report</th>
+      </tr>
 
       <Disbursement disbursements={reports} header="Disbursement" />
       {maturedLoans.length > 0 && (
@@ -298,7 +318,6 @@ export function GeneralReport({ reports }: { reports: any[] }) {
         <Arrears
           reports={arrears}
           totalAmountToPay={arrearsSumValues.totalAmountToPay}
-          totalAmountPaid={arrearsSumValues.totalAmountPaid}
           totalOutstandingBalance={arrearsSumValues.totalOutstandingBalance}
           header="Arrears Report"
         />
@@ -307,7 +326,6 @@ export function GeneralReport({ reports }: { reports: any[] }) {
         <Arrears
           reports={payments}
           totalAmountToPay={paymentSumValues.totalAmountToPay}
-          totalAmountPaid={paymentSumValues.totalAmountPaid}
           totalOutstandingBalance={paymentSumValues.totalOutstandingBalance}
           header="Payments Report"
         />
@@ -317,7 +335,6 @@ export function GeneralReport({ reports }: { reports: any[] }) {
         <Arrears
           reports={payments}
           totalAmountToPay={paymentSumValues.totalAmountToPay}
-          totalAmountPaid={paymentSumValues.totalAmountPaid}
           totalOutstandingBalance={paymentSumValues.totalOutstandingBalance}
           header="Arrears Report"
         />
@@ -413,9 +430,9 @@ export function Repayments({
   ];
   return (
     <main className="overflow-x-auto">
-      <h1 className="font-mono font-semibold text-lg m-5 underline text-center">
-        Repayment Reports
-      </h1>
+       <tr className="w-full flex justify-center my-4">
+        <th>Repayments</th>
+      </tr>
       <table className="table-xs">
         <TableHeader columns={columns} />
         <TableBody
@@ -440,13 +457,11 @@ export function Repayments({
 export function Arrears({
   reports,
   totalAmountToPay,
-  totalAmountPaid,
   totalOutstandingBalance,
   header,
 }: {
   reports: any[];
   totalAmountToPay: number;
-  totalAmountPaid: number;
   totalOutstandingBalance: number;
   header: string;
 }) {
@@ -541,9 +556,9 @@ export function Arrears({
   ];
   return (
     <main className="overflow-x-auto">
-      <h1 className="font-mono font-semibold text-lg m-5 underline text-center">
-        {header}
-      </h1>
+     <tr className="w-full flex justify-center my-5">
+        <th>{header}</th>
+      </tr>
       <table className="table-xs">
         <TableHeader columns={columns} />
         <TableBody
@@ -556,10 +571,9 @@ export function Arrears({
                 className="text-neutral-800"
                 values={[
                   formatCurrency(totalAmountToPay),
-                  formatCurrency(totalAmountPaid),
                   formatCurrency(totalOutstandingBalance),
                 ]}
-                FillEmptySpaces={<FillEmptySpaces length={9} />}
+                FillEmptySpaces={<FillEmptySpaces length={10} />}
               />
               {/* <td className="p-1">{"  "}</td>{" "} */}
             </>
@@ -703,9 +717,9 @@ export function Outstanding({ data, page }: { data: any[]; page: string }) {
 
   return (
     <main className="overflow-x-auto">
-      <h1 className="font-mono font-semibold text-lg m-5 underline text-center">
-        Outstanding Reports
-      </h1>
+      <tr className="w-full flex justify-center my-5">
+        <th>Outstanding</th>
+      </tr>
       <table className="table-xs">
         <TableHeader columns={columns} />
         <TableBody

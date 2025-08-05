@@ -10,7 +10,7 @@ import { ILoanApplication } from "@/app/lib/backend/models/loans.model";
 import { IoIosArrowRoundForward } from "react-icons/io";
 
 import Link from "next/link";
-import { useLogginIdentity } from "@/app/lib/customHooks";
+import { useLogginIdentity } from "@/app/lib/hooks/useLogginIdentity";
 
 interface LoanProps {
   loan: ILoanApplication | any;
@@ -33,7 +33,7 @@ const Loan: React.FC<LoanProps> = ({ loan, loanOfficer }) => {
         />
       )}
 
-      <tr key={loan.id} className="hover:bg-gray-100 relative">
+      <tr className="hover:bg-gray-100 relative">
         <td className="p-2">{loan.systemId}</td>
         <td className="p-2">{loan.loanProduct}</td>
         <td className="p-2">{Number(loan.principal.toFixed(2))}</td>

@@ -11,7 +11,7 @@ import SearchInput from "@/app/component/Search/SearchInput";
 const LoanList = dynamic(() => import("./loanList"), { ssr: false });
 import { LoadingDivs } from "@/app/component/Loaders/Loading";
 import InfoHeaderComponent from "@/app/component/Info-header/Info-Header";
-import {  useSearch } from "@/app/lib/customHooks";
+import { useSearch } from "@/app/lib/hooks/useSearch";
 import TableSkeletonLoader from "@/app/component/TableSkeletonLoader";
 const AllLoans = () => {
   // const [loans, setLoans] = useState<ILoanApplication[]>([]);
@@ -36,7 +36,7 @@ const AllLoans = () => {
   } = useSearch<ILoanApplication>({
     endpoint: 'api/loans',
     initialPage: 1,
-    limit: 10
+    limit: 15
   });
 
   // async function fetchLoans(query = "") {

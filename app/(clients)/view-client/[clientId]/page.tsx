@@ -11,31 +11,27 @@ export default async function Page({
 }: {
   params: Promise<{ clientId: string }>;
 }) {
-  // const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
-  // const fullUrl = `${baseUrl}/api/clients?clientId=${encodeURIComponent(
-  //   clientId
-  // )}`;
+  const clientId = (await params).clientId;
+  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
+  const fullUrl = `${baseUrl}/api/clients?clientId=${encodeURIComponent(
+    clientId
+  )}`;
 
   try {
     // const client = await makeRequest(fullUrl, {
     //   method: "GET",
-    //   cache: "no-store",
-    const clientId = (await params).clientId;
-    const { GET } = await import("@/app/api/clients/route");
-    const request: any = new Request(
-      `http://localhost/api/clients?clientId=${encodeURIComponent(clientId)}`
-    );
-    // });
-    const response = await GET(request);
+    //  cache: "no-store",
+    // })
+    const response = await fetch(fullUrl, {method:"GET", cache:"no-store"});
     const client = await response.json();
-    console.log(client);
+  
     if (!client?.data) {
       return (
         <main>
           <p>Client data not found.</p>
         </main>
       );
-    }
+  }
 
     return (
       <Suspense fallback={<LoadingDivs />}>

@@ -1,11 +1,10 @@
 "use client";
 
-import React, { useState } from "react";
+import React from "react";
 import { IoCaretForward } from "react-icons/io5";
 import { IoCaretBackSharp } from "react-icons/io5";
 import { ILoanApplication } from "@/app/lib/backend/models/loans.model";
 import Loan from "./Loan";
-import { useDebounceValue } from "@/app/lib/customHooks";
 
 interface LoanListProps {
   loans: ILoanApplication[];
