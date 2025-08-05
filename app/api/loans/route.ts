@@ -137,6 +137,7 @@ export async function GET(req: NextRequest) {
             $or: [
               { first_name: { $regex: search, $options: "i" } },
               { last_name: { $regex: search, $options: "i" } },
+              {paymentStatus: {$regex: search, $options: "i"}}
             ],
           },
           { client_status: "active" },
