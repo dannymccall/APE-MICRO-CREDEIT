@@ -116,6 +116,7 @@ const PaymentSchedule: React.FC<IPaymentSchedule> = ({
                 handleArrearsPayment={handleArrearsPayment}
                 selectedSchedule={selectedSchedule!}
                 handleOnClickSchedule={handleOnClickSchedule}
+                pending={pending}
               />
             ))}
             </div> */}

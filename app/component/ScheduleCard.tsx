@@ -33,6 +33,7 @@ export interface PaymentScheduleRowProps {
     nextPayment: string,
     clientId: string
   ) => void;
+  pending: boolean
 }
 const ScheduleCard = ({
   schedule,
@@ -44,6 +45,7 @@ const ScheduleCard = ({
   handleArrearsPayment,
   selectedSchedule,
   handleOnClickSchedule,
+  pending
 }: PaymentScheduleRowProps) => {
   const [amount, setAmount] = React.useState<number | undefined>();
 
@@ -124,6 +126,7 @@ const ScheduleCard = ({
           loan={loan}
           handleArrearsPayment={handleArrearsPayment}
           selectedSchedule={selectedSchedule}
+          pending={pending}
         />
       )}
     </div>
