@@ -1,6 +1,6 @@
 "use client";
 
-import React, {  useState } from "react";
+import React, { useState } from "react";
 import { ILoanApplication } from "@/app/lib/backend/models/loans.model";
 
 import LoanClientDetails from "@/app/component/loans/LoanClientDetails";
@@ -28,11 +28,16 @@ const LoanDetails: React.FC<LoanDetailsProps> = ({ loan, loanId }) => {
 
   const [showToast, setShowToast] = useState<boolean>(false);
   const [modalOpen, setModalOpen] = React.useState<boolean>(false);
-
+  const [pending, setPending] = useState<boolean>(false);
   const arreas = loan.paymentSchedule.schedule.filter(
     (schedule: any) => schedule.status === "arrears"
   ) as any[];
 
+  const defaults = loan.paymentSchedule.schedule.filter(
+    (schedule: any) => schedule.status === "default"
+  ) as any[];
+
+  console.log({ defaults });
   const outStandingLoans = loan.paymentSchedule.schedule.filter(
     (schedule: any) => schedule.outStandingBalance > 0
   ) as any[];
@@ -44,6 +49,7 @@ const LoanDetails: React.FC<LoanDetailsProps> = ({ loan, loanId }) => {
     clientId: string,
     nextPayment: string
   ) {
+    setPending(true);
     const body = {
       0: {
         amount,
@@ -62,6 +68,7 @@ const LoanDetails: React.FC<LoanDetailsProps> = ({ loan, loanId }) => {
     if (response.success) {
       setModalOpen(false);
       setShowToast(true);
+      setPending(false);
 
       const timeOut: NodeJS.Timeout = setTimeout(() => {
         setShowToast(false);
@@ -86,6 +93,7 @@ const LoanDetails: React.FC<LoanDetailsProps> = ({ loan, loanId }) => {
           handleArrearsPayment={() => {}}
           modalOpen={modalOpen}
           setModalOpen={setModalOpen}
+          pending={pending}
         />
       ),
     },
@@ -100,9 +108,28 @@ const LoanDetails: React.FC<LoanDetailsProps> = ({ loan, loanId }) => {
             handleArrearsPayment={handleArrearsPayment}
             modalOpen={modalOpen}
             setModalOpen={setModalOpen}
+            pending={pending}
           />
         ) : (
           <h1>No Arrears</h1>
+        ),
+    },
+
+    {
+      label: "Defaults",
+      content:
+        defaults.length > 0 ? (
+          <PaymentSchedule
+            schedules={defaults}
+            activeTab={3}
+            loan={loan}
+            handleArrearsPayment={handleArrearsPayment}
+            modalOpen={modalOpen}
+            setModalOpen={setModalOpen}
+            pending={pending}
+          />
+        ) : (
+          <h1>No Default</h1>
         ),
     },
     {

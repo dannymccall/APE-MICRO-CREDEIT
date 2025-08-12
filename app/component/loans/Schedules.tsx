@@ -22,7 +22,7 @@ export const PaymentScheduleHeader: React.FC<PaymentScheduleHeader> = ({
         ? "Next Payment Date"
         : activeTab === 2
         ? "Due Date"
-        : ""}
+        : activeTab === 3 ? "Defaulted Date":""}
     </th>
 
     {activeTab === 1 && (
@@ -40,7 +40,7 @@ export const PaymentScheduleHeader: React.FC<PaymentScheduleHeader> = ({
     <th className="text-sm font-sans font-medium text-slate-50 p-2 border text-left">
       Total
     </th>
-    {activeTab === 2 && (
+    {activeTab === 2 || activeTab === 3 &&(
       <>
         <th className="text-sm font-sans font-medium text-slate-50 p-2 border text-left">
           Amount Paid
@@ -53,7 +53,7 @@ export const PaymentScheduleHeader: React.FC<PaymentScheduleHeader> = ({
     <th className="text-sm font-sans font-medium text-slate-50 p-2 border text-left">
       Payment Status
     </th>
-    {activeTab === 2 && (
+    {activeTab === 2 || activeTab === 3 && (
       <th className="text-sm font-sans font-medium text-slate-50 p-2 border text-left">
         Action
       </th>
@@ -86,8 +86,10 @@ export interface PaymentScheduleRowProps {
     amount: number,
     loadId: string,
     nextPayment: string,
-    clientId: string
+    clientId: string,
   ) => void;
+
+  pending: boolean
 }
 
 export const PaymentScheduleRow: React.FC<PaymentScheduleRowProps> = ({
@@ -100,9 +102,10 @@ export const PaymentScheduleRow: React.FC<PaymentScheduleRowProps> = ({
   handleArrearsPayment,
   selectedSchedule,
   handleOnClickSchedule,
+  pending
 }) => {
   const [amount, setAmount] = React.useState<number | undefined>();
-
+  
   return (
     <>
       <tr key={index}>
@@ -131,7 +134,7 @@ export const PaymentScheduleRow: React.FC<PaymentScheduleRowProps> = ({
           {formatCurrency(schedule.amountToPay)}
         </td>
 
-        {activeTab === 2 && (
+        {activeTab === 2 || activeTab === 3 &&(
           <>
             <td className="text-sm font-sans text-gray-700 p-2 border">
               {formatCurrency(schedule.amountPaid)}
@@ -158,10 +161,10 @@ export const PaymentScheduleRow: React.FC<PaymentScheduleRowProps> = ({
           </span>
         </td>
 
-        {activeTab === 2 && (
+        {activeTab === 2 || activeTab === 3 &&  (
           <td className="text-sm font-sans text-gray-700 p-2 border">
             <button
-              className="btn btn-sm px-5 glass bg-violet-500 text-slate-100"
+              className="btn btn-sm px-5  bg-violet-700 text-slate-100"
               onClick={() => {
                 handleOnClickSchedule(schedule);
                 setModalOpen(true);
@@ -173,7 +176,7 @@ export const PaymentScheduleRow: React.FC<PaymentScheduleRowProps> = ({
         )}
       </tr>
 
-      {activeTab === 2 && selectedSchedule && (
+      {activeTab === 2 || activeTab  === 3 &&selectedSchedule && (
         <ArrearsPaymentModal
           modalOpen={modalOpen}
           setModalOpen={setModalOpen}
@@ -182,6 +185,7 @@ export const PaymentScheduleRow: React.FC<PaymentScheduleRowProps> = ({
           loan={loan}
           handleArrearsPayment={handleArrearsPayment}
           selectedSchedule={selectedSchedule}
+          pending={pending}
         />
       )}
     </>

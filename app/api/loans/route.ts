@@ -72,7 +72,9 @@ export async function GET(req: NextRequest) {
     // Handle loan search by query
     if (query) {
       try {
-        const loans = await LoanApplication.find({})
+        const loans = await LoanApplication.find({
+          paymentStatus: { $regex: query, $options: "i" },
+        })
           .populate({
             path: "client",
             match: {
@@ -137,10 +139,9 @@ export async function GET(req: NextRequest) {
             $or: [
               { first_name: { $regex: search, $options: "i" } },
               { last_name: { $regex: search, $options: "i" } },
-              {paymentStatus: {$regex: search, $options: "i"}}
             ],
           },
-          { client_status: "active" },
+          { client_status: "active", $options: "i" },
         ],
       });
 
@@ -227,7 +228,6 @@ export async function POST(req: NextRequest) {
     if (!client)
       return createResponse(false, "001", "Client does not exist", {});
 
-    
     const passport: File | null = body.get("file") as unknown as File;
     let newFileName: string = "";
 

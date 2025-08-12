@@ -37,6 +37,7 @@ interface IPaymentSchedule {
     nextPayment: string,
     clientId: string
   ) => void;
+  pending: boolean
 }
 
 const PaymentSchedule: React.FC<IPaymentSchedule> = ({
@@ -47,6 +48,7 @@ const PaymentSchedule: React.FC<IPaymentSchedule> = ({
   handleArrearsPayment,
   modalOpen,
   setModalOpen,
+  pending
 }) => {
   // const [selectedSchedule, setSelectedSchedule] = useState<any>();
   const totalPrincipalPayment = schedules.reduce(
@@ -90,6 +92,7 @@ const PaymentSchedule: React.FC<IPaymentSchedule> = ({
               handleArrearsPayment={handleArrearsPayment}
               selectedSchedule={selectedSchedule!}
               handleOnClickSchedule={handleOnClickSchedule}
+              pending={pending}
             />
               ))}
           <PaymentScheduleFooter

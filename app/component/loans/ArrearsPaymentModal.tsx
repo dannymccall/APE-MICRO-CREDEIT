@@ -3,7 +3,7 @@ import Modal from "../Modal";
 import { Schedule } from "./Schedules";
 import { formatCurrency, formatDate } from "@/app/lib/helperFunctions";
 import { IoIosArrowRoundForward } from "react-icons/io";
-
+import { LoadingSpinner } from "../Loaders/Loading";
 interface ArrearsPaymentSchedule {
   modalOpen: boolean;
   setModalOpen: (modalOpen: boolean) => void;
@@ -25,6 +25,7 @@ interface ArrearsPaymentSchedule {
     nextPayment: string,
     clientId: string
   ) => void;
+  pending: boolean;
 }
 const ArrearsPaymentModal = ({
   modalOpen,
@@ -34,6 +35,7 @@ const ArrearsPaymentModal = ({
   loan,
   selectedSchedule,
   handleArrearsPayment,
+  pending,
 }: ArrearsPaymentSchedule) => {
   return (
     <Modal
@@ -80,7 +82,7 @@ const ArrearsPaymentModal = ({
           />
           <button
             className="btn btn-sm disabled:bg-gray-300 glass bg-violet-500 text-slate-100 flex items-center justify-center gap-3"
-            disabled={isNaN(amount ?? 0) || (amount ?? 0) <= 0}
+            disabled={isNaN(amount ?? 0) || (amount ?? 0) <= 0 || pending}
             onClick={() =>
               handleArrearsPayment(
                 Number(amount),
@@ -90,11 +92,17 @@ const ArrearsPaymentModal = ({
               )
             }
           >
-            Proceed{" "}
-            <IoIosArrowRoundForward
-              size={25}
-              className="relative icon-move-left"
-            />
+            {pending ? (
+              <LoadingSpinner />
+            ) : (
+              <>
+                Proceed{" "}
+                <IoIosArrowRoundForward
+                  size={25}
+                  className="relative icon-move-left"
+                />
+              </>
+            )}
           </button>
         </div>
       </section>

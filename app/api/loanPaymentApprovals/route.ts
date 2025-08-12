@@ -68,7 +68,7 @@ export async function POST(req: NextRequest) {
 
     // Process payment schedule
     paymentSchedule.forEach((schedule: any) => {
-      if (schedule.status === "arrears" && balance > 0) {
+      if (schedule.status === "arrears" || schedule.status === "default" && balance > 0) {
         const outstanding = Number(schedule.outStandingBalance);
 
         if (balance >= outstanding) {
@@ -79,7 +79,7 @@ export async function POST(req: NextRequest) {
           schedule.datePaid = new Date(pendingLoan.createdAt);
         } else {
           schedule.outStandingBalance = outstanding - balance;
-          schedule.status = "arrears";
+          schedule.status =schedule.status;
           balance = 0;
         }
       }
@@ -98,7 +98,7 @@ export async function POST(req: NextRequest) {
             schedule.datePaid = new Date(pendingLoan.createdAt);
           } else {
             schedule.outStandingBalance = schedule.amountToPay - balance;
-            schedule.status = "arrears";
+            schedule.status = schedule.status;
             schedule.amountPaid = Number(balance);
             balance = 0;
           }
