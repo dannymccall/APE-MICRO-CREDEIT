@@ -241,7 +241,7 @@ export default function Sidebar({
       }`}
     >
       {
-        logginIdentity && profilePicture ?
+        logginIdentity  ?
         <section className="h-full flex flex-col justify-between">
   
         <div className="bg-violet-900 p-4 text-xl font-bold border-b border-violet-500 z-10 mb-7 relative">
