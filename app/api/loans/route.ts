@@ -72,9 +72,7 @@ export async function GET(req: NextRequest) {
     // Handle loan search by query
     if (query) {
       try {
-        const loans = await LoanApplication.find({
-          paymentStatus: { $regex: query, $options: "i" },
-        })
+        const loans = await LoanApplication.find()
           .populate({
             path: "client",
             match: {
