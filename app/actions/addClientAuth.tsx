@@ -39,7 +39,7 @@ export async function addClient(state: AddClientState, formData: FormData) {
     // Conditionally omit the 'passport' field
     schema = schema.omit({ passport: true });
   }
-
+console.log(body)
   
   // Now validate the body using the dynamically adjusted schema
   const validatedClientFormDetails = schema.safeParse(body);

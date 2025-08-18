@@ -58,6 +58,7 @@ export function SelectField({
   onChange,
   options,
   placeholder,
+  useLower
 }: any) {
   return (
     <select
@@ -70,7 +71,7 @@ export function SelectField({
         {placeholder}
       </option>
       {options.map((opt: any, index: any) => (
-        <option key={index} value={opt.toLowerCase()} className="text-sm font-sans">
+        <option key={index} value={useLower ? opt.toLowerCase() : opt} className="text-sm font-sans">
           {opt}
         </option>
       ))}

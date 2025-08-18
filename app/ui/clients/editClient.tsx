@@ -133,6 +133,7 @@ const EditClient: React.FC<IEditClient> = ({ client, setOpenModalEdit }) => {
               name="title"
               defaultValue=""
               options={[...title, client.title]}
+            useLower={false}
             />
             {state?.errors?.title && (
               <p className=" text-red-500 p-3 font-semibold">
@@ -198,6 +199,7 @@ const EditClient: React.FC<IEditClient> = ({ client, setOpenModalEdit }) => {
             <SelectField
               name="clientStatus"
               defaultValue=""
+              useLower={true}
               options={[
                 toCapitalized(client.client_status),
                 "Active",
