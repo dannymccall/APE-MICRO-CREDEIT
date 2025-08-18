@@ -22,16 +22,16 @@ export default async function Page({
     //   method: "GET",
     //  cache: "no-store",
     // })
-    const response = await fetch(fullUrl, {method:"GET", cache:"no-store"});
+    const response = await fetch(fullUrl, { method: "GET", cache: "no-store" });
     const client = await response.json();
-  
+
     if (!client?.data) {
       return (
         <main>
           <p>Client data not found.</p>
         </main>
       );
-  }
+    }
 
     return (
       <Suspense fallback={<LoadingDivs />}>
