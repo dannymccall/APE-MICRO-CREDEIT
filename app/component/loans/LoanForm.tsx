@@ -44,7 +44,7 @@ export default function LoanForm({
               }}
               className={`${inputClasses} border-b`}
             />
-            <ul className="max-h-40 overflow-hidden w-full">
+            <ul className="max-h-40 overflow-y-scroll w-full">
               {reducerState.clients.length > 0 ? (
                 reducerState.clients.map((client: any) => (
                   <li

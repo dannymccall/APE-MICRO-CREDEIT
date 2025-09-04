@@ -81,6 +81,7 @@ export async function POST(req: NextRequest) {
 
     const user = await userService.findOne({ username });
 
+    console.log({user})
     if (!user) {
       return NextResponse.json(
         createResponse(false, "001", "Invalid Credentials", {}),
@@ -92,6 +93,7 @@ export async function POST(req: NextRequest) {
       password,
       user.password
     );
+  
     if (!isPasswordValid) {
       return createResponse(false, "001", "Invalid Credentials", {}, {});
     }

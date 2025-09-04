@@ -126,6 +126,7 @@ export async function GET(req: NextRequest) {
     }
 
     if (search) {
+      console.log({search})
       const clients = await Client.find({
         $and: [
           {

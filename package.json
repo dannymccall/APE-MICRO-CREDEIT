@@ -15,7 +15,7 @@
         "@types/js-cookie": "^3.0.6",
         "@types/next": "^8.0.7",
         "@types/sharp": "^0.32.0",
-        "bcrypt": "^5.1.1",
+        "bcrypt": "^6.0.0",
         "chart.js": "^4.4.7",
         "chrome-aws-lambda": "^10.1.0",
         "cloudinary": "^2.5.1",
