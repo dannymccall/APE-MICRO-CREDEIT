@@ -20,12 +20,14 @@ import mongoose from "mongoose";
 import { generateFileName } from "../loans/route";
 import { getUserId } from "../auth/route";
 import { ActivitymanagementService } from "@/app/lib/backend/services/ActivitymanagementService";
-import { uploadToCloudinary, getArrayBuffer, saveFile } from "@/app/lib/serverFunctions";
+import {
+  uploadToCloudinary,
+  getArrayBuffer,
+  saveFile,
+} from "@/app/lib/serverFunctions";
 await connectDB();
 const clientService = new ClientService();
 const activitymanagementService = new ActivitymanagementService();
-
-
 
 export async function GET(req: NextRequest) {
   try {
@@ -57,7 +59,13 @@ export async function GET(req: NextRequest) {
                 { systemId: { $regex: query, $options: "i" } },
               ],
             },
-            { client_status: "active" },
+
+            {
+              $or: [
+                { client_status: "active" },
+                { client_status: "in active" },
+              ],
+            },
           ],
         })
           .populate("loans")
@@ -126,7 +134,7 @@ export async function GET(req: NextRequest) {
     }
 
     if (search) {
-      console.log({search})
+      console.log({ search });
       const clients = await Client.find({
         $and: [
           {
@@ -240,7 +248,7 @@ export async function POST(req: NextRequest) {
         const result = await generateFileName(passport);
         newFileName = result.newFileName;
         await saveFile(newFileName, result.buffer);
-        console.log(newFileName)
+        console.log(newFileName);
       } else {
         const buffer = await getArrayBuffer(passport);
         const result = await uploadToCloudinary(buffer, "uploads");
@@ -265,9 +273,16 @@ export async function POST(req: NextRequest) {
       idNumber: body.get("idNumber") as string,
       avarta: newFileName, // Make sure `newFileName` is defined and sanitized
       staff: staff._id as mongoose.Types.ObjectId, // Ensure staff is fetched correctly
-      maritalStatus: body.get("maritalStatus") as "married" | "single" | "divorced" | "widowed" | undefined, // Ensure correct type
+      maritalStatus: body.get("maritalStatus") as
+        | "married"
+        | "single"
+        | "divorced"
+        | "widowed"
+        | undefined, // Ensure correct type
       systemId: systemId, // Ensure this is generated uniquely
-      gender: (body.get("gender") as "male" | "female" | "others" | undefined)?.toLowerCase(), // Ensure correct type
+      gender: (
+        body.get("gender") as "male" | "female" | "others" | undefined
+      )?.toLowerCase(), // Ensure correct type
     };
 
     const newClient = await clientService.create(client as any);
@@ -293,8 +308,7 @@ export async function DELETE(req: NextRequest) {
     const id: string | any = searchParams.get("id");
 
     const client = await clientService.findById(id);
-    if (!client)
-      return createResponse(false, "001", "Client does not exists");
+    if (!client) return createResponse(false, "001", "Client does not exists");
 
     const deleteClient = await clientService.delete(id);
     if (!deleteClient)
@@ -334,7 +348,7 @@ export async function PUT(req: NextRequest) {
     // const id: string | any = searchParams.get("id");
     // if (!id) return createResponse(false, "001", "Client ID is required", {});
 
-    const client = await clientService.findById(body.get('id') as string);
+    const client = await clientService.findById(body.get("id") as string);
     if (!client) return createResponse(false, "001", "Client not found", {});
 
     const [staff, branch] = await Promise.all([
@@ -366,7 +380,7 @@ export async function PUT(req: NextRequest) {
     const updatedFields: Partial<typeof client> = {};
 
     Object.entries(fieldMapping).forEach(([formKey, clientKey]) => {
-      const formValue = body.get(formKey);    
+      const formValue = body.get(formKey);
       if (isNotEmpty(formValue)) {
         (updatedFields as any)[clientKey] = formValue;
       }
@@ -389,9 +403,12 @@ export async function PUT(req: NextRequest) {
     updatedFields["staff"] = staff._id as mongoose.Types.ObjectId;
     updatedFields["branch"] = branch._id as mongoose.Types.ObjectId;
     updatedFields["client_status"] = body.get("clientStatus") as string;
-    updatedFields["idNumber"] = body.get("idNumber") as string
+    updatedFields["idNumber"] = body.get("idNumber") as string;
 
-    const updatedClient = await clientService.update(body.get('id') as string, updatedFields);
+    const updatedClient = await clientService.update(
+      body.get("id") as string,
+      updatedFields
+    );
     const userId = await getUserId();
 
     await activitymanagementService.createActivity(
@@ -415,4 +432,3 @@ export async function PUT(req: NextRequest) {
   }
 }
 export { saveFile };
-
