@@ -82,6 +82,7 @@ export async function GET() {
 
         if (loan.paymentSchedule.schedule.every((schedule: Schedule) => schedule.status === "paid")) {
           loan.paymentStatus = "completed";
+          console.log("completed")
           isUpdated = true;
         }
 
