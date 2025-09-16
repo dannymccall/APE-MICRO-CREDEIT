@@ -79,6 +79,7 @@ export async function GET() {
             }
           }
         });
+        console.log("going to complete")
 
         if (
           loan.paymentSchedule.schedule.every(
@@ -89,6 +90,8 @@ export async function GET() {
           console.log("Loan marked completed");
           isUpdated = true;
         }
+                console.log("going to complete")
+
 
         if (isUpdated) {
           loan.markModified("paymentSchedule");
