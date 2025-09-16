@@ -6,7 +6,6 @@ import {
 import { connectDB } from "@/app/lib/mongodb";
 import {
   PaymentScheduleSchema,
-  PaymentSchedule,
   IPaymentSchedule,
 } from "@/app/lib/backend/models/paymentSchdule.model";
 import mongoose from "mongoose";
@@ -30,78 +29,76 @@ interface ILoan
   };
 }
 
-export async function GET() {
+export async function POST() {
   await connectDB();
 
+  // ✅ Register the model correctly
   if (!mongoose.models.PaymentSchedule) {
-    mongoose.model<IPaymentSchedule>("LoanApplication", PaymentScheduleSchema);
+    mongoose.model<IPaymentSchedule>("PaymentSchedule", PaymentScheduleSchema);
   }
+
   try {
     console.log("Cron ran at ", new Date());
 
-    const loans: any = (await LoanApplication.find({
-      paymentStatus: "not completed",
+    const loans: ILoan[] = (await LoanApplication.find({
+      paymentStatus: { $ne: "completed" }, // only incomplete loans
     }).populate({
       path: "paymentSchedule",
-      populate: { path: "schedule" },
       select: "schedule",
     })) as unknown as ILoan[];
 
     const today = new Date();
-
     const startOfDayUTC = new Date(
       Date.UTC(today.getUTCFullYear(), today.getUTCMonth(), today.getUTCDate())
     );
 
-    console.log(startOfDayUTC.toISOString());
+    console.log("Processing date:", startOfDayUTC.toISOString());
+
     await Promise.all(
       loans.map(async (loan: any) => {
         if (!loan.paymentSchedule) return;
 
         let isUpdated = false;
-        const maturityDate = new Date(loan.maturityDate); // Ensure maturityDate is in your model
+        const maturityDate = new Date(loan.maturityDate);
 
+        // 🔹 Step 1: update schedule items
         loan.paymentSchedule.schedule.forEach((schedule: Schedule) => {
           const nextPaymentDate = new Date(schedule.nextPayment);
 
-          // Only update if not already paid
           if (schedule.status !== "paid") {
             if (nextPaymentDate < startOfDayUTC) {
               schedule.status = "arrears";
               isUpdated = true;
             }
 
-            // Check default only if past maturity and not paid
             if (startOfDayUTC > maturityDate) {
               schedule.status = "default";
-              loan.paymentStatus = "default";
               isUpdated = true;
             }
           }
         });
-        console.log("going to complete")
 
-        if (
-          loan.paymentSchedule.schedule.every(
-            (s: Schedule) => s.status === "paid"
-          )
-        ) {
+        // 🔹 Step 2: recalc loan status directly from schedule
+        if (loan.paymentSchedule.schedule.every((s: Schedule) => s.status === "paid")) {
           loan.paymentStatus = "completed";
-          console.log("Loan marked completed");
-          isUpdated = true;
+        } else if (loan.paymentSchedule.schedule.some((s: Schedule) => s.status === "default")) {
+          loan.paymentStatus = "default";
+        } else {
+          loan.paymentStatus = "not completed";
         }
-                console.log("going to complete")
 
+        isUpdated = true; // always sync status
 
+        // 🔹 Step 3: save properly
         if (isUpdated) {
           loan.markModified("paymentSchedule");
           await loan.save();
+          await loan.paymentSchedule.save()
         }
       })
     );
 
     return NextResponse.json({
-      loans,
       message: "Cron job executed successfully",
     });
   } catch (error) {
