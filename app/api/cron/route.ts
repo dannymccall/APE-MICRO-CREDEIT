@@ -55,7 +55,7 @@ export async function GET() {
 
     console.log(startOfDayUTC.toISOString());
     await Promise.all(
-      loans.map(async (loan:any) => {
+      loans.map(async (loan: any) => {
         if (!loan.paymentSchedule) return;
 
         let isUpdated = false;
@@ -63,38 +63,36 @@ export async function GET() {
 
         loan.paymentSchedule.schedule.forEach((schedule: Schedule) => {
           const nextPaymentDate = new Date(schedule.nextPayment);
-          if (nextPaymentDate < startOfDayUTC && schedule.status !== "paid") {
-            schedule.status = "arrears";
-            isUpdated = true;
-          }
 
-          if (nextPaymentDate < startOfDayUTC && schedule.status === "paid" && schedule.amountPaid! <= 0) {
-            schedule.status = "arrears";
-            isUpdated = true;
-          }
-          
-          if ((nextPaymentDate < startOfDayUTC) && (startOfDayUTC > maturityDate) && (schedule.status) !== "paid") {
-            schedule.status = "default";
-            loan.paymentStatus = "default";
-            isUpdated = true;
-          }
-          if ((nextPaymentDate < startOfDayUTC) && (startOfDayUTC > maturityDate) && (schedule.status) === "paid") {
-            schedule.status = "paid";
-            loan.paymentStatus = "completed";
-            isUpdated = true;
+          // Only update if not already paid
+          if (schedule.status !== "paid") {
+            if (nextPaymentDate < startOfDayUTC) {
+              schedule.status = "arrears";
+              isUpdated = true;
+            }
+
+            // Check default only if past maturity and not paid
+            if (startOfDayUTC > maturityDate) {
+              schedule.status = "default";
+              loan.paymentStatus = "default";
+              isUpdated = true;
+            }
           }
         });
 
-        if (loan.paymentSchedule.schedule.every((schedule: Schedule) => schedule.status === "paid")) {
+        if (
+          loan.paymentSchedule.schedule.every(
+            (s: Schedule) => s.status === "paid"
+          )
+        ) {
           loan.paymentStatus = "completed";
-          console.log("completed")
+          console.log("Loan marked completed");
           isUpdated = true;
         }
 
         if (isUpdated) {
-          loan.markModified("paymentSchedule"); // Ensures changes are tracked
+          loan.markModified("paymentSchedule");
           await loan.save();
-          await loan.paymentSchedule.save()
         }
       })
     );
