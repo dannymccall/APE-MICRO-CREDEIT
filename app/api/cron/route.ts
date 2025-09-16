@@ -73,14 +73,16 @@ export async function GET() {
             isUpdated = true;
           }
           
-          if (nextPaymentDate < startOfDayUTC && startOfDayUTC > maturityDate && schedule.status !== "paid") {
+          if ((nextPaymentDate < startOfDayUTC) && (startOfDayUTC > maturityDate) && (schedule.status) !== "paid") {
             schedule.status = "default";
             loan.paymentStatus = "default";
             isUpdated = true;
           }
+         
         });
 
         if (loan.paymentSchedule.schedule.every((schedule: Schedule) => schedule.status === "paid")) {
+          console.log("completed")
           loan.paymentStatus = "completed";
           console.log("completed")
           isUpdated = true;
