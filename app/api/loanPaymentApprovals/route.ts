@@ -78,7 +78,7 @@ export async function POST(req: NextRequest) {
           schedule.status = "paid";
           schedule.datePaid = new Date(pendingLoan.createdAt);
         } else {
-          schedule.outStandingBalance = outstanding - balance;
+           schedule.outStandingBalance = outstanding - balance;
           schedule.status =schedule.status;
           balance = 0;
         }
@@ -98,7 +98,7 @@ export async function POST(req: NextRequest) {
             schedule.datePaid = new Date(pendingLoan.createdAt);
           } else {
             schedule.outStandingBalance = schedule.amountToPay - balance;
-            schedule.status = schedule.status;
+            schedule.status = "arrears";
             schedule.amountPaid = Number(balance);
             balance = 0;
           }

@@ -69,6 +69,7 @@ const DashboardUI = () => {
     totalClients,
     totalOutstandingBalance,
     totalArrears,
+    totalDefaults,
     totalRepayment,
     totalDisbursement,
     todayRepayment,
@@ -76,13 +77,18 @@ const DashboardUI = () => {
     activities,
   } = data;
 
-  // console.log({ data });
+  console.log({ data });
   const dashboardStats: IDashboardStatics[] = [
     { statsType: "Total Clients", stats: totalClients, icon: FiUsers }, // Represents people/users
     { statsType: "Total Users", stats: totalUsers, icon: FiUsers }, // Also represents users
     {
       statsType: "Total Arrears",
       stats: formatCurrency(totalArrears),
+      icon: FiBarChart2,
+    }, // Represents financial metrics
+    {
+      statsType: "Total Default",
+      stats: formatCurrency(totalDefaults),
       icon: FiBarChart2,
     }, // Represents financial metrics
     {

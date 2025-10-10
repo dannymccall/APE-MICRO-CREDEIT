@@ -286,11 +286,11 @@ export function generatePaymentSchedule(
     schedule.push({
       week: i,
       nextPayment: paymentDate.toISOString().split("T")[0], // Format as YYYY-MM-DD
-      amountToPay,
+      amountToPay: Math.floor(amountToPay),
       status: "not paid",
       principalPayment: Math.floor(Number(principal) / numberOfWeeks),
       interestPayment: Math.ceil(Number(principal) * 0.0267),
-      outStandingBalance: amountToPay,
+      outStandingBalance: Math.floor(amountToPay),
       amountPaid: 0,
     });
   }

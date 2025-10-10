@@ -1,7 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
 import { LoanApplication } from "@/app/lib/backend/models/loans.model";
 import { Client } from "@/app/lib/backend/models/client.model";
-import { PaymentSchedule } from "@/app/lib/backend/models/paymentSchdule.model";
+import {
+  IPaymentSchedule,
+  PaymentSchedule,
+} from "@/app/lib/backend/models/paymentSchdule.model";
 import { User } from "@/app/lib/backend/models/user.model";
 import { Activitymanagement } from "@/app/lib/backend/models/activitymanagement.model";
 import { connectDB } from "@/app/lib/mongodb";
@@ -26,6 +29,7 @@ export async function GET() {
       totalClients,
       totalOutstandingBalance,
       totalArrears,
+      totalDefaults,
       totalRepayment,
       monthlyRepayment,
       totalDisbursement,
@@ -34,7 +38,7 @@ export async function GET() {
       activities,
     ] = await Promise.all([
       PaymentSchedule.aggregate([
-           {
+        {
           $lookup: {
             from: "loanapplications", // collection name in MongoDB (should be lowercase and plural)
             localField: "loan",
@@ -43,7 +47,7 @@ export async function GET() {
           },
         },
         { $match: { "loanDetails.loanApprovalStatus": "Approved" } },
-        
+
         { $unwind: "$schedule" },
         {
           $group: {
@@ -66,7 +70,7 @@ export async function GET() {
       User.countDocuments(),
       Client.countDocuments(),
       PaymentSchedule.aggregate([
-           {
+        {
           $lookup: {
             from: "loanapplications", // collection name in MongoDB (should be lowercase and plural)
             localField: "loan",
@@ -104,6 +108,26 @@ export async function GET() {
         },
       ]),
       PaymentSchedule.aggregate([
+        {
+          $lookup: {
+            from: "loanapplications", // collection name in MongoDB (should be lowercase and plural)
+            localField: "loan",
+            foreignField: "_id",
+            as: "loanDetails",
+          },
+        },
+        { $match: { "loanDetails.loanApprovalStatus": "Approved" } },
+        { $unwind: "$schedule" },
+
+        { $match: { "schedule.status": "default" } },
+        {
+          $group: {
+            _id: null,
+            totalOutstanding: { $sum: "$schedule.outStandingBalance" },
+          },
+        },
+      ]),
+      PaymentSchedule.aggregate([
         { $unwind: "$schedule" },
         {
           $group: {
@@ -113,7 +137,7 @@ export async function GET() {
         },
       ]),
       PaymentSchedule.aggregate([
-         {
+        {
           $lookup: {
             from: "loanapplications", // collection name in MongoDB (should be lowercase and plural)
             localField: "loan",
@@ -141,7 +165,7 @@ export async function GET() {
         },
       ]),
       PaymentSchedule.aggregate([
-         {
+        {
           $lookup: {
             from: "loanapplications", // collection name in MongoDB (should be lowercase and plural)
             localField: "loan",
@@ -165,9 +189,8 @@ export async function GET() {
             createdAt: {
               $gte: startOfDay,
               $lt: endOfDay,
-              
             },
-            loanApprovalStatus: "Approved"
+            loanApprovalStatus: "Approved",
           },
         },
         {
@@ -227,6 +250,21 @@ export async function GET() {
       (repayment: Repayment) => repayment.monthlyRepayment
     );
 
+    // const paymentSchdule: IPaymentSchedule[] = await PaymentSchedule.find();
+
+    // for (const value of paymentSchdule) {
+    //   for (const i of value.schedule) {
+    //     i.amountToPay = Math.floor(i.amountToPay);
+    //     i.outStandingBalance = Math.floor(i.outStandingBalance);
+    //     i.amountPaid = Math.ceil(i.amountPaid)
+    //     if(i.amountPaid === i.amountToPay){
+    //       i.status = "paid"
+    //     }
+    //   }
+    
+    //   await value.save(); // ✅ this saves all subdocs inside
+    // }
+
     return NextResponse.json(
       {
         monthlyOutstandingBalance,
@@ -236,6 +274,7 @@ export async function GET() {
         totalOutstandingBalance:
           totalOutstandingBalance[0]?.totalOutstanding || 0,
         totalArrears: totalArrears[0]?.totalOutstanding || 0,
+        totalDefaults: totalDefaults[0]?.totalOutstanding || 0,
         totalRepayment: totalRepayment[0]?.totalRepayment || 0,
         monthlyRepayment,
         totalDisbursement: totalDisbursement[0]?.totalDisbursement || 0,
