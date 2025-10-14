@@ -117,7 +117,7 @@ const ClientDetails: React.FC<PaymentClientDetails> = ({ client }) => {
                    {formatCurrency(loan.weeklyAmount)}
                   </span>
                 </div>
-                <div className="w-full flex desktop:flex-row laptop:flex-row tablet:flex-row phone:flex-col gap-1 mb-2  justify-between desktop:items-center laptop:items-center tablet:items-center phone:items-start  px-5">
+                {/* <div className="w-full flex desktop:flex-row laptop:flex-row tablet:flex-row phone:flex-col gap-1 mb-2  justify-between desktop:items-center laptop:items-center tablet:items-center phone:items-start  px-5">
                   <p className="text-base font-mono text-slate-100">
                     NEXT PAYMENT DATE
                   </p>
@@ -125,7 +125,7 @@ const ClientDetails: React.FC<PaymentClientDetails> = ({ client }) => {
                   <span className="text-sm font-mono  text-amber-500">
                     {formatDate(loan.nextPayment)}
                   </span>
-                </div>
+                </div> */}
 
                 <form
                   className="w-full h-full flex flex-col  px-5"

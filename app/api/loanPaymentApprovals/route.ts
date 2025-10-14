@@ -87,7 +87,6 @@ export async function POST(req: NextRequest) {
       if (balance > 0) {
         const paymentDate = new Date(pendingLoan.paymentDate as Date);
         if (
-          isSameDate(schedule.nextPayment, paymentDate) &&
           schedule.status === "not paid"
         ) {
           if (balance >= schedule.amountToPay) {
@@ -112,15 +111,15 @@ export async function POST(req: NextRequest) {
         { _id: loanPaymentSchedule._id },
         { schedule: paymentSchedule }
       ),
-      LoanApplication.updateOne(
-        { _id: loanId },
-        {
-          nextPayment: new Date(loanApplication.nextPayment as Date).setDate(
-            new Date(loanApplication.nextPayment as Date).getDate() + 7
-          ),
-          nextPaymentStatus: "",
-        }
-      ),
+      // LoanApplication.updateOne(
+      //   { _id: loanId },
+      //   {
+      //     nextPayment: new Date(loanApplication.nextPayment as Date).setDate(
+      //       new Date(loanApplication.nextPayment as Date).getDate() + 7
+      //     ),
+      //     nextPaymentStatus: "",
+      //   }
+      // ),
       TemporalPayment.findByIdAndDelete(pendingLoanId),
     ]);
     await makeRequest(
