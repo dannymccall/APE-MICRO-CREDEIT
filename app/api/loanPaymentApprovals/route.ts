@@ -111,15 +111,15 @@ export async function POST(req: NextRequest) {
         { _id: loanPaymentSchedule._id },
         { schedule: paymentSchedule }
       ),
-      // LoanApplication.updateOne(
-      //   { _id: loanId },
-      //   {
-      //     nextPayment: new Date(loanApplication.nextPayment as Date).setDate(
-      //       new Date(loanApplication.nextPayment as Date).getDate() + 7
-      //     ),
-      //     nextPaymentStatus: "",
-      //   }
-      // ),
+      LoanApplication.updateOne(
+        { _id: loanId },
+        {
+          // nextPayment: new Date(loanApplication.nextPayment as Date).setDate(
+          //   new Date(loanApplication.nextPayment as Date).getDate() + 7
+          // ),
+          nextPaymentStatus: "",
+        }
+      ),
       TemporalPayment.findByIdAndDelete(pendingLoanId),
     ]);
     await makeRequest(

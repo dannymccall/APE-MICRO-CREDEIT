@@ -119,7 +119,7 @@ const ClientDetails: React.FC<PaymentClientDetails> = ({ client }) => {
                 </div>
                 {/* <div className="w-full flex desktop:flex-row laptop:flex-row tablet:flex-row phone:flex-col gap-1 mb-2  justify-between desktop:items-center laptop:items-center tablet:items-center phone:items-start  px-5">
                   <p className="text-base font-mono text-slate-100">
-                    NEXT PAYMENT DATE
+                    DUE DATE
                   </p>
 
                   <span className="text-sm font-mono  text-amber-500">
