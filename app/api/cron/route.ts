@@ -29,7 +29,7 @@ interface ILoan
   };
 }
 
-export async function POST() {
+export async function GET() {
   await connectDB();
 
   // ✅ Register the model correctly
