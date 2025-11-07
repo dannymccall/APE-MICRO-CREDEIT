@@ -520,9 +520,9 @@ export function getOutstandingBalances(loans: any) {
       // Calculate totalOutstandingBalance for each loan item
       loan.paymentSchedule.schedule.forEach((schedule: any) => {
         totalOutstandingBalance +=
-          (schedule.principalPayment || 0) + (schedule.interestPayment || 0) ||
+          (schedule.amountToPay || 0)  ||
           0;
-        totalInterest += schedule.interestPayment || 0;
+        totalInterest += ((schedule.amountToPay || 0) - schedule.principalPayment || 0) || 0;
         totalWeeklyAmount += schedule.principalPayment || 0;
         totalAmountLeft +=
           (schedule.amountToPay || 0) - (schedule.amountPaid || 0);
